@@ -24,6 +24,10 @@ export function AuthProvider({ children }) {
     setError('')
     try {
       const res = await api.post('/auth/login', { email, password })
+      if (res.data.access_token) {
+        localStorage.setItem('secureft_token', res.data.access_token)
+        setUser(res.data.user)
+      }
       return res.data
     } catch (err) {
       const message = apiError(err)

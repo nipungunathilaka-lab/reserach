@@ -1,0 +1,19 @@
+{
+  "name": "ai-secure-file-transfer-system",
+  "version": "1.0.0",
+  "description": "Root runner for MERN + Python AI microservice",
+  "scripts": {
+    "install:all": "npm run install:node && npm run install:frontend && npm run install:python",
+    "install:node": "cd backend-node && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:python": "cd backend && (if not exist venv python -m venv venv) && .\\venv\\Scripts\\pip install -r requirements.txt",
+    "start": "concurrently \"npm run start:node\" \"npm run start:python\" \"npm run start:frontend\"",
+    "dev": "npm run start",
+    "start:node": "cd backend-node && node server.js",
+    "start:python": "cd backend && .\\venv\\Scripts\\uvicorn app.main:app --reload --port 8000",
+    "start:frontend": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
