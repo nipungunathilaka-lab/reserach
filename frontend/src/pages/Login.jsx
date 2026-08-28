@@ -31,9 +31,13 @@ export default function Login() {
     setLoading(true)
     try {
       const data = await startLogin(email.trim(), password)
-      setChallenge(data)
-      setOtp('')
-      setStep('mfa')
+      if (data.access_token) {
+        navigate('/')
+      } else {
+        setChallenge(data)
+        setOtp('')
+        setStep('mfa')
+      }
     } catch (err) {
       setApiError(err.message || 'Invalid credentials. Please try again.')
     } finally {

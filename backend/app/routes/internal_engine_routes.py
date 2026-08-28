@@ -1,0 +1,107 @@
+import io
+import os
+import uuid
+import time
+from pathlib import Path
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException
+from fastapi.responses import StreamingResponse
+from app.services.ai_service import AIService
+from app.services.malware_service import MalwareDetectionService
+from app.services.classification_service import DataClassificationScanner
+from app.services.pfce_engine import PFCEEngine
+from app.services.crypto_service import CryptoService
+from app.database.db import ENCRYPTED_DIR
+
+router = APIRouter(prefix="/internal", tags=["Internal Engine"])
+
+@router.post("/crypto/ensure_keys")
+def ensure_keys(user_id: str = Form(...)):
+    CryptoService.ensure_user_keypair(user_id)
+    return {"status": "ok"}
+
+@router.post("/crypto/encrypt")
+async def internal_encrypt(
+    file: UploadFile = File(...),
+    sender_id: str = Form(...),
+    receiver_id: str = Form(...),
+    classification: str = Form("standard"),
+    transfers_last_hour: int = Form(0),
+    mfa_failed_attempts: int = Form(0),
+    failed_login_attempts: int = Form(0),
+):
+    safe_name = Path(file.filename or "uploaded_file").name
+    file_size_mb = round(file.size / (1024 * 1024), 4) if file.size else 0
+
+    sample_bytes = await file.read(4096)
+    await file.seek(0)
+    file.file.seek(0)
+    
+    # AI Scan
+    import datetime
+    now = datetime.datetime.utcnow()
+    ai_result = AIService.analyze_transfer(
+        file_size_mb=file_size_mb,
+        hour_of_day=now.hour,
+        transfers_last_hour=transfers_last_hour,
+        mfa_failed_attempts=mfa_failed_attempts,
+        failed_login_attempts=failed_login_attempts,
+        file_name=safe_name,
+    )
+    
+    threat_result = MalwareDetectionService.predict(sample_bytes, safe_name, file_size_mb)
+    threat_score = 0.0 if isinstance(threat_result, dict) else threat_result
+    
+    if threat_score >= 0.90:
+        ai_result["is_anomaly"] = True
+        ai_result["level"] = "critical"
+        ai_result["reason"] = f"Malware detected (score: {threat_score:.2f})"
+        ai_result["anomaly_score"] = max(ai_result.get("anomaly_score", 0), threat_score)
+
+    classification_result = DataClassificationScanner.scan(sample_bytes, safe_name)
+    
+    # Encrypt
+    stored_name = f"{uuid.uuid4().hex}_{safe_name}"
+    pfce_package_path = str(ENCRYPTED_DIR / f"{stored_name}.pfce")
+    
+    pfce_engine = PFCEEngine()
+    CryptoService.ensure_user_keypair(receiver_id)
+    
+    pfce_result = pfce_engine.process_upload(
+        file_stream=file.file, 
+        receiver_id=receiver_id,
+        stored_name_prefix=stored_name,
+        classification=classification_result,
+        pfce_package_path=pfce_package_path
+    )
+    
+    original_hash = getattr(pfce_result, "original_hash", "")
+    
+    return {
+        "stored_name": stored_name,
+        "original_hash": original_hash,
+        "encrypted_path": pfce_result.pfce_package_path,
+        "encrypted_key": "packaged_in_pfce",
+        "nonce": "packaged_in_pfce",
+        "ecdh_public_key": None,
+        "ecdh_wrapped_key": None,
+        "anomaly_score": ai_result["anomaly_score"],
+        "is_anomaly": ai_result["is_anomaly"],
+        "anomaly_level": ai_result.get("level", ""),
+        "anomaly_reason": ai_result.get("reason", "")
+    }
+
+@router.post("/crypto/decrypt")
+async def internal_decrypt(
+    encrypted_path: str = Form(...),
+    receiver_id: str = Form(...),
+):
+    try:
+        pfce_engine = PFCEEngine()
+        stream_generator = pfce_engine.process_download_stream(
+            pfce_package_path=encrypted_path, 
+            receiver_id=receiver_id
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+        
+    return StreamingResponse(stream_generator, media_type="application/octet-stream")
