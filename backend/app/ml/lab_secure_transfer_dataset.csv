@@ -1,0 +1,601 @@
+transfer_id,sender_id,receiver_id,file_name,file_type,file_size_mb,transfer_time,hour_of_day,day_of_week,transfers_last_hour,mfa_failed_attempts,failed_login_attempts,is_unusual_hour,high_risk_file_type,archive_file_type,integrity_status,unauthorized_attempt,encryption_time_ms,decryption_time_ms,ecdh_time_ms,rsa_key_wrap_time_ms,transfer_status,is_anomaly,anomaly_reason,anomaly_level
+350,9,5,project_file_350.xlsx,xlsx,6.66,2025-02-23T12:23:00,12,Sunday,4,0,0,0,0,0,verified,0,16.127,20.131,2.054,2.496,completed,0,normal secure transfer pattern,low
+461,6,7,project_file_461.csv,csv,7.39,2025-04-26T17:23:00,17,Saturday,0,1,0,0,0,0,verified,0,17.822,18.369,3.5,3.419,completed,0,normal secure transfer pattern,low
+225,3,3,project_file_225.png,png,3.84,2025-01-06T16:36:00,16,Monday,2,0,1,0,0,0,verified,0,16.672,12.189,2.77,5.296,completed,0,normal secure transfer pattern,low
+171,6,2,project_file_171.docx,docx,5.16,2025-03-18T15:39:00,15,Tuesday,3,1,0,0,0,0,verified,0,19.434,16.278,0.835,6.649,completed,0,normal secure transfer pattern,low
+471,2,9,suspicious_transfer_471.png,png,84.7,2025-02-08T20:14:00,20,Saturday,1,4,4,0,0,0,failed,0,112.168,92.125,1.906,2.829,blocked,1,failed integrity verification,medium
+587,1,5,suspicious_transfer_587.jar,jar,8.33,2025-04-05T09:38:00,9,Saturday,10,3,6,0,1,0,failed,0,26.986,23.394,2.507,1.678,completed,1,repeated failed login attempts before transfer,high
+130,5,2,project_file_130.csv,csv,1.97,2025-04-13T11:02:00,11,Sunday,4,0,0,0,0,0,verified,0,12.904,10.531,3.194,3.948,completed,0,normal secure transfer pattern,low
+264,8,2,project_file_264.pdf,pdf,8.74,2025-03-29T15:03:00,15,Saturday,0,0,0,0,0,0,verified,0,24.669,21.195,3.882,4.985,completed,0,normal secure transfer pattern,low
+293,8,10,project_file_293.xlsx,xlsx,3.17,2025-05-01T14:37:00,14,Thursday,2,0,1,0,0,0,verified,0,15.216,12.345,3.514,1.233,completed,0,normal secure transfer pattern,low
+107,6,3,project_file_107.txt,txt,3.48,2025-04-29T11:59:00,11,Tuesday,3,1,0,0,0,0,verified,0,15.357,13.107,0.952,4.813,completed,0,normal secure transfer pattern,low
+105,2,2,project_file_105.csv,csv,3.0,2025-04-30T15:08:00,15,Wednesday,3,0,0,0,0,0,verified,0,16.293,10.47,2.718,1.731,completed,0,normal secure transfer pattern,low
+547,3,9,suspicious_transfer_547.csv,csv,42.34,2025-01-09T03:38:00,3,Thursday,17,3,4,1,0,0,verified,1,54.533,59.637,5.965,4.788,completed,1,too many transfers in one hour,high
+83,8,10,project_file_83.pdf,pdf,15.18,2025-03-21T15:36:00,15,Friday,3,1,0,0,0,0,verified,0,43.179,25.511,1.578,6.037,completed,0,normal secure transfer pattern,low
+147,6,8,project_file_147.pdf,pdf,5.22,2025-04-30T17:15:00,17,Wednesday,1,1,1,0,0,0,verified,0,18.774,15.137,1.536,5.792,completed,0,normal secure transfer pattern,low
+428,7,10,project_file_428.zip,zip,4.04,2025-03-11T16:28:00,16,Tuesday,2,1,0,0,1,1,verified,0,14.896,13.479,1.167,7.281,completed,0,normal secure transfer pattern,low
+436,6,9,project_file_436.csv,csv,2.29,2025-01-12T09:25:00,9,Sunday,1,0,0,0,0,0,verified,0,14.844,11.981,2.161,1.413,completed,0,normal secure transfer pattern,low
+451,6,8,project_file_451.docx,docx,14.52,2025-02-03T12:10:00,12,Monday,0,1,0,0,0,0,verified,0,35.152,24.625,1.041,4.836,completed,0,normal secure transfer pattern,low
+197,9,9,project_file_197.xlsx,xlsx,3.27,2025-02-19T15:40:00,15,Wednesday,4,0,0,0,0,0,verified,0,13.403,14.111,3.705,6.083,completed,0,normal secure transfer pattern,low
+444,10,4,project_file_444.txt,txt,6.38,2025-03-12T13:16:00,13,Wednesday,0,0,0,0,0,0,verified,0,15.178,18.684,3.676,6.687,completed,0,normal secure transfer pattern,low
+427,3,1,project_file_427.png,png,8.81,2025-01-17T10:43:00,10,Friday,3,0,0,0,0,0,verified,0,29.072,19.489,0.949,6.603,completed,0,normal secure transfer pattern,low
+356,5,5,project_file_356.csv,csv,2.25,2025-04-09T08:20:00,8,Wednesday,3,0,0,0,0,0,verified,0,12.564,10.299,2.686,5.76,completed,0,normal secure transfer pattern,low
+196,10,2,project_file_196.jpg,jpg,5.83,2025-01-20T09:27:00,9,Monday,1,0,0,0,0,0,verified,0,21.63,17.115,0.917,6.688,completed,0,normal secure transfer pattern,low
+143,9,2,project_file_143.pdf,pdf,8.13,2025-02-09T11:37:00,11,Sunday,0,0,0,0,0,0,verified,0,25.4,23.874,1.575,7.61,completed,0,normal secure transfer pattern,low
+329,6,4,project_file_329.zip,zip,9.87,2025-03-28T15:58:00,15,Friday,1,0,0,0,1,1,verified,0,20.434,27.696,2.499,6.033,completed,0,normal secure transfer pattern,low
+584,8,8,suspicious_transfer_584.ps1,ps1,71.32,2025-03-28T05:22:00,5,Friday,3,3,0,1,1,0,failed,1,188.024,156.259,2.214,1.854,blocked,1,unauthorized access attempt,high
+145,8,3,project_file_145.txt,txt,5.28,2025-01-19T15:19:00,15,Sunday,2,1,0,0,0,0,verified,0,19.483,17.212,0.84,2.781,completed,0,normal secure transfer pattern,low
+398,4,10,project_file_398.zip,zip,2.18,2025-03-25T09:29:00,9,Tuesday,3,0,1,0,1,1,verified,0,13.482,10.486,3.606,5.131,completed,0,normal secure transfer pattern,low
+224,5,2,project_file_224.xlsx,xlsx,1.16,2025-03-01T13:57:00,13,Saturday,3,0,1,0,0,0,verified,0,11.749,10.108,1.573,2.398,completed,0,normal secure transfer pattern,low
+319,6,7,project_file_319.xlsx,xlsx,2.85,2025-03-07T10:18:00,10,Friday,2,1,1,0,0,0,verified,0,13.823,11.837,3.482,2.051,completed,0,normal secure transfer pattern,low
+73,10,7,project_file_73.png,png,5.43,2025-04-13T08:44:00,8,Sunday,3,0,0,0,0,0,verified,0,19.36,12.739,2.661,6.02,completed,0,normal secure transfer pattern,low
+212,7,5,project_file_212.png,png,5.13,2025-02-17T16:59:00,16,Monday,4,0,0,0,0,0,verified,0,21.265,12.585,1.828,3.504,completed,0,normal secure transfer pattern,low
+297,7,2,project_file_297.docx,docx,6.99,2025-02-05T16:05:00,16,Wednesday,4,1,0,0,0,0,verified,0,21.699,16.618,3.968,3.426,completed,0,normal secure transfer pattern,low
+6,3,2,project_file_6.zip,zip,5.51,2025-03-07T08:14:00,8,Friday,2,1,0,0,1,1,verified,0,19.232,14.404,0.758,6.647,completed,0,normal secure transfer pattern,low
+531,9,1,suspicious_transfer_531.zip,zip,57.64,2025-03-23T14:00:00,14,Sunday,11,8,9,0,1,1,failed,0,155.768,129.475,3.253,3.294,integrity_failed,1,compressed archive after failed authentication,high
+41,3,2,project_file_41.txt,txt,2.37,2025-01-11T17:14:00,17,Saturday,0,0,0,0,0,0,verified,0,14.821,11.36,2.282,1.968,completed,0,normal secure transfer pattern,low
+290,9,7,project_file_290.zip,zip,2.85,2025-04-06T17:26:00,17,Sunday,1,0,1,0,1,1,verified,0,13.298,13.179,3.893,5.339,completed,0,normal secure transfer pattern,low
+459,5,8,project_file_459.xlsx,xlsx,1.6,2025-04-15T14:53:00,14,Tuesday,0,0,0,0,0,0,verified,0,12.059,9.626,1.382,1.327,completed,0,normal secure transfer pattern,low
+157,1,2,project_file_157.zip,zip,4.96,2025-03-10T13:17:00,13,Monday,1,0,1,0,1,1,verified,0,18.0,15.333,2.12,6.099,completed,0,normal secure transfer pattern,low
+586,8,1,suspicious_transfer_586.txt,txt,426.34,2025-02-28T02:25:00,2,Friday,6,5,1,1,0,0,failed,1,504.828,446.731,4.025,5.08,blocked,1,unusual night transfer time,high
+504,7,6,suspicious_transfer_504.7z,7z,245.32,2025-01-26T16:53:00,16,Sunday,0,4,9,0,1,1,verified,1,329.803,291.495,3.012,1.214,integrity_failed,1,compressed archive after failed authentication,high
+122,4,7,project_file_122.jpg,jpg,6.49,2025-03-22T15:53:00,15,Saturday,3,1,1,0,0,0,verified,0,22.589,16.558,0.728,7.021,completed,0,normal secure transfer pattern,low
+600,3,2,suspicious_transfer_600.exe,exe,70.05,2025-03-24T02:09:00,2,Monday,8,2,4,1,1,0,failed,1,180.544,133.558,4.739,2.466,blocked,1,high-risk executable/script file type,high
+375,7,10,project_file_375.zip,zip,5.02,2025-03-25T14:38:00,14,Tuesday,2,0,0,0,1,1,verified,0,17.753,13.155,3.672,1.316,completed,0,normal secure transfer pattern,low
+430,4,4,project_file_430.xlsx,xlsx,4.14,2025-02-17T15:17:00,15,Monday,2,1,0,0,0,0,verified,0,17.337,16.138,2.907,1.929,completed,0,normal secure transfer pattern,low
+424,4,8,project_file_424.txt,txt,3.47,2025-04-09T17:15:00,17,Wednesday,4,0,1,0,0,0,verified,0,14.462,13.313,2.593,3.374,completed,0,normal secure transfer pattern,low
+357,10,8,project_file_357.zip,zip,3.87,2025-02-03T15:39:00,15,Monday,0,0,0,0,1,1,verified,0,14.957,12.731,2.722,2.182,completed,0,normal secure transfer pattern,low
+232,8,2,project_file_232.txt,txt,3.36,2025-03-08T15:24:00,15,Saturday,3,0,0,0,0,0,verified,0,16.718,14.533,1.571,7.663,completed,0,normal secure transfer pattern,low
+526,9,7,suspicious_transfer_526.ps1,ps1,109.79,2025-02-08T04:42:00,4,Saturday,10,0,5,1,1,0,verified,1,265.157,218.994,1.778,8.567,completed,1,unauthorized access attempt,high
+154,3,10,project_file_154.docx,docx,2.45,2025-04-22T15:39:00,15,Tuesday,2,0,1,0,0,0,verified,0,15.174,10.786,0.657,7.357,completed,0,normal secure transfer pattern,low
+246,7,8,project_file_246.jpg,jpg,6.35,2025-01-26T17:53:00,17,Sunday,2,0,1,0,0,0,verified,0,18.246,14.951,0.533,7.998,completed,0,normal secure transfer pattern,low
+305,4,1,project_file_305.zip,zip,1.6,2025-02-02T10:43:00,10,Sunday,3,0,0,0,1,1,verified,0,11.948,9.753,1.957,2.855,completed,0,normal secure transfer pattern,low
+148,8,1,project_file_148.csv,csv,1.85,2025-04-19T14:28:00,14,Saturday,4,0,0,0,0,0,verified,0,14.07,10.527,0.864,1.691,completed,0,normal secure transfer pattern,low
+155,4,3,project_file_155.txt,txt,15.3,2025-03-10T11:40:00,11,Monday,0,1,0,0,0,0,verified,0,31.135,35.146,1.992,7.419,completed,0,normal secure transfer pattern,low
+217,3,1,project_file_217.docx,docx,3.41,2025-04-26T08:03:00,8,Saturday,4,0,0,0,0,0,verified,0,16.223,10.913,1.091,7.177,completed,0,normal secure transfer pattern,low
+551,6,9,suspicious_transfer_551.docx,docx,259.51,2025-03-20T00:55:00,0,Thursday,35,0,5,1,0,0,verified,1,376.697,566.529,4.99,9.623,blocked,1,too many transfers in one hour,high
+179,7,9,project_file_179.docx,docx,2.39,2025-01-17T10:24:00,10,Friday,4,0,0,0,0,0,verified,0,14.475,11.266,3.731,6.432,completed,0,normal secure transfer pattern,low
+556,3,5,suspicious_transfer_556.pdf,pdf,604.7,2025-03-29T03:49:00,3,Saturday,7,5,2,1,0,0,verified,1,1427.428,898.319,1.018,1.853,integrity_failed,1,unusual night transfer time,high
+477,1,2,suspicious_transfer_477.bat,bat,7.5,2025-03-06T23:35:00,23,Thursday,11,5,0,1,1,0,verified,1,30.466,26.974,5.467,9.002,integrity_failed,1,repeated failed MFA attempts,high
+323,5,4,project_file_323.docx,docx,2.1,2025-01-19T13:24:00,13,Sunday,3,0,0,0,0,0,verified,0,11.7,11.219,1.663,6.19,completed,0,normal secure transfer pattern,low
+301,4,5,project_file_301.xlsx,xlsx,2.44,2025-01-16T10:15:00,10,Thursday,0,0,0,0,0,0,verified,0,15.068,10.626,1.271,5.129,completed,0,normal secure transfer pattern,low
+31,2,7,project_file_31.docx,docx,7.56,2025-01-23T08:58:00,8,Thursday,0,0,0,0,0,0,verified,0,22.989,15.108,2.051,4.551,completed,0,normal secure transfer pattern,low
+583,6,6,suspicious_transfer_583.zip,zip,867.6,2025-03-09T01:59:00,1,Sunday,6,6,8,1,1,1,failed,0,1457.869,1028.823,1.341,8.136,completed,1,compressed archive after failed authentication,high
+324,3,8,project_file_324.docx,docx,5.83,2025-03-12T17:41:00,17,Wednesday,2,1,0,0,0,0,verified,0,14.962,19.391,1.428,6.166,completed,0,normal secure transfer pattern,low
+306,3,10,project_file_306.txt,txt,3.99,2025-02-09T11:14:00,11,Sunday,2,0,0,0,0,0,verified,0,16.807,14.202,3.299,6.54,completed,0,normal secure transfer pattern,low
+576,8,3,suspicious_transfer_576.docx,docx,89.55,2025-01-03T12:08:00,12,Friday,10,2,4,0,0,0,verified,1,109.716,205.195,5.906,1.396,integrity_failed,1,repeated failed login attempts before transfer,high
+521,2,6,suspicious_transfer_521.txt,txt,85.86,2025-01-02T05:49:00,5,Thursday,12,2,5,1,0,0,verified,1,185.249,148.988,3.882,7.649,completed,1,unusual night transfer time,high
+180,5,1,project_file_180.xlsx,xlsx,8.84,2025-03-17T11:03:00,11,Monday,4,0,1,0,0,0,verified,0,28.613,16.908,1.78,6.487,completed,0,normal secure transfer pattern,low
+287,1,5,project_file_287.jpg,jpg,3.22,2025-02-13T13:01:00,13,Thursday,2,0,0,0,0,0,verified,0,14.553,13.322,1.901,6.241,completed,0,normal secure transfer pattern,low
+349,2,4,project_file_349.png,png,2.97,2025-03-21T13:15:00,13,Friday,2,1,0,0,0,0,verified,0,15.243,11.574,1.25,6.647,completed,0,normal secure transfer pattern,low
+559,6,5,suspicious_transfer_559.png,png,61.08,2025-04-11T03:51:00,3,Friday,5,8,1,1,0,0,failed,1,148.764,82.709,2.553,6.277,blocked,1,repeated failed MFA attempts,high
+549,4,10,suspicious_transfer_549.xlsx,xlsx,105.48,2025-02-12T00:41:00,0,Wednesday,1,2,9,1,0,0,verified,0,200.514,193.972,1.668,6.079,integrity_failed,1,repeated failed login attempts before transfer,high
+76,2,3,project_file_76.png,png,11.55,2025-02-21T14:08:00,14,Friday,4,0,0,0,0,0,verified,0,28.626,23.208,2.441,4.638,completed,0,normal secure transfer pattern,low
+57,2,4,project_file_57.docx,docx,6.05,2025-02-08T08:40:00,8,Saturday,1,0,0,0,0,0,verified,0,16.849,17.407,2.27,3.009,completed,0,normal secure transfer pattern,low
+336,2,5,project_file_336.zip,zip,3.36,2025-02-01T09:27:00,9,Saturday,3,0,0,0,1,1,verified,0,15.864,11.251,0.757,7.564,completed,0,normal secure transfer pattern,low
+191,5,9,project_file_191.zip,zip,1.18,2025-03-15T15:55:00,15,Saturday,0,0,1,0,1,1,verified,0,12.484,9.06,1.645,1.701,completed,0,normal secure transfer pattern,low
+548,3,2,suspicious_transfer_548.zip,zip,44.19,2025-03-11T02:40:00,2,Tuesday,1,7,7,1,1,1,verified,0,66.324,78.001,3.126,5.793,completed,1,compressed archive after failed authentication,high
+288,5,4,project_file_288.xlsx,xlsx,10.44,2025-01-21T17:21:00,17,Tuesday,3,1,0,0,0,0,verified,0,24.409,21.212,0.657,4.417,completed,0,normal secure transfer pattern,low
+190,7,2,project_file_190.xlsx,xlsx,6.37,2025-01-23T13:44:00,13,Thursday,4,0,0,0,0,0,verified,0,22.68,18.439,1.955,2.315,completed,0,normal secure transfer pattern,low
+590,6,10,suspicious_transfer_590.ps1,ps1,118.16,2025-02-03T04:27:00,4,Monday,5,1,4,1,1,0,failed,0,176.261,266.848,5.285,6.4,blocked,1,unusual night transfer time,high
+13,8,9,project_file_13.csv,csv,4.83,2025-03-07T10:55:00,10,Friday,2,0,1,0,0,0,verified,0,15.144,13.215,3.338,4.936,completed,0,normal secure transfer pattern,low
+303,2,1,project_file_303.txt,txt,4.2,2025-03-19T10:19:00,10,Wednesday,0,1,0,0,0,0,verified,0,17.961,15.023,0.963,6.8,completed,0,normal secure transfer pattern,low
+539,5,10,suspicious_transfer_539.xlsx,xlsx,38.65,2025-01-24T03:47:00,3,Friday,2,4,3,1,0,0,verified,0,92.164,61.486,2.2,5.302,completed,1,repeated failed MFA attempts,medium
+252,10,8,project_file_252.xlsx,xlsx,4.65,2025-03-20T10:07:00,10,Thursday,4,1,0,0,0,0,verified,0,14.285,12.575,3.032,2.044,completed,0,normal secure transfer pattern,low
+452,3,10,project_file_452.png,png,1.87,2025-01-23T11:59:00,11,Thursday,3,1,1,0,0,0,verified,0,13.96,11.7,1.523,7.404,completed,0,normal secure transfer pattern,low
+111,2,4,project_file_111.jpg,jpg,3.68,2025-03-07T11:43:00,11,Friday,1,0,0,0,0,0,verified,0,14.887,13.923,0.944,6.571,completed,0,normal secure transfer pattern,low
+156,5,6,project_file_156.zip,zip,1.29,2025-02-05T15:53:00,15,Wednesday,3,0,0,0,1,1,verified,0,11.75,10.074,3.475,2.932,completed,0,normal secure transfer pattern,low
+413,3,9,project_file_413.xlsx,xlsx,13.05,2025-03-14T16:53:00,16,Friday,4,1,0,0,0,0,verified,0,25.561,22.338,2.138,6.633,completed,0,normal secure transfer pattern,low
+460,9,8,project_file_460.csv,csv,2.35,2025-03-25T16:11:00,16,Tuesday,4,0,0,0,0,0,verified,0,15.161,12.203,2.629,7.164,completed,0,normal secure transfer pattern,low
+541,10,2,suspicious_transfer_541.docx,docx,762.9,2025-03-30T09:19:00,9,Sunday,35,0,5,0,0,0,failed,0,707.295,1040.316,3.803,2.977,integrity_failed,1,too many transfers in one hour,high
+188,3,7,project_file_188.docx,docx,4.48,2025-03-18T11:58:00,11,Tuesday,0,1,0,0,0,0,verified,0,15.011,15.096,1.957,3.755,completed,0,normal secure transfer pattern,low
+425,9,4,project_file_425.docx,docx,2.28,2025-02-17T12:38:00,12,Monday,3,1,0,0,0,0,verified,0,13.265,11.496,2.353,1.636,completed,0,normal secure transfer pattern,low
+553,1,8,suspicious_transfer_553.exe,exe,101.74,2025-03-14T01:35:00,1,Friday,10,1,9,1,1,0,failed,0,252.098,166.016,4.232,9.81,integrity_failed,1,repeated failed login attempts before transfer,high
+327,4,2,project_file_327.zip,zip,3.55,2025-02-09T09:42:00,9,Sunday,2,0,0,0,1,1,verified,0,13.738,12.637,1.085,1.231,completed,0,normal secure transfer pattern,low
+36,2,5,project_file_36.png,png,2.85,2025-04-11T15:45:00,15,Friday,2,1,0,0,0,0,verified,0,16.072,11.955,3.475,1.215,completed,0,normal secure transfer pattern,low
+35,6,2,project_file_35.zip,zip,9.02,2025-03-31T10:46:00,10,Monday,2,0,0,0,1,1,verified,0,20.138,21.618,2.253,4.892,completed,0,normal secure transfer pattern,low
+410,10,9,project_file_410.xlsx,xlsx,3.03,2025-04-28T17:51:00,17,Monday,0,1,0,0,0,0,verified,0,15.584,14.015,0.935,5.018,completed,0,normal secure transfer pattern,low
+194,1,4,project_file_194.xlsx,xlsx,6.42,2025-03-13T08:46:00,8,Thursday,4,0,0,0,0,0,verified,0,15.652,19.261,2.255,2.492,completed,0,normal secure transfer pattern,low
+2,7,9,project_file_2.jpg,jpg,5.41,2025-04-21T12:47:00,12,Monday,3,0,0,0,0,0,verified,0,20.563,13.652,3.558,3.352,completed,0,normal secure transfer pattern,low
+545,2,3,suspicious_transfer_545.zip,zip,112.73,2025-01-26T05:04:00,5,Sunday,4,5,4,1,1,1,verified,1,223.011,123.298,5.38,3.697,integrity_failed,1,repeated failed login attempts before transfer,high
+577,6,3,suspicious_transfer_577.pdf,pdf,154.61,2025-02-24T07:17:00,7,Monday,10,3,2,0,0,0,failed,0,381.065,200.418,3.189,8.572,completed,1,failed integrity verification,medium
+447,8,1,project_file_447.xlsx,xlsx,6.96,2025-02-01T11:06:00,11,Saturday,1,0,0,0,0,0,verified,0,19.044,16.47,0.789,4.071,completed,0,normal secure transfer pattern,low
+203,2,5,project_file_203.png,png,14.29,2025-02-14T09:04:00,9,Friday,3,0,0,0,0,0,verified,0,38.963,22.097,2.777,7.569,completed,0,normal secure transfer pattern,low
+448,1,3,project_file_448.jpg,jpg,6.62,2025-02-01T17:49:00,17,Saturday,4,1,0,0,0,0,verified,0,16.718,20.257,2.896,3.905,completed,0,normal secure transfer pattern,low
+241,7,5,project_file_241.xlsx,xlsx,7.47,2025-03-25T10:22:00,10,Tuesday,3,0,1,0,0,0,verified,0,24.63,19.785,0.574,1.524,completed,0,normal secure transfer pattern,low
+589,9,9,suspicious_transfer_589.xlsx,xlsx,866.04,2025-01-19T05:45:00,5,Sunday,10,4,5,1,0,0,verified,0,1331.658,1771.67,4.259,7.558,integrity_failed,1,repeated failed MFA attempts,high
+152,3,5,project_file_152.docx,docx,8.62,2025-03-19T14:13:00,14,Wednesday,3,0,0,0,0,0,verified,0,20.943,16.53,2.444,2.986,completed,0,normal secure transfer pattern,low
+91,8,6,project_file_91.txt,txt,6.71,2025-04-14T11:46:00,11,Monday,0,0,0,0,0,0,verified,0,20.315,17.086,2.517,6.853,completed,0,normal secure transfer pattern,low
+560,9,8,suspicious_transfer_560.zip,zip,8.66,2025-03-27T16:31:00,16,Thursday,11,6,5,0,1,1,failed,0,25.671,30.732,4.589,9.956,completed,1,compressed archive after failed authentication,high
+330,2,5,project_file_330.xlsx,xlsx,7.63,2025-01-17T16:36:00,16,Friday,3,0,0,0,0,0,verified,0,17.9,19.748,1.101,6.837,completed,0,normal secure transfer pattern,low
+599,10,9,suspicious_transfer_599.jpg,jpg,219.77,2025-03-29T03:02:00,3,Saturday,12,5,2,1,0,0,failed,0,265.966,464.474,2.456,6.31,blocked,1,repeated failed MFA attempts,high
+498,5,7,suspicious_transfer_498.jar,jar,398.74,2025-04-13T21:51:00,21,Sunday,12,3,5,0,1,0,verified,0,726.201,566.934,4.131,5.316,completed,1,very large file transfer,high
+87,9,6,project_file_87.csv,csv,2.7,2025-01-05T12:59:00,12,Sunday,0,1,0,0,0,0,verified,0,12.798,12.676,2.481,3.082,completed,0,normal secure transfer pattern,low
+239,3,8,project_file_239.png,png,1.15,2025-02-25T11:13:00,11,Tuesday,0,0,1,0,0,0,verified,0,11.421,9.897,1.234,7.205,completed,0,normal secure transfer pattern,low
+443,9,8,project_file_443.docx,docx,2.56,2025-04-28T10:51:00,10,Monday,2,0,1,0,0,0,verified,0,12.743,10.86,2.997,1.862,completed,0,normal secure transfer pattern,low
+116,4,7,project_file_116.csv,csv,2.42,2025-02-24T09:55:00,9,Monday,3,0,0,0,0,0,verified,0,12.287,10.888,2.016,6.326,completed,0,normal secure transfer pattern,low
+211,3,7,project_file_211.png,png,3.68,2025-01-24T17:03:00,17,Friday,4,1,0,0,0,0,verified,0,16.246,13.235,0.686,4.351,completed,0,normal secure transfer pattern,low
+132,4,5,project_file_132.pdf,pdf,2.2,2025-01-12T11:55:00,11,Sunday,3,0,0,0,0,0,verified,0,14.412,11.608,3.555,1.6,completed,0,normal secure transfer pattern,low
+277,10,3,project_file_277.docx,docx,3.02,2025-02-14T17:36:00,17,Friday,0,0,1,0,0,0,verified,0,15.609,12.812,1.808,4.37,completed,0,normal secure transfer pattern,low
+63,8,9,project_file_63.jpg,jpg,1.38,2025-01-05T11:24:00,11,Sunday,3,0,0,0,0,0,verified,0,12.764,9.402,2.514,5.226,completed,0,normal secure transfer pattern,low
+335,1,4,project_file_335.xlsx,xlsx,4.08,2025-04-26T10:38:00,10,Saturday,1,0,1,0,0,0,verified,0,14.751,13.496,3.364,2.765,completed,0,normal secure transfer pattern,low
+198,5,1,project_file_198.csv,csv,1.71,2025-01-14T12:59:00,12,Tuesday,4,1,0,0,0,0,verified,0,13.124,11.413,2.498,5.805,completed,0,normal secure transfer pattern,low
+400,10,8,project_file_400.jpg,jpg,2.24,2025-02-19T10:51:00,10,Wednesday,4,0,1,0,0,0,verified,0,12.942,9.976,2.369,7.556,completed,0,normal secure transfer pattern,low
+204,2,1,project_file_204.jpg,jpg,11.45,2025-04-10T15:42:00,15,Thursday,3,0,1,0,0,0,verified,0,22.241,21.262,1.395,5.288,completed,0,normal secure transfer pattern,low
+216,2,7,project_file_216.txt,txt,6.74,2025-04-19T14:02:00,14,Saturday,0,0,1,0,0,0,verified,0,16.927,19.469,2.169,5.281,completed,0,normal secure transfer pattern,low
+562,9,5,suspicious_transfer_562.txt,txt,105.18,2025-03-04T04:06:00,4,Tuesday,2,4,5,1,0,0,failed,1,202.269,170.595,3.598,5.592,integrity_failed,1,unauthorized access attempt,high
+522,6,2,suspicious_transfer_522.bat,bat,70.85,2025-04-06T22:07:00,22,Sunday,1,5,0,0,1,0,failed,1,96.803,159.88,4.945,4.014,completed,1,failed integrity verification,high
+377,1,10,project_file_377.png,png,5.86,2025-02-07T12:16:00,12,Friday,1,1,1,0,0,0,verified,0,16.468,15.773,2.945,4.69,completed,0,normal secure transfer pattern,low
+56,2,4,project_file_56.xlsx,xlsx,1.4,2025-01-27T13:25:00,13,Monday,3,1,1,0,0,0,verified,0,12.617,10.445,3.178,2.117,completed,0,normal secure transfer pattern,low
+517,8,8,suspicious_transfer_517.jpg,jpg,81.32,2025-02-28T23:19:00,23,Friday,2,4,4,1,0,0,failed,1,217.766,104.341,4.697,1.646,completed,1,unauthorized access attempt,high
+401,6,1,project_file_401.xlsx,xlsx,2.03,2025-02-28T13:00:00,13,Friday,1,0,0,0,0,0,verified,0,13.526,10.606,1.421,2.287,completed,0,normal secure transfer pattern,low
+175,2,6,project_file_175.zip,zip,1.9,2025-02-08T10:07:00,10,Saturday,0,0,1,0,1,1,verified,0,12.289,9.734,3.436,7.265,completed,0,normal secure transfer pattern,low
+7,9,6,project_file_7.zip,zip,7.4,2025-04-22T11:00:00,11,Tuesday,1,0,1,0,1,1,verified,0,21.467,16.74,2.529,3.364,completed,0,normal secure transfer pattern,low
+478,3,7,suspicious_transfer_478.exe,exe,643.94,2025-01-11T09:40:00,9,Saturday,3,5,4,0,1,0,failed,0,1545.939,1386.151,2.724,8.299,completed,1,very large file transfer,high
+480,10,10,suspicious_transfer_480.js,js,22.95,2025-03-18T23:15:00,23,Tuesday,10,0,4,1,1,0,failed,1,36.688,58.402,5.175,2.995,integrity_failed,1,failed integrity verification,high
+183,6,9,project_file_183.csv,csv,4.05,2025-02-07T12:01:00,12,Friday,2,0,1,0,0,0,verified,0,14.704,11.629,1.021,7.391,completed,0,normal secure transfer pattern,low
+592,7,1,suspicious_transfer_592.bat,bat,556.43,2025-03-22T05:36:00,5,Saturday,4,0,4,1,1,0,failed,1,623.782,888.511,4.474,8.436,blocked,1,unusual night transfer time,high
+202,3,5,project_file_202.zip,zip,2.26,2025-01-20T13:43:00,13,Monday,3,0,0,0,1,1,verified,0,12.454,11.878,3.254,3.769,completed,0,normal secure transfer pattern,low
+299,5,10,project_file_299.zip,zip,5.45,2025-03-25T08:26:00,8,Tuesday,1,0,0,0,1,1,verified,0,15.088,16.28,0.765,3.823,completed,0,normal secure transfer pattern,low
+418,3,8,project_file_418.png,png,5.1,2025-04-25T10:57:00,10,Friday,2,0,0,0,0,0,verified,0,14.817,17.011,3.846,6.908,completed,0,normal secure transfer pattern,low
+199,2,3,project_file_199.pdf,pdf,2.65,2025-04-16T09:26:00,9,Wednesday,2,0,0,0,0,0,verified,0,14.356,10.278,0.888,7.768,completed,0,normal secure transfer pattern,low
+26,8,7,project_file_26.txt,txt,2.67,2025-04-26T15:14:00,15,Saturday,2,0,0,0,0,0,verified,0,15.436,12.676,0.614,4.855,completed,0,normal secure transfer pattern,low
+397,1,8,project_file_397.pdf,pdf,1.39,2025-03-16T15:57:00,15,Sunday,2,0,0,0,0,0,verified,0,11.478,10.162,1.268,6.236,completed,0,normal secure transfer pattern,low
+283,1,10,project_file_283.xlsx,xlsx,10.27,2025-03-04T17:13:00,17,Tuesday,1,1,0,0,0,0,verified,0,23.635,23.432,2.913,6.495,completed,0,normal secure transfer pattern,low
+17,7,10,project_file_17.xlsx,xlsx,1.85,2025-03-01T15:45:00,15,Saturday,4,0,0,0,0,0,verified,0,12.084,10.807,2.653,5.078,completed,0,normal secure transfer pattern,low
+552,9,7,suspicious_transfer_552.pdf,pdf,47.77,2025-02-25T03:22:00,3,Tuesday,9,5,2,1,0,0,verified,1,107.012,86.728,2.616,9.833,integrity_failed,1,unauthorized access attempt,high
+165,2,7,project_file_165.csv,csv,4.88,2025-03-31T09:28:00,9,Monday,3,1,0,0,0,0,verified,0,13.984,13.934,3.973,3.89,completed,0,normal secure transfer pattern,low
+454,3,1,project_file_454.xlsx,xlsx,13.11,2025-03-20T12:40:00,12,Thursday,1,0,1,0,0,0,verified,0,33.378,26.573,3.021,2.527,completed,0,normal secure transfer pattern,low
+164,6,1,project_file_164.txt,txt,8.2,2025-03-08T13:31:00,13,Saturday,3,0,0,0,0,0,verified,0,24.778,16.02,3.432,1.278,completed,0,normal secure transfer pattern,low
+344,4,6,project_file_344.png,png,6.93,2025-02-10T10:03:00,10,Monday,4,0,0,0,0,0,verified,0,17.336,13.612,2.167,5.036,completed,0,normal secure transfer pattern,low
+458,1,2,project_file_458.docx,docx,7.19,2025-04-10T16:51:00,16,Thursday,3,0,0,0,0,0,verified,0,21.396,16.251,1.724,7.06,completed,0,normal secure transfer pattern,low
+591,2,2,suspicious_transfer_591.png,png,596.73,2025-02-27T01:29:00,1,Thursday,5,0,4,1,0,0,failed,1,1390.218,890.626,2.497,5.35,blocked,1,very large file transfer,high
+463,2,1,project_file_463.zip,zip,2.18,2025-02-06T13:13:00,13,Thursday,0,0,0,0,1,1,verified,0,12.418,11.3,2.132,3.622,completed,0,normal secure transfer pattern,low
+281,10,2,project_file_281.pdf,pdf,6.26,2025-03-25T15:19:00,15,Tuesday,1,0,0,0,0,0,verified,0,17.939,17.466,2.967,5.85,completed,0,normal secure transfer pattern,low
+223,4,4,project_file_223.xlsx,xlsx,2.52,2025-04-16T10:22:00,10,Wednesday,2,0,0,0,0,0,verified,0,14.279,12.442,3.809,7.896,completed,0,normal secure transfer pattern,low
+177,10,5,project_file_177.pdf,pdf,3.66,2025-02-20T13:54:00,13,Thursday,2,0,0,0,0,0,verified,0,14.83,14.093,2.378,5.307,completed,0,normal secure transfer pattern,low
+304,1,10,project_file_304.docx,docx,2.4,2025-04-16T08:49:00,8,Wednesday,0,0,0,0,0,0,verified,0,14.336,10.504,0.909,1.548,completed,0,normal secure transfer pattern,low
+29,5,7,project_file_29.png,png,0.83,2025-04-09T09:49:00,9,Wednesday,0,0,0,0,0,0,verified,0,10.907,9.621,2.099,6.683,completed,0,normal secure transfer pattern,low
+215,8,1,project_file_215.docx,docx,8.78,2025-04-03T17:25:00,17,Thursday,0,0,0,0,0,0,verified,0,22.18,25.013,2.991,2.554,completed,0,normal secure transfer pattern,low
+359,6,9,project_file_359.pdf,pdf,5.35,2025-03-04T11:07:00,11,Tuesday,3,0,1,0,0,0,verified,0,18.146,15.803,3.023,2.101,completed,0,normal secure transfer pattern,low
+326,5,9,project_file_326.xlsx,xlsx,1.2,2025-03-03T15:52:00,15,Monday,0,1,0,0,0,0,verified,0,11.846,9.568,0.881,4.382,completed,0,normal secure transfer pattern,low
+598,3,2,suspicious_transfer_598.exe,exe,730.47,2025-02-27T02:04:00,2,Thursday,30,2,4,1,1,0,verified,0,957.141,1308.962,3.491,9.012,blocked,1,too many transfers in one hour,high
+339,3,1,project_file_339.csv,csv,9.8,2025-04-05T17:25:00,17,Saturday,4,0,0,0,0,0,verified,0,19.792,26.717,3.56,7.029,completed,0,normal secure transfer pattern,low
+439,4,7,project_file_439.xlsx,xlsx,0.68,2025-02-16T11:10:00,11,Sunday,0,0,0,0,0,0,verified,0,10.753,8.641,2.472,5.1,completed,0,normal secure transfer pattern,low
+511,4,2,suspicious_transfer_511.xlsx,xlsx,654.87,2025-02-04T09:01:00,9,Tuesday,2,5,2,0,0,0,verified,0,663.664,1335.82,3.161,4.334,integrity_failed,1,very large file transfer,high
+52,8,1,project_file_52.pdf,pdf,5.86,2025-04-10T10:06:00,10,Thursday,1,0,0,0,0,0,verified,0,21.643,14.337,2.361,2.151,completed,0,normal secure transfer pattern,low
+365,5,10,project_file_365.zip,zip,3.21,2025-01-27T09:07:00,9,Monday,4,0,0,0,1,1,verified,0,15.843,13.618,0.81,6.819,completed,0,normal secure transfer pattern,low
+55,4,10,project_file_55.txt,txt,16.07,2025-03-27T15:11:00,15,Thursday,1,0,0,0,0,0,verified,0,26.724,23.626,2.857,7.466,completed,0,normal secure transfer pattern,low
+515,10,1,suspicious_transfer_515.ps1,ps1,129.04,2025-04-07T23:48:00,23,Monday,9,1,3,1,1,0,failed,1,187.077,269.926,1.079,5.974,integrity_failed,1,unauthorized access attempt,high
+380,5,1,project_file_380.txt,txt,3.71,2025-01-31T16:22:00,16,Friday,0,0,1,0,0,0,verified,0,14.31,13.181,0.973,5.128,completed,0,normal secure transfer pattern,low
+30,7,8,project_file_30.pdf,pdf,2.56,2025-03-04T16:23:00,16,Tuesday,3,0,0,0,0,0,verified,0,15.014,12.509,1.863,3.027,completed,0,normal secure transfer pattern,low
+69,7,6,project_file_69.zip,zip,2.38,2025-01-18T15:25:00,15,Saturday,4,0,1,0,1,1,verified,0,14.645,12.507,1.264,5.933,completed,0,normal secure transfer pattern,low
+555,5,7,suspicious_transfer_555.ps1,ps1,412.26,2025-02-12T03:53:00,3,Wednesday,34,0,5,1,1,0,verified,0,1022.686,720.496,1.09,2.999,integrity_failed,1,too many transfers in one hour,high
+89,9,1,project_file_89.xlsx,xlsx,8.19,2025-01-15T08:11:00,8,Wednesday,0,0,0,0,0,0,verified,0,27.035,15.493,3.515,6.637,completed,0,normal secure transfer pattern,low
+43,2,8,project_file_43.xlsx,xlsx,4.76,2025-02-25T11:29:00,11,Tuesday,1,1,1,0,0,0,verified,0,18.193,16.039,2.159,2.703,completed,0,normal secure transfer pattern,low
+112,9,1,project_file_112.xlsx,xlsx,2.79,2025-01-29T14:30:00,14,Wednesday,1,1,1,0,0,0,verified,0,15.754,12.249,1.276,5.877,completed,0,normal secure transfer pattern,low
+488,5,10,suspicious_transfer_488.js,js,51.52,2025-03-28T19:09:00,19,Friday,1,2,3,0,1,0,verified,0,120.214,88.069,5.975,5.163,blocked,1,repeated failed login attempts before transfer,high
+153,9,5,project_file_153.txt,txt,4.37,2025-04-01T14:58:00,14,Tuesday,2,1,0,0,0,0,verified,0,14.913,11.563,3.817,4.3,completed,0,normal secure transfer pattern,low
+554,2,2,suspicious_transfer_554.js,js,190.57,2025-04-30T03:22:00,3,Wednesday,0,2,3,1,1,0,failed,1,341.919,364.526,4.673,9.565,integrity_failed,1,unauthorized access attempt,high
+371,1,2,project_file_371.docx,docx,5.69,2025-04-22T13:18:00,13,Tuesday,0,0,0,0,0,0,verified,0,20.239,19.375,1.464,2.315,completed,0,normal secure transfer pattern,low
+144,3,9,project_file_144.xlsx,xlsx,14.56,2025-03-15T13:18:00,13,Saturday,4,1,1,0,0,0,verified,0,32.66,34.493,3.035,5.117,completed,0,normal secure transfer pattern,low
+487,4,8,suspicious_transfer_487.xlsx,xlsx,277.14,2025-01-03T04:53:00,4,Friday,0,4,7,1,0,0,verified,1,386.357,316.192,2.413,4.598,completed,1,repeated failed login attempts before transfer,high
+414,3,6,project_file_414.zip,zip,2.59,2025-03-14T10:32:00,10,Friday,0,0,1,0,1,1,verified,0,14.14,10.275,2.678,3.64,completed,0,normal secure transfer pattern,low
+261,6,3,project_file_261.png,png,1.6,2025-03-26T12:26:00,12,Wednesday,1,0,0,0,0,0,verified,0,12.597,9.506,1.586,7.407,completed,0,normal secure transfer pattern,low
+419,2,8,project_file_419.zip,zip,2.61,2025-01-31T14:01:00,14,Friday,2,0,1,0,1,1,verified,0,15.061,10.579,3.928,2.016,completed,0,normal secure transfer pattern,low
+362,4,1,project_file_362.png,png,6.74,2025-04-29T08:33:00,8,Tuesday,2,0,1,0,0,0,verified,0,23.793,15.149,2.801,7.389,completed,0,normal secure transfer pattern,low
+435,5,7,project_file_435.pdf,pdf,5.28,2025-01-10T17:24:00,17,Friday,3,1,0,0,0,0,verified,0,17.488,15.334,0.802,4.24,completed,0,normal secure transfer pattern,low
+438,3,8,project_file_438.xlsx,xlsx,3.9,2025-01-03T10:43:00,10,Friday,1,0,1,0,0,0,verified,0,18.214,15.383,2.056,2.639,completed,0,normal secure transfer pattern,low
+33,1,2,project_file_33.pdf,pdf,1.44,2025-03-01T12:38:00,12,Saturday,4,0,0,0,0,0,verified,0,12.103,10.257,3.691,2.107,completed,0,normal secure transfer pattern,low
+309,3,6,project_file_309.png,png,6.57,2025-02-03T11:20:00,11,Monday,0,1,0,0,0,0,verified,0,21.837,14.836,3.011,7.874,completed,0,normal secure transfer pattern,low
+370,3,8,project_file_370.docx,docx,10.5,2025-04-07T12:32:00,12,Monday,0,0,0,0,0,0,verified,0,23.588,18.202,0.643,5.809,completed,0,normal secure transfer pattern,low
+86,6,5,project_file_86.docx,docx,11.54,2025-04-03T09:00:00,9,Thursday,4,1,0,0,0,0,verified,0,33.471,27.668,1.658,1.458,completed,0,normal secure transfer pattern,low
+50,7,4,project_file_50.jpg,jpg,3.5,2025-03-10T16:03:00,16,Monday,2,0,0,0,0,0,verified,0,13.856,14.963,3.916,6.64,completed,0,normal secure transfer pattern,low
+16,7,7,project_file_16.csv,csv,2.57,2025-02-15T14:56:00,14,Saturday,1,1,0,0,0,0,verified,0,15.497,10.751,1.127,4.033,completed,0,normal secure transfer pattern,low
+284,2,8,project_file_284.docx,docx,4.02,2025-02-14T10:01:00,10,Friday,1,0,0,0,0,0,verified,0,16.247,13.08,1.059,3.237,completed,0,normal secure transfer pattern,low
+11,9,6,project_file_11.csv,csv,4.29,2025-01-02T08:09:00,8,Thursday,3,1,0,0,0,0,verified,0,18.959,16.5,1.799,3.34,completed,0,normal secure transfer pattern,low
+581,7,10,suspicious_transfer_581.ps1,ps1,80.32,2025-02-21T02:00:00,2,Friday,1,2,5,1,1,0,failed,1,180.349,138.143,5.7,7.689,completed,1,high-risk executable/script file type,high
+251,8,7,project_file_251.zip,zip,3.55,2025-02-15T16:50:00,16,Saturday,0,0,0,0,1,1,verified,0,15.267,14.025,2.919,7.358,completed,0,normal secure transfer pattern,low
+100,10,8,project_file_100.csv,csv,1.36,2025-02-02T14:12:00,14,Sunday,0,0,0,0,0,0,verified,0,11.619,9.911,3.42,3.398,completed,0,normal secure transfer pattern,low
+133,6,5,project_file_133.xlsx,xlsx,3.58,2025-03-19T16:30:00,16,Wednesday,0,0,1,0,0,0,verified,0,13.176,11.081,2.707,6.559,completed,0,normal secure transfer pattern,low
+77,2,8,project_file_77.txt,txt,7.16,2025-04-08T10:49:00,10,Tuesday,4,0,0,0,0,0,verified,0,15.891,19.862,2.44,5.961,completed,0,normal secure transfer pattern,low
+95,7,7,project_file_95.zip,zip,3.86,2025-02-26T12:18:00,12,Wednesday,2,0,0,0,1,1,verified,0,16.899,11.823,2.021,5.216,completed,0,normal secure transfer pattern,low
+386,8,10,project_file_386.png,png,9.54,2025-04-16T08:47:00,8,Wednesday,3,0,0,0,0,0,verified,0,28.998,26.201,1.888,2.664,completed,0,normal secure transfer pattern,low
+8,2,9,project_file_8.jpg,jpg,1.84,2025-01-20T12:10:00,12,Monday,4,1,0,0,0,0,verified,0,12.238,10.696,2.849,6.26,completed,0,normal secure transfer pattern,low
+421,7,4,project_file_421.docx,docx,7.07,2025-02-21T12:21:00,12,Friday,1,0,0,0,0,0,verified,0,19.282,17.77,1.328,7.746,completed,0,normal secure transfer pattern,low
+456,8,7,project_file_456.txt,txt,2.05,2025-04-19T13:43:00,13,Saturday,3,0,0,0,0,0,verified,0,13.107,10.788,1.992,3.633,completed,0,normal secure transfer pattern,low
+412,2,10,project_file_412.png,png,3.52,2025-03-11T15:47:00,15,Tuesday,4,0,0,0,0,0,verified,0,16.266,14.631,2.323,7.065,completed,0,normal secure transfer pattern,low
+256,5,9,project_file_256.pdf,pdf,3.02,2025-04-04T13:21:00,13,Friday,3,0,1,0,0,0,verified,0,13.965,13.366,3.754,1.7,completed,0,normal secure transfer pattern,low
+48,6,4,project_file_48.png,png,4.74,2025-02-23T10:37:00,10,Sunday,2,0,1,0,0,0,verified,0,16.488,14.419,0.703,6.195,completed,0,normal secure transfer pattern,low
+464,9,3,project_file_464.zip,zip,4.37,2025-04-08T14:07:00,14,Tuesday,0,0,0,0,1,1,verified,0,18.492,13.707,0.738,7.559,completed,0,normal secure transfer pattern,low
+74,8,9,project_file_74.txt,txt,4.24,2025-01-04T08:57:00,8,Saturday,4,1,1,0,0,0,verified,0,13.756,15.606,1.434,3.721,completed,0,normal secure transfer pattern,low
+580,3,9,suspicious_transfer_580.js,js,66.88,2025-02-13T05:17:00,5,Thursday,5,0,0,1,1,0,verified,1,135.212,158.489,1.538,8.475,completed,1,unusual night transfer time,high
+272,5,3,project_file_272.png,png,4.92,2025-04-02T15:39:00,15,Wednesday,1,1,0,0,0,0,verified,0,17.18,17.532,0.658,6.032,completed,0,normal secure transfer pattern,low
+270,3,4,project_file_270.xlsx,xlsx,4.05,2025-01-25T13:37:00,13,Saturday,0,0,1,0,0,0,verified,0,14.922,14.679,3.854,6.522,completed,0,normal secure transfer pattern,low
+546,8,1,suspicious_transfer_546.exe,exe,43.99,2025-03-15T05:04:00,5,Saturday,4,7,3,1,1,0,failed,0,107.721,59.27,0.858,6.332,completed,1,repeated failed MFA attempts,high
+268,4,4,project_file_268.docx,docx,4.94,2025-04-23T17:23:00,17,Wednesday,1,0,1,0,0,0,verified,0,20.591,14.295,1.963,5.478,completed,0,normal secure transfer pattern,low
+266,5,3,project_file_266.pdf,pdf,10.07,2025-03-11T08:55:00,8,Tuesday,4,0,1,0,0,0,verified,0,31.699,16.235,1.296,5.717,completed,0,normal secure transfer pattern,low
+65,10,3,project_file_65.pdf,pdf,3.11,2025-02-23T14:57:00,14,Sunday,3,0,1,0,0,0,verified,0,13.446,13.683,2.333,4.474,completed,0,normal secure transfer pattern,low
+120,7,5,project_file_120.docx,docx,5.88,2025-03-25T08:19:00,8,Tuesday,3,0,0,0,0,0,verified,0,21.814,13.195,1.396,6.774,completed,0,normal secure transfer pattern,low
+102,5,10,project_file_102.png,png,3.18,2025-01-21T12:45:00,12,Tuesday,3,1,0,0,0,0,verified,0,16.559,11.643,1.048,1.684,completed,0,normal secure transfer pattern,low
+355,8,2,project_file_355.docx,docx,4.54,2025-03-13T17:56:00,17,Thursday,3,0,0,0,0,0,verified,0,14.7,12.525,3.691,4.336,completed,0,normal secure transfer pattern,low
+506,10,4,suspicious_transfer_506.exe,exe,27.49,2025-01-28T13:56:00,13,Tuesday,25,2,4,0,1,0,verified,0,70.906,52.566,2.129,5.766,integrity_failed,1,too many transfers in one hour,high
+292,8,3,project_file_292.txt,txt,4.09,2025-05-01T08:22:00,8,Thursday,4,1,0,0,0,0,verified,0,17.572,11.787,3.836,7.874,completed,0,normal secure transfer pattern,low
+383,10,1,project_file_383.zip,zip,5.94,2025-04-11T10:44:00,10,Friday,1,0,0,0,1,1,verified,0,17.046,13.106,1.789,4.61,completed,0,normal secure transfer pattern,low
+567,1,6,suspicious_transfer_567.bat,bat,250.51,2025-03-09T14:42:00,14,Sunday,7,1,2,0,1,0,verified,0,420.928,441.058,5.133,3.18,completed,1,high-risk executable/script file type,high
+200,10,8,project_file_200.txt,txt,1.68,2025-01-06T15:47:00,15,Monday,0,0,1,0,0,0,verified,0,11.489,11.112,3.873,1.516,completed,0,normal secure transfer pattern,low
+45,6,10,project_file_45.png,png,2.05,2025-02-06T17:46:00,17,Thursday,3,0,1,0,0,0,verified,0,12.712,10.521,2.042,5.01,completed,0,normal secure transfer pattern,low
+207,9,10,project_file_207.png,png,21.13,2025-03-29T08:59:00,8,Saturday,2,0,0,0,0,0,verified,0,45.765,44.015,1.313,5.164,completed,0,normal secure transfer pattern,low
+341,9,2,project_file_341.docx,docx,2.99,2025-03-18T11:48:00,11,Tuesday,4,0,0,0,0,0,verified,0,13.868,13.078,1.171,2.499,completed,0,normal secure transfer pattern,low
+374,5,2,project_file_374.txt,txt,8.84,2025-04-13T11:56:00,11,Sunday,2,0,0,0,0,0,verified,0,28.852,16.668,1.515,5.913,completed,0,normal secure transfer pattern,low
+313,2,5,project_file_313.csv,csv,6.27,2025-03-05T11:09:00,11,Wednesday,0,1,0,0,0,0,verified,0,23.59,13.14,1.938,1.602,completed,0,normal secure transfer pattern,low
+298,9,6,project_file_298.zip,zip,3.99,2025-01-12T13:28:00,13,Sunday,3,1,0,0,1,1,verified,0,13.962,12.19,2.059,6.727,completed,0,normal secure transfer pattern,low
+170,7,4,project_file_170.zip,zip,7.66,2025-01-20T15:41:00,15,Monday,4,0,0,0,1,1,verified,0,20.964,20.698,2.05,2.256,completed,0,normal secure transfer pattern,low
+265,7,6,project_file_265.jpg,jpg,3.88,2025-03-03T12:09:00,12,Monday,3,0,0,0,0,0,verified,0,16.602,15.713,3.516,5.693,completed,0,normal secure transfer pattern,low
+286,2,5,project_file_286.zip,zip,3.19,2025-04-26T16:30:00,16,Saturday,4,0,1,0,1,1,verified,0,13.358,10.571,1.338,2.914,completed,0,normal secure transfer pattern,low
+403,10,10,project_file_403.xlsx,xlsx,4.26,2025-04-03T10:59:00,10,Thursday,4,0,1,0,0,0,verified,0,19.262,13.953,3.493,4.545,completed,0,normal secure transfer pattern,low
+588,4,4,suspicious_transfer_588.csv,csv,795.32,2025-04-05T00:05:00,0,Saturday,12,6,5,1,0,0,verified,1,1320.157,1352.608,4.289,9.907,blocked,1,repeated failed MFA attempts,high
+117,9,5,project_file_117.docx,docx,5.82,2025-02-04T16:42:00,16,Tuesday,3,1,0,0,0,0,verified,0,17.872,13.615,2.994,7.547,completed,0,normal secure transfer pattern,low
+317,10,1,project_file_317.jpg,jpg,5.41,2025-01-20T16:41:00,16,Monday,0,0,0,0,0,0,verified,0,21.058,14.716,1.706,3.167,completed,0,normal secure transfer pattern,low
+285,1,3,project_file_285.pdf,pdf,2.48,2025-02-07T12:27:00,12,Friday,2,0,0,0,0,0,verified,0,15.171,11.98,2.782,7.184,completed,0,normal secure transfer pattern,low
+318,10,5,project_file_318.xlsx,xlsx,3.68,2025-04-12T10:32:00,10,Saturday,4,0,1,0,0,0,verified,0,13.238,15.339,0.803,4.507,completed,0,normal secure transfer pattern,low
+134,9,2,project_file_134.csv,csv,3.3,2025-04-16T08:54:00,8,Wednesday,3,0,1,0,0,0,verified,0,15.453,12.835,1.627,4.493,completed,0,normal secure transfer pattern,low
+399,10,8,project_file_399.xlsx,xlsx,9.46,2025-01-27T11:52:00,11,Monday,0,1,0,0,0,0,verified,0,27.83,21.231,3.64,3.089,completed,0,normal secure transfer pattern,low
+103,8,4,project_file_103.xlsx,xlsx,2.53,2025-02-24T17:27:00,17,Monday,4,0,1,0,0,0,verified,0,14.348,12.683,1.759,2.604,completed,0,normal secure transfer pattern,low
+514,5,1,suspicious_transfer_514.jar,jar,435.28,2025-01-18T04:17:00,4,Saturday,6,5,1,1,1,0,verified,0,468.906,569.017,3.177,5.656,blocked,1,high-risk executable/script file type,high
+557,10,4,suspicious_transfer_557.js,js,41.35,2025-03-08T01:57:00,1,Saturday,12,0,2,1,1,0,verified,0,77.43,106.138,3.842,8.938,blocked,1,too many transfers in one hour,high
+321,5,5,project_file_321.pdf,pdf,4.33,2025-01-20T09:11:00,9,Monday,1,0,0,0,0,0,verified,0,13.998,15.773,2.819,2.344,completed,0,normal secure transfer pattern,low
+450,1,7,project_file_450.xlsx,xlsx,2.02,2025-03-18T11:42:00,11,Tuesday,0,0,0,0,0,0,verified,0,12.566,10.172,0.695,6.643,completed,0,normal secure transfer pattern,low
+518,2,9,suspicious_transfer_518.jar,jar,35.35,2025-01-17T01:43:00,1,Friday,6,0,1,1,1,0,failed,1,92.865,47.308,3.435,7.053,completed,1,failed integrity verification,high
+525,10,7,suspicious_transfer_525.7z,7z,438.99,2025-04-25T00:45:00,0,Friday,3,4,3,1,1,1,failed,0,504.66,621.913,4.424,8.212,integrity_failed,1,compressed archive after failed authentication,high
+320,10,1,project_file_320.xlsx,xlsx,1.68,2025-02-08T12:47:00,12,Saturday,2,0,0,0,0,0,verified,0,11.432,9.841,1.084,2.073,completed,0,normal secure transfer pattern,low
+92,10,5,project_file_92.pdf,pdf,6.43,2025-03-31T09:37:00,9,Monday,4,0,0,0,0,0,verified,0,22.805,20.42,1.865,6.648,completed,0,normal secure transfer pattern,low
+187,3,2,project_file_187.txt,txt,6.36,2025-01-10T10:19:00,10,Friday,4,1,0,0,0,0,verified,0,19.366,17.406,1.034,2.457,completed,0,normal secure transfer pattern,low
+524,6,7,suspicious_transfer_524.jar,jar,524.18,2025-01-31T21:40:00,21,Friday,0,0,1,0,1,0,failed,1,1323.066,936.142,2.023,6.876,blocked,1,very large file transfer,high
+382,1,1,project_file_382.png,png,2.45,2025-01-08T13:32:00,13,Wednesday,3,0,0,0,0,0,verified,0,13.704,10.973,1.636,5.731,completed,0,normal secure transfer pattern,low
+254,5,5,project_file_254.zip,zip,6.42,2025-01-10T13:55:00,13,Friday,0,0,0,0,1,1,verified,0,18.995,19.476,3.114,4.235,completed,0,normal secure transfer pattern,low
+71,2,5,project_file_71.zip,zip,3.88,2025-02-04T08:30:00,8,Tuesday,0,0,0,0,1,1,verified,0,17.12,13.113,2.476,7.619,completed,0,normal secure transfer pattern,low
+178,9,4,project_file_178.txt,txt,10.16,2025-01-08T12:26:00,12,Wednesday,0,1,0,0,0,0,verified,0,21.103,21.397,2.734,5.211,completed,0,normal secure transfer pattern,low
+227,9,2,project_file_227.zip,zip,2.8,2025-01-21T08:17:00,8,Tuesday,3,1,0,0,1,1,verified,0,14.778,13.32,0.735,7.766,completed,0,normal secure transfer pattern,low
+473,7,7,suspicious_transfer_473.jar,jar,39.16,2025-02-06T04:09:00,4,Thursday,10,4,7,1,1,0,failed,0,64.736,56.46,4.445,4.045,completed,1,repeated failed login attempts before transfer,high
+538,3,4,suspicious_transfer_538.jar,jar,876.64,2025-03-18T07:04:00,7,Tuesday,0,4,0,0,1,0,failed,1,825.768,1617.312,4.666,1.584,blocked,1,high-risk executable/script file type,high
+114,10,5,project_file_114.txt,txt,3.85,2025-02-24T17:03:00,17,Monday,3,0,0,0,0,0,verified,0,16.23,15.236,1.524,3.389,completed,0,normal secure transfer pattern,low
+437,8,1,project_file_437.png,png,14.72,2025-03-23T09:43:00,9,Sunday,2,1,0,0,0,0,verified,0,34.634,24.891,2.948,4.24,completed,0,normal secure transfer pattern,low
+230,4,8,project_file_230.zip,zip,3.99,2025-03-20T13:29:00,13,Thursday,4,0,0,0,1,1,verified,0,17.115,13.529,0.512,2.509,completed,0,normal secure transfer pattern,low
+222,5,1,project_file_222.csv,csv,6.06,2025-01-31T08:18:00,8,Friday,0,0,0,0,0,0,verified,0,14.901,19.201,3.088,7.241,completed,0,normal secure transfer pattern,low
+255,4,10,project_file_255.csv,csv,7.19,2025-01-12T13:17:00,13,Sunday,0,1,0,0,0,0,verified,0,18.043,20.24,3.297,2.803,completed,0,normal secure transfer pattern,low
+420,7,8,project_file_420.txt,txt,4.16,2025-01-10T17:01:00,17,Friday,2,0,0,0,0,0,verified,0,15.58,11.439,1.217,5.876,completed,0,normal secure transfer pattern,low
+407,10,9,project_file_407.png,png,3.95,2025-02-05T17:16:00,17,Wednesday,4,0,0,0,0,0,verified,0,17.642,13.859,1.598,3.039,completed,0,normal secure transfer pattern,low
+34,9,3,project_file_34.xlsx,xlsx,1.82,2025-04-11T17:12:00,17,Friday,0,0,0,0,0,0,verified,0,12.32,9.73,2.178,6.299,completed,0,normal secure transfer pattern,low
+228,8,4,project_file_228.png,png,5.01,2025-01-29T17:57:00,17,Wednesday,1,1,0,0,0,0,verified,0,14.244,14.356,3.652,3.926,completed,0,normal secure transfer pattern,low
+453,4,10,project_file_453.jpg,jpg,3.18,2025-02-17T14:38:00,14,Monday,0,1,0,0,0,0,verified,0,15.727,10.76,1.896,4.0,completed,0,normal secure transfer pattern,low
+96,8,1,project_file_96.docx,docx,2.25,2025-02-27T11:01:00,11,Thursday,1,0,1,0,0,0,verified,0,14.83,10.909,3.87,7.538,completed,0,normal secure transfer pattern,low
+426,5,7,project_file_426.zip,zip,3.17,2025-02-22T13:01:00,13,Saturday,3,0,0,0,1,1,verified,0,14.708,11.687,3.449,5.313,completed,0,normal secure transfer pattern,low
+495,6,9,suspicious_transfer_495.jpg,jpg,227.08,2025-04-29T09:38:00,9,Tuesday,6,7,2,0,0,0,failed,0,363.641,303.401,5.011,1.557,completed,1,repeated failed MFA attempts,high
+337,7,5,project_file_337.docx,docx,5.48,2025-01-21T17:17:00,17,Tuesday,3,0,1,0,0,0,verified,0,16.448,18.195,1.568,3.689,completed,0,normal secure transfer pattern,low
+81,5,2,project_file_81.csv,csv,1.9,2025-01-22T14:00:00,14,Wednesday,1,0,0,0,0,0,verified,0,13.772,11.051,1.271,4.641,completed,0,normal secure transfer pattern,low
+416,8,10,project_file_416.txt,txt,1.73,2025-04-19T13:17:00,13,Saturday,3,0,0,0,0,0,verified,0,12.509,9.522,2.733,2.553,completed,0,normal secure transfer pattern,low
+496,5,6,suspicious_transfer_496.pdf,pdf,636.19,2025-04-21T23:30:00,23,Monday,1,2,5,1,0,0,verified,1,1114.441,886.689,3.429,9.18,integrity_failed,1,unusual night transfer time,high
+566,5,6,suspicious_transfer_566.ps1,ps1,604.06,2025-04-02T20:02:00,20,Wednesday,11,4,0,0,1,0,failed,1,1517.318,621.999,1.304,8.236,blocked,1,high-risk executable/script file type,high
+127,4,10,project_file_127.zip,zip,6.49,2025-01-02T09:24:00,9,Thursday,0,0,1,0,1,1,verified,0,17.535,15.905,2.597,2.224,completed,0,normal secure transfer pattern,low
+235,4,6,project_file_235.xlsx,xlsx,12.09,2025-03-04T13:28:00,13,Tuesday,3,0,0,0,0,0,verified,0,31.495,23.668,1.188,6.366,completed,0,normal secure transfer pattern,low
+334,7,5,project_file_334.xlsx,xlsx,12.14,2025-01-06T10:51:00,10,Monday,0,1,1,0,0,0,verified,0,19.732,24.105,2.737,7.168,completed,0,normal secure transfer pattern,low
+67,1,9,project_file_67.txt,txt,2.74,2025-01-16T12:41:00,12,Thursday,2,0,0,0,0,0,verified,0,12.474,10.971,1.741,2.126,completed,0,normal secure transfer pattern,low
+579,3,8,suspicious_transfer_579.pdf,pdf,375.4,2025-01-20T00:24:00,0,Monday,3,4,1,1,0,0,verified,1,431.285,508.471,2.153,9.278,completed,1,unauthorized access attempt,high
+348,9,8,project_file_348.xlsx,xlsx,4.4,2025-01-14T15:46:00,15,Tuesday,2,0,0,0,0,0,verified,0,19.277,15.91,3.784,1.646,completed,0,normal secure transfer pattern,low
+64,3,4,project_file_64.png,png,5.1,2025-02-16T16:59:00,16,Sunday,3,0,0,0,0,0,verified,0,15.217,17.358,3.562,4.476,completed,0,normal secure transfer pattern,low
+193,10,3,project_file_193.xlsx,xlsx,7.07,2025-02-25T15:38:00,15,Tuesday,3,1,0,0,0,0,verified,0,23.575,21.185,2.148,2.07,completed,0,normal secure transfer pattern,low
+533,8,3,suspicious_transfer_533.zip,zip,617.82,2025-02-16T00:11:00,0,Sunday,2,8,4,1,1,1,failed,0,1371.605,1114.369,1.728,1.343,integrity_failed,1,compressed archive after failed authentication,high
+315,1,1,project_file_315.pdf,pdf,1.44,2025-03-21T16:09:00,16,Friday,3,0,0,0,0,0,verified,0,12.077,9.271,1.934,4.902,completed,0,normal secure transfer pattern,low
+509,2,4,suspicious_transfer_509.jpg,jpg,23.97,2025-01-29T18:15:00,18,Wednesday,6,1,7,0,0,0,failed,0,49.056,45.103,5.964,6.245,integrity_failed,1,repeated failed login attempts before transfer,high
+242,8,1,project_file_242.jpg,jpg,8.67,2025-03-05T09:15:00,9,Wednesday,1,0,0,0,0,0,verified,0,25.508,15.468,2.332,4.848,completed,0,normal secure transfer pattern,low
+210,1,10,project_file_210.pdf,pdf,2.74,2025-01-02T15:45:00,15,Thursday,1,0,0,0,0,0,verified,0,15.865,12.635,0.656,3.221,completed,0,normal secure transfer pattern,low
+159,8,3,project_file_159.xlsx,xlsx,2.9,2025-02-09T11:59:00,11,Sunday,0,0,0,0,0,0,verified,0,15.638,12.741,2.312,1.246,completed,0,normal secure transfer pattern,low
+482,6,9,suspicious_transfer_482.7z,7z,82.76,2025-01-03T08:56:00,8,Friday,5,4,8,0,1,1,verified,0,168.389,184.329,5.702,5.797,blocked,1,compressed archive after failed authentication,high
+106,3,6,project_file_106.docx,docx,1.66,2025-04-15T16:35:00,16,Tuesday,0,0,1,0,0,0,verified,0,12.471,10.118,1.018,3.077,completed,0,normal secure transfer pattern,low
+568,6,7,suspicious_transfer_568.js,js,32.23,2025-01-27T14:30:00,14,Monday,6,1,3,0,1,0,failed,1,66.793,46.877,5.845,7.91,blocked,1,high-risk executable/script file type,high
+550,8,9,suspicious_transfer_550.zip,zip,13.73,2025-01-30T04:04:00,4,Thursday,2,4,4,1,1,1,verified,1,31.58,42.14,0.695,7.869,integrity_failed,1,compressed archive after failed authentication,high
+307,2,7,project_file_307.txt,txt,2.8,2025-03-14T16:41:00,16,Friday,2,1,0,0,0,0,verified,0,15.625,13.485,0.673,6.144,completed,0,normal secure transfer pattern,low
+593,3,2,suspicious_transfer_593.pdf,pdf,108.91,2025-04-23T03:12:00,3,Wednesday,6,4,4,1,0,0,failed,0,159.035,236.778,2.8,4.627,integrity_failed,1,unusual night transfer time,medium
+346,3,4,project_file_346.docx,docx,18.39,2025-03-19T12:37:00,12,Wednesday,0,1,0,0,0,0,verified,0,34.773,40.429,1.683,1.412,completed,0,normal secure transfer pattern,low
+238,10,4,project_file_238.docx,docx,3.25,2025-04-05T17:08:00,17,Saturday,3,0,1,0,0,0,verified,0,16.881,10.963,3.963,1.881,completed,0,normal secure transfer pattern,low
+358,3,8,project_file_358.csv,csv,2.14,2025-02-01T12:01:00,12,Saturday,1,0,1,0,0,0,verified,0,12.34,11.204,3.476,2.141,completed,0,normal secure transfer pattern,low
+561,6,6,suspicious_transfer_561.docx,docx,366.66,2025-02-09T05:17:00,5,Sunday,4,0,3,1,0,0,verified,1,441.879,775.696,1.767,6.673,integrity_failed,1,unusual night transfer time,high
+595,4,7,suspicious_transfer_595.zip,zip,84.5,2025-03-07T03:31:00,3,Friday,4,8,6,1,1,1,verified,0,109.543,142.19,2.21,4.255,completed,1,compressed archive after failed authentication,high
+174,3,1,project_file_174.docx,docx,4.75,2025-04-13T10:56:00,10,Sunday,3,0,0,0,0,0,verified,0,15.367,16.8,3.999,6.028,completed,0,normal secure transfer pattern,low
+9,4,5,project_file_9.txt,txt,7.29,2025-03-24T14:00:00,14,Monday,0,0,1,0,0,0,verified,0,23.524,21.536,3.673,2.019,completed,0,normal secure transfer pattern,low
+169,10,1,project_file_169.pdf,pdf,12.01,2025-02-06T15:07:00,15,Thursday,1,0,0,0,0,0,verified,0,36.005,22.314,2.217,5.003,completed,0,normal secure transfer pattern,low
+14,9,2,project_file_14.xlsx,xlsx,1.16,2025-02-03T12:29:00,12,Monday,1,0,0,0,0,0,verified,0,12.055,9.865,3.407,7.742,completed,0,normal secure transfer pattern,low
+338,3,8,project_file_338.zip,zip,1.97,2025-03-30T16:28:00,16,Sunday,2,0,0,0,1,1,verified,0,12.914,10.641,0.805,3.188,completed,0,normal secure transfer pattern,low
+10,1,6,project_file_10.zip,zip,2.98,2025-02-15T11:25:00,11,Saturday,4,0,0,0,1,1,verified,0,12.814,13.352,3.913,2.126,completed,0,normal secure transfer pattern,low
+434,4,8,project_file_434.jpg,jpg,1.95,2025-04-11T17:21:00,17,Friday,3,0,0,0,0,0,verified,0,13.033,11.1,2.964,7.126,completed,0,normal secure transfer pattern,low
+248,7,10,project_file_248.docx,docx,2.14,2025-04-18T10:54:00,10,Friday,0,0,0,0,0,0,verified,0,14.594,9.893,1.247,5.675,completed,0,normal secure transfer pattern,low
+390,4,9,project_file_390.csv,csv,7.33,2025-02-10T14:18:00,14,Monday,4,0,1,0,0,0,verified,0,23.622,16.659,3.915,5.125,completed,0,normal secure transfer pattern,low
+124,10,6,project_file_124.zip,zip,5.29,2025-03-24T14:44:00,14,Monday,0,0,0,0,1,1,verified,0,16.025,13.727,3.703,7.302,completed,0,normal secure transfer pattern,low
+396,5,5,project_file_396.zip,zip,10.86,2025-01-26T17:02:00,17,Sunday,4,0,0,0,1,1,verified,0,29.654,24.153,1.949,5.543,completed,0,normal secure transfer pattern,low
+267,10,9,project_file_267.pdf,pdf,6.57,2025-04-05T11:35:00,11,Saturday,3,0,1,0,0,0,verified,0,16.372,14.187,1.889,2.497,completed,0,normal secure transfer pattern,low
+353,3,3,project_file_353.png,png,2.01,2025-03-13T13:53:00,13,Thursday,1,1,0,0,0,0,verified,0,13.119,9.861,2.519,4.131,completed,0,normal secure transfer pattern,low
+108,8,5,project_file_108.png,png,4.33,2025-01-22T09:31:00,9,Wednesday,4,0,0,0,0,0,verified,0,14.266,15.623,1.854,3.634,completed,0,normal secure transfer pattern,low
+167,9,3,project_file_167.csv,csv,4.78,2025-04-01T11:09:00,11,Tuesday,1,0,1,0,0,0,verified,0,18.42,16.056,0.601,3.667,completed,0,normal secure transfer pattern,low
+411,4,10,project_file_411.png,png,15.42,2025-01-22T16:35:00,16,Wednesday,4,0,0,0,0,0,verified,0,39.736,27.64,1.279,1.667,completed,0,normal secure transfer pattern,low
+347,5,8,project_file_347.docx,docx,8.83,2025-02-25T08:43:00,8,Tuesday,1,1,0,0,0,0,verified,0,19.46,19.426,3.46,4.698,completed,0,normal secure transfer pattern,low
+536,6,7,suspicious_transfer_536.7z,7z,477.46,2025-02-12T22:34:00,22,Wednesday,11,8,8,0,1,1,failed,0,687.785,905.553,1.173,9.039,integrity_failed,1,compressed archive after failed authentication,high
+497,4,7,suspicious_transfer_497.zip,zip,109.64,2025-02-18T07:20:00,7,Tuesday,5,3,6,0,1,1,failed,0,277.898,242.428,1.166,6.399,blocked,1,compressed archive after failed authentication,high
+213,1,9,project_file_213.pdf,pdf,5.11,2025-03-02T16:32:00,16,Sunday,1,1,0,0,0,0,verified,0,19.919,16.056,2.316,6.132,completed,0,normal secure transfer pattern,low
+62,3,3,project_file_62.docx,docx,1.76,2025-01-24T12:51:00,12,Friday,1,0,1,0,0,0,verified,0,12.282,10.556,2.764,5.264,completed,0,normal secure transfer pattern,low
+474,10,9,suspicious_transfer_474.7z,7z,107.59,2025-01-21T03:39:00,3,Tuesday,2,8,7,1,1,1,verified,0,220.968,231.234,3.32,4.033,blocked,1,compressed archive after failed authentication,high
+597,9,6,suspicious_transfer_597.js,js,91.63,2025-03-31T02:44:00,2,Monday,3,5,2,1,1,0,failed,1,170.467,120.751,2.836,2.218,completed,1,high-risk executable/script file type,high
+291,7,1,project_file_291.csv,csv,8.15,2025-03-12T11:14:00,11,Wednesday,2,0,0,0,0,0,verified,0,19.122,19.63,2.822,6.088,completed,0,normal secure transfer pattern,low
+508,3,3,suspicious_transfer_508.zip,zip,109.68,2025-03-01T02:04:00,2,Saturday,8,7,5,1,1,1,verified,1,160.419,131.261,3.904,1.612,integrity_failed,1,compressed archive after failed authentication,high
+260,2,3,project_file_260.txt,txt,8.06,2025-02-14T11:38:00,11,Friday,4,0,1,0,0,0,verified,0,19.686,19.524,2.003,7.533,completed,0,normal secure transfer pattern,low
+250,7,6,project_file_250.jpg,jpg,2.5,2025-04-21T11:52:00,11,Monday,0,0,0,0,0,0,verified,0,12.108,11.53,3.705,4.173,completed,0,normal secure transfer pattern,low
+542,6,7,suspicious_transfer_542.xlsx,xlsx,111.68,2025-04-07T08:25:00,8,Monday,11,5,4,0,0,0,failed,1,209.964,162.0,1.713,8.493,integrity_failed,1,unauthorized access attempt,high
+322,5,9,project_file_322.txt,txt,2.45,2025-04-21T11:16:00,11,Monday,0,0,1,0,0,0,verified,0,15.375,11.561,2.11,4.661,completed,0,normal secure transfer pattern,low
+331,3,2,project_file_331.txt,txt,7.66,2025-04-18T11:45:00,11,Friday,2,1,0,0,0,0,verified,0,20.882,16.088,0.834,7.91,completed,0,normal secure transfer pattern,low
+280,3,10,project_file_280.txt,txt,5.94,2025-02-28T10:53:00,10,Friday,3,0,1,0,0,0,verified,0,21.1,16.718,1.705,5.747,completed,0,normal secure transfer pattern,low
+150,10,6,project_file_150.txt,txt,6.18,2025-04-28T14:47:00,14,Monday,0,0,0,0,0,0,verified,0,16.147,18.836,2.99,6.476,completed,0,normal secure transfer pattern,low
+219,9,3,project_file_219.pdf,pdf,5.45,2025-02-24T17:18:00,17,Monday,2,0,0,0,0,0,verified,0,19.873,18.733,2.422,4.696,completed,0,normal secure transfer pattern,low
+345,9,10,project_file_345.pdf,pdf,4.49,2025-03-20T13:34:00,13,Thursday,4,1,0,0,0,0,verified,0,18.942,13.668,2.87,1.931,completed,0,normal secure transfer pattern,low
+479,7,4,suspicious_transfer_479.jpg,jpg,500.36,2025-02-27T22:10:00,22,Thursday,31,2,3,0,0,0,verified,0,1107.101,825.425,2.212,2.987,integrity_failed,1,too many transfers in one hour,high
+503,5,8,suspicious_transfer_503.ps1,ps1,117.87,2025-04-13T01:36:00,1,Sunday,9,6,0,1,1,0,verified,1,152.123,247.02,1.516,2.486,integrity_failed,1,repeated failed MFA attempts,high
+534,6,6,suspicious_transfer_534.png,png,289.65,2025-01-16T15:56:00,15,Thursday,11,4,5,0,0,0,failed,1,315.222,284.22,3.073,7.159,integrity_failed,1,very large file transfer,high
+569,7,2,suspicious_transfer_569.7z,7z,25.65,2025-03-20T00:00:00,0,Thursday,8,4,9,1,1,1,verified,1,54.283,56.802,1.14,9.701,completed,1,compressed archive after failed authentication,high
+501,2,1,suspicious_transfer_501.zip,zip,619.1,2025-01-17T09:49:00,9,Friday,9,6,9,0,1,1,failed,1,1101.681,1224.36,2.198,1.475,completed,1,compressed archive after failed authentication,high
+481,3,4,suspicious_transfer_481.bat,bat,796.03,2025-02-09T04:48:00,4,Sunday,11,4,1,1,1,0,failed,0,1807.482,1408.216,0.643,9.547,blocked,1,very large file transfer,high
+258,3,1,project_file_258.pdf,pdf,5.02,2025-04-05T17:06:00,17,Saturday,1,0,0,0,0,0,verified,0,20.542,17.697,3.653,1.618,completed,0,normal secure transfer pattern,low
+162,7,3,project_file_162.csv,csv,13.79,2025-01-05T16:10:00,16,Sunday,2,0,0,0,0,0,verified,0,31.948,21.214,1.168,4.287,completed,0,normal secure transfer pattern,low
+433,10,6,project_file_433.csv,csv,5.98,2025-04-03T13:16:00,13,Thursday,2,1,0,0,0,0,verified,0,17.499,14.001,2.373,1.68,completed,0,normal secure transfer pattern,low
+37,3,10,project_file_37.zip,zip,5.85,2025-02-16T12:32:00,12,Sunday,1,0,0,0,1,1,verified,0,19.257,15.945,0.856,6.395,completed,0,normal secure transfer pattern,low
+236,10,8,project_file_236.jpg,jpg,2.14,2025-01-12T15:57:00,15,Sunday,0,1,1,0,0,0,verified,0,13.544,11.243,3.851,6.243,completed,0,normal secure transfer pattern,low
+176,9,7,project_file_176.docx,docx,6.19,2025-03-16T09:32:00,9,Sunday,2,0,1,0,0,0,verified,0,15.101,15.49,3.1,3.586,completed,0,normal secure transfer pattern,low
+512,3,1,suspicious_transfer_512.pdf,pdf,567.53,2025-02-25T03:17:00,3,Tuesday,7,7,3,1,0,0,failed,0,806.676,799.72,4.749,7.278,integrity_failed,1,repeated failed MFA attempts,high
+445,1,7,project_file_445.csv,csv,20.99,2025-02-05T11:57:00,11,Wednesday,1,0,1,0,0,0,verified,0,38.161,33.059,0.62,3.414,completed,0,normal secure transfer pattern,low
+394,4,10,project_file_394.pdf,pdf,5.84,2025-03-13T15:55:00,15,Thursday,0,0,0,0,0,0,verified,0,16.491,19.155,0.905,2.718,completed,0,normal secure transfer pattern,low
+422,3,9,project_file_422.pdf,pdf,3.5,2025-01-30T14:17:00,14,Thursday,4,0,0,0,0,0,verified,0,17.644,14.084,1.308,2.357,completed,0,normal secure transfer pattern,low
+19,6,6,project_file_19.txt,txt,7.43,2025-01-11T12:31:00,12,Saturday,4,1,0,0,0,0,verified,0,18.625,17.711,1.066,7.544,completed,0,normal secure transfer pattern,low
+389,8,3,project_file_389.png,png,7.32,2025-04-14T14:23:00,14,Monday,1,0,1,0,0,0,verified,0,21.988,16.694,1.95,5.579,completed,0,normal secure transfer pattern,low
+3,6,1,project_file_3.jpg,jpg,8.97,2025-04-20T16:39:00,16,Sunday,3,0,0,0,0,0,verified,0,17.435,24.026,0.889,4.778,completed,0,normal secure transfer pattern,low
+491,10,2,suspicious_transfer_491.bat,bat,63.62,2025-02-24T04:20:00,4,Monday,9,2,5,1,1,0,verified,1,115.16,100.053,0.723,8.589,blocked,1,high-risk executable/script file type,high
+42,6,3,project_file_42.jpg,jpg,4.29,2025-02-23T11:02:00,11,Sunday,4,0,0,0,0,0,verified,0,18.747,12.015,0.802,4.303,completed,0,normal secure transfer pattern,low
+78,10,8,project_file_78.pdf,pdf,12.19,2025-04-23T16:54:00,16,Wednesday,0,0,1,0,0,0,verified,0,33.866,22.806,2.623,2.167,completed,0,normal secure transfer pattern,low
+494,8,2,suspicious_transfer_494.zip,zip,90.32,2025-01-18T23:27:00,23,Saturday,26,2,0,1,1,1,verified,1,240.369,208.229,1.139,9.575,blocked,1,too many transfers in one hour,high
+192,9,3,project_file_192.csv,csv,2.51,2025-02-02T10:26:00,10,Sunday,0,0,1,0,0,0,verified,0,12.889,11.545,2.803,3.28,completed,0,normal secure transfer pattern,low
+182,8,8,project_file_182.pdf,pdf,4.65,2025-02-10T09:43:00,9,Monday,1,1,0,0,0,0,verified,0,15.562,15.118,3.523,1.642,completed,0,normal secure transfer pattern,low
+263,10,4,project_file_263.csv,csv,2.63,2025-01-26T10:33:00,10,Sunday,2,0,0,0,0,0,verified,0,12.645,11.297,1.656,3.028,completed,0,normal secure transfer pattern,low
+49,7,4,project_file_49.txt,txt,4.67,2025-01-28T12:20:00,12,Tuesday,0,1,1,0,0,0,verified,0,19.511,12.242,2.981,4.687,completed,0,normal secure transfer pattern,low
+372,5,3,project_file_372.csv,csv,4.23,2025-03-22T17:16:00,17,Saturday,0,0,0,0,0,0,verified,0,15.54,16.298,3.34,3.482,completed,0,normal secure transfer pattern,low
+278,9,6,project_file_278.xlsx,xlsx,10.45,2025-04-20T11:08:00,11,Sunday,0,0,0,0,0,0,verified,0,27.239,26.126,1.991,5.193,completed,0,normal secure transfer pattern,low
+115,1,10,project_file_115.txt,txt,1.33,2025-01-19T15:07:00,15,Sunday,0,1,0,0,0,0,verified,0,11.141,9.095,1.505,3.294,completed,0,normal secure transfer pattern,low
+476,1,4,suspicious_transfer_476.txt,txt,110.35,2025-04-28T02:29:00,2,Monday,12,5,9,1,0,0,verified,1,242.989,112.772,3.878,9.497,integrity_failed,1,repeated failed login attempts before transfer,high
+245,2,5,project_file_245.pdf,pdf,2.26,2025-03-12T11:34:00,11,Wednesday,0,1,0,0,0,0,verified,0,14.161,12.201,3.199,4.375,completed,0,normal secure transfer pattern,low
+485,4,4,suspicious_transfer_485.jar,jar,468.91,2025-02-11T18:05:00,18,Tuesday,6,1,0,0,1,0,failed,1,1140.579,690.333,1.832,8.752,integrity_failed,1,very large file transfer,high
+276,8,4,project_file_276.pdf,pdf,10.5,2025-03-02T17:46:00,17,Sunday,2,0,0,0,0,0,verified,0,29.073,16.534,3.886,2.31,completed,0,normal secure transfer pattern,low
+209,8,9,project_file_209.csv,csv,5.04,2025-04-29T08:12:00,8,Tuesday,0,1,0,0,0,0,verified,0,19.561,15.31,2.121,7.353,completed,0,normal secure transfer pattern,low
+247,5,9,project_file_247.zip,zip,4.87,2025-03-09T08:24:00,8,Sunday,1,0,1,0,1,1,verified,0,15.798,16.015,3.679,5.503,completed,0,normal secure transfer pattern,low
+528,6,6,suspicious_transfer_528.txt,txt,31.53,2025-01-02T11:13:00,11,Thursday,12,3,5,0,0,0,verified,1,54.072,53.03,4.853,2.635,completed,1,unauthorized access attempt,high
+519,5,7,suspicious_transfer_519.jpg,jpg,753.64,2025-04-23T16:42:00,16,Wednesday,0,5,4,0,0,0,verified,0,737.338,1442.684,3.057,4.427,integrity_failed,1,very large file transfer,high
+70,4,3,project_file_70.pdf,pdf,8.46,2025-01-29T15:31:00,15,Wednesday,1,0,0,0,0,0,verified,0,20.32,21.4,1.67,7.276,completed,0,normal secure transfer pattern,low
+354,3,4,project_file_354.xlsx,xlsx,3.38,2025-01-15T14:16:00,14,Wednesday,3,1,0,0,0,0,verified,0,15.53,11.885,2.79,2.125,completed,0,normal secure transfer pattern,low
+415,3,7,project_file_415.jpg,jpg,6.26,2025-02-08T17:45:00,17,Saturday,2,0,1,0,0,0,verified,0,20.479,16.452,2.79,3.023,completed,0,normal secure transfer pattern,low
+80,7,9,project_file_80.docx,docx,1.74,2025-04-15T08:54:00,8,Tuesday,1,1,1,0,0,0,verified,0,13.42,10.94,1.767,2.984,completed,0,normal secure transfer pattern,low
+214,10,1,project_file_214.csv,csv,13.15,2025-02-12T10:49:00,10,Wednesday,2,1,1,0,0,0,verified,0,26.497,25.188,3.507,6.284,completed,0,normal secure transfer pattern,low
+201,2,9,project_file_201.pdf,pdf,5.31,2025-03-20T16:04:00,16,Thursday,1,0,0,0,0,0,verified,0,20.782,14.598,2.229,3.168,completed,0,normal secure transfer pattern,low
+507,6,1,suspicious_transfer_507.xlsx,xlsx,38.59,2025-03-18T04:49:00,4,Tuesday,4,4,0,1,0,0,failed,0,76.12,58.207,4.822,8.483,completed,1,unusual night transfer time,medium
+483,6,1,suspicious_transfer_483.bat,bat,698.61,2025-04-28T11:30:00,11,Monday,5,5,0,0,1,0,verified,0,1682.476,770.543,5.32,7.45,blocked,1,very large file transfer,high
+66,7,2,project_file_66.docx,docx,1.23,2025-03-15T15:10:00,15,Saturday,3,0,0,0,0,0,verified,0,12.18,10.166,3.319,2.396,completed,0,normal secure transfer pattern,low
+582,7,7,suspicious_transfer_582.ps1,ps1,79.94,2025-02-20T21:22:00,21,Thursday,6,2,0,0,1,0,verified,1,112.493,159.088,3.265,3.379,blocked,1,high-risk executable/script file type,high
+12,6,3,project_file_12.txt,txt,3.12,2025-04-11T10:35:00,10,Friday,4,0,0,0,0,0,verified,0,14.776,10.834,1.872,7.317,completed,0,normal secure transfer pattern,low
+257,6,8,project_file_257.xlsx,xlsx,4.47,2025-04-18T12:30:00,12,Friday,1,0,1,0,0,0,verified,0,14.994,14.887,3.9,4.449,completed,0,normal secure transfer pattern,low
+229,3,2,project_file_229.txt,txt,2.16,2025-01-29T13:49:00,13,Wednesday,2,0,1,0,0,0,verified,0,12.308,9.996,2.933,1.912,completed,0,normal secure transfer pattern,low
+379,7,1,project_file_379.xlsx,xlsx,2.74,2025-04-28T16:23:00,16,Monday,2,0,0,0,0,0,verified,0,15.104,11.209,2.037,5.516,completed,0,normal secure transfer pattern,low
+186,2,8,project_file_186.pdf,pdf,1.33,2025-02-08T11:17:00,11,Saturday,1,0,0,0,0,0,verified,0,12.027,10.277,3.018,1.627,completed,0,normal secure transfer pattern,low
+163,5,9,project_file_163.csv,csv,4.4,2025-04-25T15:28:00,15,Friday,1,1,0,0,0,0,verified,0,17.462,15.898,3.307,3.351,completed,0,normal secure transfer pattern,low
+160,5,2,project_file_160.jpg,jpg,2.61,2025-01-16T11:28:00,11,Thursday,3,0,0,0,0,0,verified,0,14.284,11.248,2.837,2.844,completed,0,normal secure transfer pattern,low
+578,9,2,suspicious_transfer_578.png,png,92.49,2025-03-15T00:06:00,0,Saturday,33,1,0,1,0,0,verified,0,197.525,175.114,2.318,3.623,integrity_failed,1,too many transfers in one hour,medium
+97,2,8,project_file_97.pdf,pdf,9.89,2025-04-18T12:34:00,12,Friday,3,0,1,0,0,0,verified,0,26.577,25.015,3.085,5.874,completed,0,normal secure transfer pattern,low
+61,4,2,project_file_61.docx,docx,4.19,2025-02-04T16:02:00,16,Tuesday,0,0,0,0,0,0,verified,0,18.378,12.756,2.817,6.133,completed,0,normal secure transfer pattern,low
+18,2,6,project_file_18.png,png,0.59,2025-01-31T10:44:00,10,Friday,4,1,1,0,0,0,verified,0,10.686,9.026,1.157,5.552,completed,0,normal secure transfer pattern,low
+72,5,4,project_file_72.docx,docx,4.72,2025-04-21T17:59:00,17,Monday,4,1,0,0,0,0,verified,0,18.787,13.439,0.572,1.689,completed,0,normal secure transfer pattern,low
+123,5,9,project_file_123.png,png,6.14,2025-03-16T13:49:00,13,Sunday,2,1,1,0,0,0,verified,0,16.706,17.033,2.961,7.257,completed,0,normal secure transfer pattern,low
+40,4,4,project_file_40.png,png,4.53,2025-02-04T10:23:00,10,Tuesday,4,1,0,0,0,0,verified,0,15.773,16.297,2.399,1.685,completed,0,normal secure transfer pattern,low
+449,1,1,project_file_449.docx,docx,4.3,2025-03-12T10:44:00,10,Wednesday,0,1,0,0,0,0,verified,0,17.032,12.402,1.369,3.422,completed,0,normal secure transfer pattern,low
+378,10,7,project_file_378.docx,docx,5.71,2025-01-29T15:38:00,15,Wednesday,0,0,1,0,0,0,verified,0,20.587,13.69,1.109,4.11,completed,0,normal secure transfer pattern,low
+499,10,10,suspicious_transfer_499.zip,zip,33.23,2025-02-06T05:45:00,5,Thursday,1,8,1,1,1,1,verified,1,85.266,42.071,0.549,6.133,integrity_failed,1,repeated failed MFA attempts,high
+109,4,4,project_file_109.jpg,jpg,4.89,2025-04-23T08:53:00,8,Wednesday,3,0,1,0,0,0,verified,0,19.346,15.895,3.859,5.814,completed,0,normal secure transfer pattern,low
+484,8,9,suspicious_transfer_484.7z,7z,16.71,2025-01-21T00:24:00,0,Tuesday,0,5,9,1,1,1,verified,0,39.108,44.266,5.701,4.437,completed,1,compressed archive after failed authentication,high
+594,5,9,suspicious_transfer_594.ps1,ps1,26.97,2025-04-30T15:45:00,15,Wednesday,1,0,4,0,1,0,failed,1,44.096,61.845,3.107,9.768,blocked,1,failed integrity verification,high
+113,5,5,project_file_113.jpg,jpg,3.7,2025-01-14T10:10:00,10,Tuesday,4,0,1,0,0,0,verified,0,14.89,14.633,1.974,5.062,completed,0,normal secure transfer pattern,low
+32,2,8,project_file_32.jpg,jpg,8.03,2025-02-27T09:59:00,9,Thursday,3,0,0,0,0,0,verified,0,17.418,21.485,1.337,5.381,completed,0,normal secure transfer pattern,low
+333,4,2,project_file_333.zip,zip,4.08,2025-02-19T16:15:00,16,Wednesday,2,0,1,0,1,1,verified,0,15.079,13.161,1.984,3.267,completed,0,normal secure transfer pattern,low
+173,5,7,project_file_173.docx,docx,9.67,2025-01-09T10:47:00,10,Thursday,1,0,1,0,0,0,verified,0,26.484,24.621,2.26,3.838,completed,0,normal secure transfer pattern,low
+529,3,3,suspicious_transfer_529.csv,csv,320.55,2025-02-23T00:06:00,0,Sunday,5,5,3,1,0,0,verified,0,799.403,614.925,3.937,7.922,completed,1,very large file transfer,high
+262,3,1,project_file_262.png,png,3.42,2025-02-04T13:24:00,13,Tuesday,4,0,0,0,0,0,verified,0,15.322,11.566,0.578,7.28,completed,0,normal secure transfer pattern,low
+99,10,2,project_file_99.jpg,jpg,6.38,2025-02-17T10:32:00,10,Monday,3,0,0,0,0,0,verified,0,15.952,17.243,3.46,3.097,completed,0,normal secure transfer pattern,low
+457,7,9,project_file_457.png,png,5.19,2025-01-19T08:45:00,8,Sunday,3,0,0,0,0,0,verified,0,17.592,16.063,2.879,2.749,completed,0,normal secure transfer pattern,low
+140,10,9,project_file_140.jpg,jpg,11.35,2025-01-24T15:59:00,15,Friday,3,0,1,0,0,0,verified,0,27.543,19.756,3.615,5.79,completed,0,normal secure transfer pattern,low
+442,4,10,project_file_442.pdf,pdf,6.77,2025-01-30T10:01:00,10,Thursday,0,0,0,0,0,0,verified,0,24.352,13.656,1.744,2.512,completed,0,normal secure transfer pattern,low
+302,10,10,project_file_302.xlsx,xlsx,8.19,2025-04-14T08:17:00,8,Monday,1,0,1,0,0,0,verified,0,23.275,24.277,3.204,1.442,completed,0,normal secure transfer pattern,low
+279,1,8,project_file_279.csv,csv,2.25,2025-01-11T13:01:00,13,Saturday,0,0,0,0,0,0,verified,0,14.817,12.246,0.847,2.843,completed,0,normal secure transfer pattern,low
+27,2,3,project_file_27.pdf,pdf,9.83,2025-02-04T16:23:00,16,Tuesday,4,0,0,0,0,0,verified,0,21.098,17.922,2.78,1.507,completed,0,normal secure transfer pattern,low
+468,4,10,project_file_468.docx,docx,6.6,2025-04-09T11:27:00,11,Wednesday,4,0,0,0,0,0,verified,0,24.317,16.864,3.347,6.959,completed,0,normal secure transfer pattern,low
+535,3,9,suspicious_transfer_535.csv,csv,26.69,2025-02-09T00:27:00,0,Sunday,7,5,5,1,0,0,verified,1,72.473,58.79,0.891,8.73,blocked,1,repeated failed login attempts before transfer,high
+310,7,3,project_file_310.zip,zip,2.35,2025-03-09T14:34:00,14,Sunday,0,0,0,0,1,1,verified,0,13.772,12.214,2.243,2.709,completed,0,normal secure transfer pattern,low
+572,10,7,suspicious_transfer_572.js,js,0.93,2025-01-26T04:56:00,4,Sunday,11,1,2,1,1,0,verified,1,16.988,12.908,2.559,8.612,integrity_failed,1,unusual night transfer time,high
+221,10,6,project_file_221.docx,docx,6.66,2025-03-21T13:42:00,13,Friday,4,1,0,0,0,0,verified,0,22.286,16.765,0.623,3.841,completed,0,normal secure transfer pattern,low
+351,6,7,project_file_351.docx,docx,12.21,2025-01-03T13:28:00,13,Friday,2,1,0,0,0,0,verified,0,32.329,26.628,0.53,1.303,completed,0,normal secure transfer pattern,low
+161,9,10,project_file_161.zip,zip,6.21,2025-02-13T15:56:00,15,Thursday,3,1,0,0,1,1,verified,0,17.806,17.957,0.519,4.968,completed,0,normal secure transfer pattern,low
+28,9,6,project_file_28.txt,txt,5.56,2025-04-06T09:25:00,9,Sunday,2,0,0,0,0,0,verified,0,20.05,13.712,0.639,2.933,completed,0,normal secure transfer pattern,low
+185,9,1,project_file_185.jpg,jpg,7.96,2025-03-13T10:10:00,10,Thursday,1,0,0,0,0,0,verified,0,17.426,19.037,0.992,4.735,completed,0,normal secure transfer pattern,low
+363,4,5,project_file_363.docx,docx,4.88,2025-04-21T13:51:00,13,Monday,3,0,0,0,0,0,verified,0,17.464,13.097,2.096,4.628,completed,0,normal secure transfer pattern,low
+373,4,6,project_file_373.csv,csv,3.49,2025-03-09T13:55:00,13,Sunday,4,0,0,0,0,0,verified,0,15.911,13.734,2.546,6.44,completed,0,normal secure transfer pattern,low
+446,10,7,project_file_446.png,png,2.76,2025-04-23T10:14:00,10,Wednesday,0,0,0,0,0,0,verified,0,13.527,13.494,3.19,1.21,completed,0,normal secure transfer pattern,low
+136,9,3,project_file_136.png,png,9.12,2025-01-08T17:40:00,17,Wednesday,2,0,0,0,0,0,verified,0,23.303,18.942,3.41,4.424,completed,0,normal secure transfer pattern,low
+325,7,3,project_file_325.png,png,12.33,2025-02-06T15:22:00,15,Thursday,1,0,0,0,0,0,verified,0,22.353,27.411,1.821,6.303,completed,0,normal secure transfer pattern,low
+141,1,2,project_file_141.txt,txt,3.76,2025-05-01T15:58:00,15,Thursday,3,0,0,0,0,0,verified,0,14.196,13.052,2.067,1.835,completed,0,normal secure transfer pattern,low
+429,8,7,project_file_429.png,png,2.31,2025-04-18T09:23:00,9,Friday,2,0,0,0,0,0,verified,0,13.493,10.327,1.514,2.171,completed,0,normal secure transfer pattern,low
+90,6,8,project_file_90.xlsx,xlsx,5.81,2025-04-02T16:27:00,16,Wednesday,2,0,0,0,0,0,verified,0,19.832,19.17,2.19,7.385,completed,0,normal secure transfer pattern,low
+311,9,2,project_file_311.csv,csv,9.34,2025-02-20T17:43:00,17,Thursday,2,0,0,0,0,0,verified,0,20.482,22.69,2.776,1.805,completed,0,normal secure transfer pattern,low
+5,10,10,project_file_5.zip,zip,6.45,2025-02-09T10:01:00,10,Sunday,3,0,0,0,1,1,verified,0,18.662,13.919,3.642,4.7,completed,0,normal secure transfer pattern,low
+240,5,9,project_file_240.jpg,jpg,3.57,2025-01-31T08:37:00,8,Friday,4,0,0,0,0,0,verified,0,15.667,14.08,2.121,6.01,completed,0,normal secure transfer pattern,low
+510,3,3,suspicious_transfer_510.zip,zip,306.47,2025-04-05T15:40:00,15,Saturday,10,4,3,0,1,1,failed,1,635.903,365.414,4.794,8.362,integrity_failed,1,unauthorized access attempt,high
+392,4,2,project_file_392.jpg,jpg,3.82,2025-03-16T10:51:00,10,Sunday,3,1,1,0,0,0,verified,0,14.241,11.679,3.46,3.271,completed,0,normal secure transfer pattern,low
+558,6,6,suspicious_transfer_558.jpg,jpg,511.3,2025-03-30T09:02:00,9,Sunday,2,3,2,0,0,0,failed,1,532.766,1026.729,3.372,8.057,completed,1,failed integrity verification,high
+369,4,6,project_file_369.zip,zip,5.97,2025-02-12T16:14:00,16,Wednesday,3,0,1,0,1,1,verified,0,16.204,19.632,3.566,2.792,completed,0,normal secure transfer pattern,low
+502,4,4,suspicious_transfer_502.7z,7z,103.09,2025-03-29T20:51:00,20,Saturday,9,8,8,0,1,1,verified,1,190.079,113.038,2.194,5.763,completed,1,compressed archive after failed authentication,high
+172,10,6,project_file_172.jpg,jpg,16.46,2025-04-13T17:02:00,17,Sunday,0,1,0,0,0,0,verified,0,25.264,36.15,1.517,2.093,completed,0,normal secure transfer pattern,low
+466,8,2,project_file_466.docx,docx,10.64,2025-02-20T16:10:00,16,Thursday,3,0,1,0,0,0,verified,0,24.276,26.983,3.655,3.647,completed,0,normal secure transfer pattern,low
+360,10,10,project_file_360.zip,zip,3.67,2025-02-12T17:29:00,17,Wednesday,0,0,1,0,1,1,verified,0,13.919,11.934,2.054,7.559,completed,0,normal secure transfer pattern,low
+296,3,8,project_file_296.jpg,jpg,2.15,2025-02-16T12:05:00,12,Sunday,3,0,0,0,0,0,verified,0,14.234,10.812,1.051,3.149,completed,0,normal secure transfer pattern,low
+513,5,7,suspicious_transfer_513.exe,exe,106.29,2025-04-16T01:17:00,1,Wednesday,0,3,3,1,1,0,failed,0,232.722,251.515,2.231,3.441,completed,1,repeated failed login attempts before transfer,high
+110,9,8,project_file_110.txt,txt,8.86,2025-01-09T09:22:00,9,Thursday,4,0,0,0,0,0,verified,0,28.613,22.781,3.771,3.949,completed,0,normal secure transfer pattern,low
+1,6,4,project_file_1.xlsx,xlsx,3.24,2025-03-04T15:52:00,15,Tuesday,1,0,0,0,0,0,verified,0,15.48,12.946,3.786,4.679,completed,0,normal secure transfer pattern,low
+158,7,9,project_file_158.txt,txt,10.82,2025-04-24T13:52:00,13,Thursday,4,0,0,0,0,0,verified,0,20.029,17.97,2.781,5.385,completed,0,normal secure transfer pattern,low
+54,10,10,project_file_54.pdf,pdf,2.32,2025-01-15T09:27:00,9,Wednesday,0,1,0,0,0,0,verified,0,13.802,11.853,3.656,4.854,completed,0,normal secure transfer pattern,low
+119,1,5,project_file_119.jpg,jpg,4.91,2025-01-18T09:15:00,9,Saturday,4,0,0,0,0,0,verified,0,19.662,16.05,1.147,3.581,completed,0,normal secure transfer pattern,low
+530,10,6,suspicious_transfer_530.ps1,ps1,10.57,2025-02-25T04:55:00,4,Tuesday,2,1,0,1,1,0,failed,1,36.224,34.139,3.797,3.523,completed,1,failed integrity verification,high
+151,5,6,project_file_151.png,png,2.0,2025-04-06T14:45:00,14,Sunday,3,0,0,0,0,0,verified,0,13.264,10.573,0.827,2.728,completed,0,normal secure transfer pattern,low
+46,9,3,project_file_46.jpg,jpg,4.74,2025-01-31T14:38:00,14,Friday,2,0,1,0,0,0,verified,0,13.883,15.153,1.211,4.279,completed,0,normal secure transfer pattern,low
+23,3,4,project_file_23.pdf,pdf,7.42,2025-03-11T10:44:00,10,Tuesday,4,0,0,0,0,0,verified,0,25.087,22.71,2.292,5.41,completed,0,normal secure transfer pattern,low
+94,9,8,project_file_94.csv,csv,4.19,2025-04-23T13:57:00,13,Wednesday,4,0,0,0,0,0,verified,0,14.925,16.204,3.0,5.339,completed,0,normal secure transfer pattern,low
+206,3,8,project_file_206.txt,txt,1.56,2025-01-10T08:18:00,8,Friday,0,1,0,0,0,0,verified,0,11.901,9.938,2.552,3.075,completed,0,normal secure transfer pattern,low
+259,8,8,project_file_259.png,png,9.96,2025-04-15T11:23:00,11,Tuesday,1,1,0,0,0,0,verified,0,18.449,26.823,0.604,5.595,completed,0,normal secure transfer pattern,low
+385,9,3,project_file_385.jpg,jpg,5.73,2025-02-07T15:45:00,15,Friday,1,1,0,0,0,0,verified,0,17.308,15.392,2.227,3.277,completed,0,normal secure transfer pattern,low
+505,10,9,suspicious_transfer_505.jar,jar,106.94,2025-04-25T02:46:00,2,Friday,7,3,0,1,1,0,verified,0,235.6,172.164,2.0,1.524,integrity_failed,1,high-risk executable/script file type,high
+486,1,6,suspicious_transfer_486.jpg,jpg,21.76,2025-02-26T10:13:00,10,Wednesday,21,2,0,0,0,0,failed,0,68.644,43.795,5.472,7.851,completed,1,too many transfers in one hour,medium
+395,2,1,project_file_395.txt,txt,3.52,2025-02-13T15:43:00,15,Thursday,4,0,1,0,0,0,verified,0,17.501,10.926,1.671,4.317,completed,0,normal secure transfer pattern,low
+384,4,5,project_file_384.zip,zip,1.6,2025-03-18T09:35:00,9,Tuesday,2,0,1,0,1,1,verified,0,13.113,9.522,1.82,2.834,completed,0,normal secure transfer pattern,low
+500,5,9,suspicious_transfer_500.zip,zip,83.0,2025-02-26T05:39:00,5,Wednesday,12,6,9,1,1,1,failed,0,161.158,194.329,4.86,5.867,completed,1,compressed archive after failed authentication,high
+88,5,9,project_file_88.pdf,pdf,4.53,2025-02-04T08:58:00,8,Tuesday,0,0,0,0,0,0,verified,0,15.787,14.908,0.847,2.556,completed,0,normal secure transfer pattern,low
+47,1,2,project_file_47.pdf,pdf,12.22,2025-02-07T14:29:00,14,Friday,0,0,0,0,0,0,verified,0,26.589,18.054,2.597,4.798,completed,0,normal secure transfer pattern,low
+189,1,9,project_file_189.png,png,2.05,2025-03-14T16:28:00,16,Friday,0,0,0,0,0,0,verified,0,13.071,10.317,3.857,1.27,completed,0,normal secure transfer pattern,low
+493,8,9,suspicious_transfer_493.png,png,72.99,2025-01-05T18:15:00,18,Sunday,3,3,5,0,0,0,verified,1,196.174,106.092,2.746,2.157,completed,1,repeated failed MFA attempts,high
+308,5,3,project_file_308.png,png,6.13,2025-02-20T14:29:00,14,Thursday,3,0,0,0,0,0,verified,0,15.188,13.608,2.663,3.951,completed,0,normal secure transfer pattern,low
+104,10,2,project_file_104.docx,docx,3.53,2025-03-18T09:07:00,9,Tuesday,1,0,0,0,0,0,verified,0,15.543,14.555,0.749,2.677,completed,0,normal secure transfer pattern,low
+440,2,7,project_file_440.png,png,8.12,2025-01-24T16:07:00,16,Friday,3,1,0,0,0,0,verified,0,24.161,19.185,2.042,3.995,completed,0,normal secure transfer pattern,low
+367,1,10,project_file_367.xlsx,xlsx,1.97,2025-01-31T10:06:00,10,Friday,2,0,0,0,0,0,verified,0,12.705,10.594,2.103,3.565,completed,0,normal secure transfer pattern,low
+237,2,4,project_file_237.txt,txt,2.96,2025-02-06T12:45:00,12,Thursday,3,0,1,0,0,0,verified,0,13.938,11.304,1.125,7.025,completed,0,normal secure transfer pattern,low
+366,5,3,project_file_366.xlsx,xlsx,7.16,2025-02-04T14:23:00,14,Tuesday,4,0,1,0,0,0,verified,0,18.086,20.864,3.995,3.945,completed,0,normal secure transfer pattern,low
+431,7,5,project_file_431.xlsx,xlsx,7.32,2025-02-21T14:39:00,14,Friday,1,1,0,0,0,0,verified,0,18.563,13.896,3.955,2.35,completed,0,normal secure transfer pattern,low
+388,9,5,project_file_388.docx,docx,6.17,2025-03-24T16:31:00,16,Monday,0,0,0,0,0,0,verified,0,22.135,14.179,0.502,7.467,completed,0,normal secure transfer pattern,low
+543,1,1,suspicious_transfer_543.jar,jar,343.54,2025-01-28T10:55:00,10,Tuesday,9,5,4,0,1,0,verified,0,752.403,391.976,0.565,7.224,completed,1,high-risk executable/script file type,high
+184,6,5,project_file_184.pdf,pdf,9.13,2025-02-07T09:12:00,9,Friday,1,0,0,0,0,0,verified,0,23.266,15.86,1.749,6.699,completed,0,normal secure transfer pattern,low
+231,2,4,project_file_231.txt,txt,3.83,2025-03-02T09:13:00,9,Sunday,2,0,0,0,0,0,verified,0,17.238,11.624,2.251,6.658,completed,0,normal secure transfer pattern,low
+39,6,2,project_file_39.jpg,jpg,3.28,2025-02-06T10:26:00,10,Thursday,2,0,0,0,0,0,verified,0,15.609,11.302,2.809,6.578,completed,0,normal secure transfer pattern,low
+249,8,2,project_file_249.zip,zip,4.27,2025-03-12T15:42:00,15,Wednesday,2,0,0,0,1,1,verified,0,17.964,12.168,1.219,3.271,completed,0,normal secure transfer pattern,low
+168,6,5,project_file_168.txt,txt,1.0,2025-03-28T13:18:00,13,Friday,2,0,0,0,0,0,verified,0,12.156,8.818,3.587,6.099,completed,0,normal secure transfer pattern,low
+316,4,7,project_file_316.xlsx,xlsx,5.5,2025-03-17T09:52:00,9,Monday,3,0,1,0,0,0,verified,0,14.802,15.204,1.403,2.175,completed,0,normal secure transfer pattern,low
+295,2,2,project_file_295.txt,txt,4.18,2025-02-18T11:51:00,11,Tuesday,2,0,1,0,0,0,verified,0,16.943,15.409,2.831,5.843,completed,0,normal secure transfer pattern,low
+275,5,6,project_file_275.jpg,jpg,8.59,2025-01-07T16:41:00,16,Tuesday,4,1,0,0,0,0,verified,0,28.836,22.283,1.382,5.709,completed,0,normal secure transfer pattern,low
+408,4,10,project_file_408.txt,txt,3.11,2025-04-11T08:04:00,8,Friday,3,0,0,0,0,0,verified,0,15.795,13.277,1.079,5.661,completed,0,normal secure transfer pattern,low
+289,10,7,project_file_289.xlsx,xlsx,3.18,2025-01-14T16:20:00,16,Tuesday,1,1,0,0,0,0,verified,0,16.495,12.386,2.585,7.286,completed,0,normal secure transfer pattern,low
+596,2,4,suspicious_transfer_596.xlsx,xlsx,96.79,2025-02-16T00:09:00,0,Sunday,3,2,5,1,0,0,failed,1,210.843,183.423,3.332,4.715,completed,1,failed integrity verification,high
+409,8,6,project_file_409.jpg,jpg,2.23,2025-04-11T17:24:00,17,Friday,2,0,0,0,0,0,verified,0,14.66,10.141,1.765,1.572,completed,0,normal secure transfer pattern,low
+340,1,9,project_file_340.jpg,jpg,6.11,2025-01-15T09:03:00,9,Wednesday,3,0,1,0,0,0,verified,0,20.749,16.431,1.089,6.167,completed,0,normal secure transfer pattern,low
+25,3,1,project_file_25.docx,docx,7.83,2025-02-05T13:10:00,13,Wednesday,2,0,1,0,0,0,verified,0,21.275,22.073,1.578,2.076,completed,0,normal secure transfer pattern,low
+146,7,4,project_file_146.xlsx,xlsx,8.46,2025-02-16T16:51:00,16,Sunday,1,0,0,0,0,0,verified,0,23.069,21.073,2.292,1.854,completed,0,normal secure transfer pattern,low
+101,6,9,project_file_101.jpg,jpg,4.36,2025-02-23T16:29:00,16,Sunday,0,0,0,0,0,0,verified,0,18.235,14.033,3.684,4.484,completed,0,normal secure transfer pattern,low
+38,9,8,project_file_38.txt,txt,1.95,2025-03-11T15:21:00,15,Tuesday,4,1,1,0,0,0,verified,0,13.224,10.692,1.291,5.723,completed,0,normal secure transfer pattern,low
+149,5,3,project_file_149.txt,txt,5.41,2025-01-04T14:38:00,14,Saturday,0,0,1,0,0,0,verified,0,21.721,18.476,2.403,6.285,completed,0,normal secure transfer pattern,low
+475,7,8,suspicious_transfer_475.csv,csv,113.41,2025-04-10T02:27:00,2,Thursday,23,1,0,1,0,0,failed,0,204.542,143.898,1.096,4.701,blocked,1,too many transfers in one hour,medium
+226,7,7,project_file_226.png,png,5.95,2025-04-07T15:09:00,15,Monday,0,1,0,0,0,0,verified,0,15.939,19.189,1.732,4.69,completed,0,normal secure transfer pattern,low
+271,6,3,project_file_271.png,png,8.34,2025-01-25T14:37:00,14,Saturday,1,0,0,0,0,0,verified,0,25.423,24.543,2.345,6.802,completed,0,normal secure transfer pattern,low
+300,7,3,project_file_300.xlsx,xlsx,13.42,2025-04-25T13:05:00,13,Friday,1,0,1,0,0,0,verified,0,37.191,27.101,3.489,3.821,completed,0,normal secure transfer pattern,low
+125,3,6,project_file_125.csv,csv,4.97,2025-03-05T13:56:00,13,Wednesday,3,0,0,0,0,0,verified,0,20.343,15.203,1.923,7.245,completed,0,normal secure transfer pattern,low
+139,6,8,project_file_139.pdf,pdf,2.55,2025-01-03T08:56:00,8,Friday,4,0,0,0,0,0,verified,0,14.0,12.141,3.89,6.123,completed,0,normal secure transfer pattern,low
+527,5,4,suspicious_transfer_527.zip,zip,95.33,2025-03-16T13:33:00,13,Sunday,2,7,4,0,1,1,failed,0,251.262,116.925,0.861,2.848,blocked,1,compressed archive after failed authentication,high
+405,9,4,project_file_405.pdf,pdf,1.76,2025-03-26T15:28:00,15,Wednesday,2,1,1,0,0,0,verified,0,11.976,10.853,3.704,1.368,completed,0,normal secure transfer pattern,low
+573,9,6,suspicious_transfer_573.js,js,172.68,2025-04-05T03:17:00,3,Saturday,6,5,2,1,1,0,verified,0,443.978,320.962,5.542,5.146,blocked,1,very large file transfer,high
+393,6,8,project_file_393.txt,txt,1.44,2025-02-01T16:49:00,16,Saturday,0,0,0,0,0,0,verified,0,12.616,10.749,1.447,3.457,completed,0,normal secure transfer pattern,low
+85,1,8,project_file_85.jpg,jpg,3.34,2025-04-26T09:09:00,9,Saturday,3,1,1,0,0,0,verified,0,15.384,12.965,2.425,1.409,completed,0,normal secure transfer pattern,low
+4,8,8,project_file_4.pdf,pdf,2.36,2025-01-12T10:28:00,10,Sunday,1,0,1,0,0,0,verified,0,13.157,12.544,1.149,2.624,completed,0,normal secure transfer pattern,low
+84,2,10,project_file_84.jpg,jpg,2.11,2025-03-02T13:08:00,13,Sunday,4,0,0,0,0,0,verified,0,14.323,11.166,2.381,3.917,completed,0,normal secure transfer pattern,low
+138,6,6,project_file_138.csv,csv,1.36,2025-03-02T08:54:00,8,Sunday,1,0,0,0,0,0,verified,0,12.424,9.48,2.047,3.221,completed,0,normal secure transfer pattern,low
+516,6,3,suspicious_transfer_516.txt,txt,83.48,2025-04-27T11:16:00,11,Sunday,11,3,4,0,0,0,verified,1,156.874,156.419,5.377,5.809,integrity_failed,1,unauthorized access attempt,high
+59,10,6,project_file_59.txt,txt,9.25,2025-03-29T13:45:00,13,Saturday,3,0,0,0,0,0,verified,0,28.743,21.907,1.976,4.947,completed,0,normal secure transfer pattern,low
+423,2,6,project_file_423.zip,zip,2.34,2025-02-28T16:22:00,16,Friday,0,1,0,0,1,1,verified,0,12.97,11.313,0.854,1.748,completed,0,normal secure transfer pattern,low
+24,6,1,project_file_24.txt,txt,3.83,2025-04-02T13:51:00,13,Wednesday,4,1,0,0,0,0,verified,0,15.621,12.82,3.421,1.295,completed,0,normal secure transfer pattern,low
+98,9,7,project_file_98.docx,docx,7.09,2025-01-18T17:49:00,17,Saturday,0,1,1,0,0,0,verified,0,21.288,16.99,3.141,1.586,completed,0,normal secure transfer pattern,low
+274,3,4,project_file_274.docx,docx,21.69,2025-02-17T08:41:00,8,Monday,1,1,1,0,0,0,verified,0,40.428,50.892,2.467,2.165,completed,0,normal secure transfer pattern,low
+563,9,9,suspicious_transfer_563.js,js,68.5,2025-04-29T21:50:00,21,Tuesday,35,2,1,0,1,0,failed,1,142.552,87.906,3.707,7.508,blocked,1,too many transfers in one hour,high
+233,9,3,project_file_233.xlsx,xlsx,2.57,2025-04-18T10:19:00,10,Friday,3,1,0,0,0,0,verified,0,12.914,12.378,2.941,5.845,completed,0,normal secure transfer pattern,low
+243,6,4,project_file_243.jpg,jpg,3.43,2025-03-04T11:02:00,11,Tuesday,2,0,0,0,0,0,verified,0,14.573,11.178,2.638,3.868,completed,0,normal secure transfer pattern,low
+135,4,9,project_file_135.png,png,2.52,2025-02-17T13:24:00,13,Monday,0,1,0,0,0,0,verified,0,14.562,12.216,3.052,3.882,completed,0,normal secure transfer pattern,low
+417,5,7,project_file_417.docx,docx,4.34,2025-03-25T08:26:00,8,Tuesday,2,0,1,0,0,0,verified,0,15.658,13.052,1.585,2.139,completed,0,normal secure transfer pattern,low
+166,4,6,project_file_166.txt,txt,6.21,2025-02-11T09:13:00,9,Tuesday,2,1,0,0,0,0,verified,0,14.986,13.973,3.057,3.565,completed,0,normal secure transfer pattern,low
+467,8,1,project_file_467.docx,docx,1.64,2025-02-06T16:48:00,16,Thursday,0,0,1,0,0,0,verified,0,12.127,9.46,2.504,7.243,completed,0,normal secure transfer pattern,low
+574,5,5,suspicious_transfer_574.csv,csv,59.9,2025-02-11T20:26:00,20,Tuesday,3,7,2,0,0,0,verified,0,147.289,120.598,1.153,6.94,integrity_failed,1,repeated failed MFA attempts,high
+585,6,5,suspicious_transfer_585.png,png,389.35,2025-02-15T17:51:00,17,Saturday,6,5,4,0,0,0,verified,1,574.218,893.413,3.563,8.244,blocked,1,unauthorized access attempt,high
+570,3,2,suspicious_transfer_570.txt,txt,748.75,2025-02-08T17:03:00,17,Saturday,1,4,5,0,0,0,failed,1,770.391,843.521,5.748,6.503,blocked,1,very large file transfer,high
+565,7,7,suspicious_transfer_565.zip,zip,59.34,2025-02-06T02:47:00,2,Thursday,12,0,9,1,1,1,verified,1,163.012,83.736,3.967,1.579,blocked,1,repeated failed login attempts before transfer,high
+60,7,1,project_file_60.csv,csv,7.05,2025-02-28T17:46:00,17,Friday,4,1,0,0,0,0,verified,0,22.318,21.728,3.649,4.861,completed,0,normal secure transfer pattern,low
+273,9,7,project_file_273.csv,csv,5.2,2025-01-12T13:40:00,13,Sunday,1,0,0,0,0,0,verified,0,16.146,14.766,0.844,6.17,completed,0,normal secure transfer pattern,low
+361,9,1,project_file_361.pdf,pdf,2.61,2025-03-28T14:12:00,14,Friday,0,0,0,0,0,0,verified,0,13.503,11.687,1.663,4.946,completed,0,normal secure transfer pattern,low
+523,1,7,suspicious_transfer_523.txt,txt,106.44,2025-02-10T15:37:00,15,Monday,10,5,5,0,0,0,failed,0,175.395,248.58,0.799,5.272,integrity_failed,1,failed integrity verification,high
+253,9,5,project_file_253.jpg,jpg,10.9,2025-02-17T13:39:00,13,Monday,1,0,0,0,0,0,verified,0,29.845,24.909,1.112,3.797,completed,0,normal secure transfer pattern,low
+368,3,1,project_file_368.docx,docx,4.44,2025-02-01T16:28:00,16,Saturday,3,0,0,0,0,0,verified,0,13.614,12.912,2.999,7.204,completed,0,normal secure transfer pattern,low
+472,8,4,suspicious_transfer_472.7z,7z,861.65,2025-03-01T06:04:00,6,Saturday,6,4,6,0,1,1,verified,1,1463.649,1451.227,3.971,5.835,integrity_failed,1,compressed archive after failed authentication,high
+44,2,7,project_file_44.jpg,jpg,4.38,2025-04-10T08:28:00,8,Thursday,1,1,1,0,0,0,verified,0,14.759,16.325,1.248,1.539,completed,0,normal secure transfer pattern,low
+532,8,4,suspicious_transfer_532.png,png,685.1,2025-02-08T01:28:00,1,Saturday,4,2,0,1,0,0,failed,1,962.906,767.543,0.56,4.788,integrity_failed,1,very large file transfer,high
+118,1,5,project_file_118.zip,zip,5.4,2025-02-08T11:23:00,11,Saturday,1,0,1,0,1,1,verified,0,20.367,13.32,2.91,2.435,completed,0,normal secure transfer pattern,low
+131,9,1,project_file_131.png,png,2.52,2025-02-10T13:17:00,13,Monday,2,0,1,0,0,0,verified,0,12.369,11.393,1.11,7.83,completed,0,normal secure transfer pattern,low
+220,1,8,project_file_220.png,png,5.11,2025-02-11T15:28:00,15,Tuesday,0,0,0,0,0,0,verified,0,19.609,12.371,2.286,2.781,completed,0,normal secure transfer pattern,low
+129,8,3,project_file_129.zip,zip,9.58,2025-03-23T11:46:00,11,Sunday,3,1,1,0,1,1,verified,0,27.91,18.82,2.335,4.197,completed,0,normal secure transfer pattern,low
+21,7,10,project_file_21.xlsx,xlsx,1.6,2025-01-11T15:38:00,15,Saturday,4,0,0,0,0,0,verified,0,13.126,11.062,3.299,7.732,completed,0,normal secure transfer pattern,low
+181,4,4,project_file_181.jpg,jpg,6.64,2025-01-26T16:44:00,16,Sunday,1,0,0,0,0,0,verified,0,24.293,16.246,1.52,7.705,completed,0,normal secure transfer pattern,low
+142,10,7,project_file_142.txt,txt,4.32,2025-01-12T16:50:00,16,Sunday,1,0,0,0,0,0,verified,0,17.851,15.202,0.977,7.936,completed,0,normal secure transfer pattern,low
+489,10,10,suspicious_transfer_489.xlsx,xlsx,90.19,2025-02-24T03:22:00,3,Monday,12,4,5,1,0,0,failed,1,101.244,128.966,2.607,2.139,completed,1,repeated failed login attempts before transfer,high
+571,2,6,suspicious_transfer_571.ps1,ps1,223.33,2025-04-13T19:35:00,19,Sunday,5,1,4,0,1,0,verified,1,469.013,279.284,2.805,9.582,blocked,1,very large file transfer,high
+205,8,6,project_file_205.txt,txt,1.33,2025-03-08T17:43:00,17,Saturday,3,1,0,0,0,0,verified,0,12.592,9.986,0.634,6.635,completed,0,normal secure transfer pattern,low
+470,5,4,suspicious_transfer_470.js,js,97.92,2025-04-29T06:20:00,6,Tuesday,1,6,4,0,1,0,verified,1,236.151,222.118,3.076,8.674,blocked,1,repeated failed MFA attempts,high
+82,4,2,project_file_82.pdf,pdf,9.72,2025-04-24T08:30:00,8,Thursday,3,0,0,0,0,0,verified,0,17.876,27.437,2.55,1.704,completed,0,normal secure transfer pattern,low
+387,10,8,project_file_387.xlsx,xlsx,3.67,2025-02-17T13:48:00,13,Monday,4,0,0,0,0,0,verified,0,17.767,13.077,1.56,6.19,completed,0,normal secure transfer pattern,low
+79,10,3,project_file_79.pdf,pdf,5.46,2025-02-19T12:20:00,12,Wednesday,4,0,0,0,0,0,verified,0,20.684,17.972,3.314,6.97,completed,0,normal secure transfer pattern,low
+520,2,8,suspicious_transfer_520.jpg,jpg,333.93,2025-01-19T02:58:00,2,Sunday,7,2,3,1,0,0,failed,1,329.609,459.71,4.889,1.537,blocked,1,unusual night transfer time,high
+381,3,9,project_file_381.jpg,jpg,8.34,2025-03-04T09:59:00,9,Tuesday,1,0,0,0,0,0,verified,0,18.371,24.463,3.407,5.788,completed,0,normal secure transfer pattern,low
+58,2,2,project_file_58.zip,zip,3.17,2025-03-21T09:52:00,9,Friday,4,1,0,0,1,1,verified,0,13.018,13.346,1.597,4.605,completed,0,normal secure transfer pattern,low
+269,4,3,project_file_269.docx,docx,4.92,2025-02-16T13:26:00,13,Sunday,2,0,0,0,0,0,verified,0,17.942,13.146,2.612,7.618,completed,0,normal secure transfer pattern,low
+137,3,9,project_file_137.zip,zip,1.07,2025-01-06T10:11:00,10,Monday,2,0,0,0,1,1,verified,0,12.017,9.616,2.205,3.212,completed,0,normal secure transfer pattern,low
+282,1,9,project_file_282.png,png,1.98,2025-03-14T15:57:00,15,Friday,4,0,1,0,0,0,verified,0,12.808,10.954,0.556,6.13,completed,0,normal secure transfer pattern,low
+364,3,8,project_file_364.csv,csv,21.12,2025-03-08T13:00:00,13,Saturday,0,0,1,0,0,0,verified,0,53.285,32.841,0.607,7.722,completed,0,normal secure transfer pattern,low
+53,7,9,project_file_53.xlsx,xlsx,9.13,2025-02-05T11:36:00,11,Wednesday,2,0,0,0,0,0,verified,0,24.392,15.593,1.132,2.592,completed,0,normal secure transfer pattern,low
+432,2,8,project_file_432.csv,csv,4.85,2025-03-24T16:09:00,16,Monday,4,0,0,0,0,0,verified,0,19.059,14.637,1.31,3.207,completed,0,normal secure transfer pattern,low
+121,1,5,project_file_121.png,png,5.06,2025-04-03T11:19:00,11,Thursday,0,0,0,0,0,0,verified,0,17.065,15.646,2.499,6.517,completed,0,normal secure transfer pattern,low
+93,6,8,project_file_93.png,png,1.35,2025-02-23T15:02:00,15,Sunday,2,1,0,0,0,0,verified,0,11.664,9.224,3.878,2.541,completed,0,normal secure transfer pattern,low
+537,7,2,suspicious_transfer_537.bat,bat,388.65,2025-02-02T04:56:00,4,Sunday,31,1,4,1,1,0,verified,0,552.347,667.94,3.885,3.242,blocked,1,too many transfers in one hour,high
+469,6,2,suspicious_transfer_469.jpg,jpg,41.97,2025-03-29T01:37:00,1,Saturday,6,3,1,1,0,0,verified,0,57.582,105.878,2.65,9.754,blocked,1,unusual night transfer time,medium
+455,6,2,project_file_455.zip,zip,10.04,2025-03-16T12:54:00,12,Sunday,2,1,1,0,1,1,verified,0,24.725,20.385,1.527,4.247,completed,0,normal secure transfer pattern,low
+294,5,4,project_file_294.png,png,7.57,2025-03-08T16:51:00,16,Saturday,0,0,0,0,0,0,verified,0,25.009,20.839,2.929,2.965,completed,0,normal secure transfer pattern,low
+465,7,6,project_file_465.png,png,1.69,2025-03-27T09:55:00,9,Thursday,0,0,0,0,0,0,verified,0,13.376,10.047,3.624,6.445,completed,0,normal secure transfer pattern,low
+195,9,5,project_file_195.jpg,jpg,4.15,2025-02-26T14:43:00,14,Wednesday,1,0,1,0,0,0,verified,0,17.605,15.672,3.933,7.738,completed,0,normal secure transfer pattern,low
+314,4,10,project_file_314.txt,txt,3.28,2025-01-14T10:12:00,10,Tuesday,0,0,0,0,0,0,verified,0,14.21,13.288,2.887,6.598,completed,0,normal secure transfer pattern,low
+51,2,8,project_file_51.png,png,3.88,2025-02-19T10:25:00,10,Wednesday,1,0,0,0,0,0,verified,0,14.694,15.682,2.715,4.768,completed,0,normal secure transfer pattern,low
+234,10,4,project_file_234.xlsx,xlsx,2.61,2025-04-13T11:35:00,11,Sunday,2,0,0,0,0,0,verified,0,13.744,13.057,2.822,4.839,completed,0,normal secure transfer pattern,low
+22,1,7,project_file_22.txt,txt,0.94,2025-01-31T13:39:00,13,Friday,0,0,0,0,0,0,verified,0,12.036,9.174,0.566,3.805,completed,0,normal secure transfer pattern,low
+492,5,2,suspicious_transfer_492.exe,exe,50.32,2025-02-22T00:38:00,0,Saturday,7,3,2,1,1,0,failed,1,105.522,104.198,4.369,3.294,integrity_failed,1,repeated failed MFA attempts,high
+15,8,3,project_file_15.png,png,4.07,2025-02-05T14:33:00,14,Wednesday,2,1,1,0,0,0,verified,0,15.347,16.079,2.238,6.362,completed,0,normal secure transfer pattern,low
+575,8,2,suspicious_transfer_575.txt,txt,812.34,2025-04-23T08:34:00,8,Wednesday,1,1,2,0,0,0,verified,1,1794.121,1026.787,3.374,1.206,integrity_failed,1,very large file transfer,high
+343,10,3,project_file_343.png,png,34.83,2025-04-16T14:02:00,14,Wednesday,1,0,1,0,0,0,verified,0,58.762,56.115,3.011,5.602,completed,0,normal secure transfer pattern,low
+544,9,10,suspicious_transfer_544.zip,zip,111.54,2025-04-03T01:20:00,1,Thursday,0,6,3,1,1,1,failed,0,278.439,263.909,3.464,1.82,blocked,1,compressed archive after failed authentication,high
+342,1,2,project_file_342.zip,zip,9.42,2025-04-11T12:20:00,12,Friday,2,0,0,0,1,1,verified,0,23.835,20.854,2.71,5.128,completed,0,normal secure transfer pattern,low
+126,10,6,project_file_126.png,png,3.93,2025-02-04T13:35:00,13,Tuesday,4,0,0,0,0,0,verified,0,17.45,14.995,2.304,1.781,completed,0,normal secure transfer pattern,low
+352,7,10,project_file_352.xlsx,xlsx,3.44,2025-03-28T12:59:00,12,Friday,2,0,0,0,0,0,verified,0,13.491,14.657,1.957,5.993,completed,0,normal secure transfer pattern,low
+328,1,8,project_file_328.zip,zip,3.05,2025-02-15T12:04:00,12,Saturday,3,0,0,0,1,1,verified,0,14.593,13.449,3.713,6.828,completed,0,normal secure transfer pattern,low
+208,5,1,project_file_208.xlsx,xlsx,5.17,2025-01-10T13:44:00,13,Friday,2,0,0,0,0,0,verified,0,15.042,14.996,3.215,5.818,completed,0,normal secure transfer pattern,low
+332,5,3,project_file_332.png,png,0.91,2025-03-21T08:32:00,8,Friday,3,1,0,0,0,0,verified,0,11.074,9.277,2.62,2.648,completed,0,normal secure transfer pattern,low
+20,8,5,project_file_20.zip,zip,3.89,2025-03-03T16:16:00,16,Monday,4,0,0,0,1,1,verified,0,14.564,14.553,3.843,4.142,completed,0,normal secure transfer pattern,low
+391,9,6,project_file_391.xlsx,xlsx,8.12,2025-02-23T15:27:00,15,Sunday,1,1,0,0,0,0,verified,0,25.859,22.977,3.538,4.986,completed,0,normal secure transfer pattern,low
+218,8,5,project_file_218.jpg,jpg,8.19,2025-03-27T09:36:00,9,Thursday,1,1,0,0,0,0,verified,0,20.918,20.216,3.595,5.04,completed,0,normal secure transfer pattern,low
+406,7,6,project_file_406.docx,docx,1.66,2025-04-07T13:55:00,13,Monday,3,1,1,0,0,0,verified,0,11.926,10.813,2.158,2.323,completed,0,normal secure transfer pattern,low
+75,10,2,project_file_75.jpg,jpg,6.82,2025-01-13T12:52:00,12,Monday,1,1,1,0,0,0,verified,0,19.41,20.406,2.505,1.79,completed,0,normal secure transfer pattern,low
+312,1,9,project_file_312.csv,csv,5.08,2025-04-29T13:58:00,13,Tuesday,1,1,0,0,0,0,verified,0,20.237,12.224,2.794,7.232,completed,0,normal secure transfer pattern,low
+462,9,5,project_file_462.pdf,pdf,7.27,2025-04-24T11:59:00,11,Thursday,1,1,0,0,0,0,verified,0,22.001,21.115,1.399,7.758,completed,0,normal secure transfer pattern,low
+402,5,9,project_file_402.txt,txt,1.89,2025-04-30T16:56:00,16,Wednesday,0,1,1,0,0,0,verified,0,12.426,11.047,1.609,7.858,completed,0,normal secure transfer pattern,low
+244,3,5,project_file_244.xlsx,xlsx,1.73,2025-04-15T10:36:00,10,Tuesday,0,0,0,0,0,0,verified,0,11.917,10.199,3.332,2.174,completed,0,normal secure transfer pattern,low
+404,6,5,project_file_404.txt,txt,5.08,2025-04-13T15:44:00,15,Sunday,2,0,1,0,0,0,verified,0,19.26,16.933,2.932,6.928,completed,0,normal secure transfer pattern,low
+376,9,6,project_file_376.pdf,pdf,5.67,2025-03-14T17:28:00,17,Friday,0,0,0,0,0,0,verified,0,22.086,16.852,1.977,2.708,completed,0,normal secure transfer pattern,low
+128,5,9,project_file_128.jpg,jpg,3.64,2025-01-13T10:28:00,10,Monday,1,1,0,0,0,0,verified,0,17.385,13.498,1.093,7.994,completed,0,normal secure transfer pattern,low
+540,9,2,suspicious_transfer_540.7z,7z,493.89,2025-04-01T05:05:00,5,Tuesday,2,5,9,1,1,1,verified,0,686.013,617.11,5.045,3.111,integrity_failed,1,compressed archive after failed authentication,high
+441,9,3,project_file_441.xlsx,xlsx,5.24,2025-02-11T09:00:00,9,Tuesday,2,0,0,0,0,0,verified,0,14.978,15.821,3.93,7.423,completed,0,normal secure transfer pattern,low
+490,6,5,suspicious_transfer_490.ps1,ps1,42.68,2025-01-01T08:20:00,8,Wednesday,12,3,5,0,1,0,verified,1,66.553,59.264,2.37,8.807,blocked,1,unauthorized access attempt,high
+564,9,10,suspicious_transfer_564.csv,csv,15.62,2025-02-15T17:20:00,17,Saturday,7,5,4,0,0,0,failed,0,38.81,31.328,5.653,5.831,integrity_failed,1,failed integrity verification,high
+68,6,10,project_file_68.png,png,4.92,2025-03-28T16:33:00,16,Friday,0,1,0,0,0,0,verified,0,18.0,17.715,3.354,5.116,completed,0,normal secure transfer pattern,low

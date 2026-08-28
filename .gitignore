@@ -1,0 +1,22 @@
+# Backend
+backend/venv/
+backend/.env
+backend/*.db
+backend/secure_file_transfer.db
+backend/app/storage/encrypted/*
+backend/app/storage/decrypted/*
+backend/app/storage/uploads/*
+backend/app/storage/keys/*
+backend/app/storage/mailbox/*
+!backend/app/storage/**/.gitkeep
+__pycache__/
+*.pyc
+
+# Frontend
+frontend/node_modules/
+frontend/.env
+frontend/dist/
+
+# OS/editor
+.DS_Store
+.vscode/
