@@ -27,14 +27,24 @@ exports.sendFile = async (req, res) => {
     formData.append('sender_id', req.user._id.toString());
     formData.append('receiver_id', receiver._id.toString());
     formData.append('classification', classification || 'standard');
+    // Align with Python AI detection fields to prevent 422 Unprocessable Entity
+    formData.append('transfers_last_hour', '0');
+    formData.append('mfa_failed_attempts', '0');
+    formData.append('failed_login_attempts', req.user.failed_login_attempts?.toString() || '0');
 
     // Call Python Internal Engine
     const pythonUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
-    const response = await axios.post(`${pythonUrl}/internal/crypto/encrypt`, formData, {
-      headers: {
-        ...formData.getHeaders()
-      }
-    });
+    let response;
+    try {
+      response = await axios.post(`${pythonUrl}/internal/crypto/encrypt`, formData, {
+        headers: {
+          ...formData.getHeaders()
+        }
+      });
+    } catch (pythonErr) {
+      console.error('Python Encrypt Error:', pythonErr.response?.data || pythonErr.message);
+      return res.status(pythonErr.response?.status || 500).json({ success: false, error: 'Internal Engine Encryption Failed' });
+    }
 
     const pythonData = response.data;
 
@@ -93,17 +103,20 @@ exports.downloadFile = async (req, res) => {
       return res.status(403).json({ success: false, error: 'Not authorized' });
     }
 
-    // Forward to Python microservice to decapsulate and decrypt
+    // Forward to Python microservice to decapsulate and decrypt using JSON matching Pydantic schema
     const pythonUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
-    const response = await axios.post(`${pythonUrl}/internal/crypto/decrypt`, {
-      encrypted_path: transfer.encrypted_path,
-      encrypted_key: transfer.encrypted_key,
-      nonce: transfer.nonce,
-      ecdh_public_key: transfer.ecdh_public_key,
-      ecdh_wrapped_key: transfer.ecdh_wrapped_key
-    }, {
-      responseType: 'stream'
-    });
+    let response;
+    try {
+      response = await axios.post(`${pythonUrl}/internal/crypto/decrypt`, {
+        encrypted_path: transfer.encrypted_path,
+        receiver_id: req.user._id.toString()
+      }, {
+        responseType: 'stream'
+      });
+    } catch (pythonErr) {
+      console.error('Python Decrypt Error:', pythonErr.response?.data || pythonErr.message);
+      return res.status(pythonErr.response?.status || 500).json({ success: false, error: 'Internal Engine Decryption Failed' });
+    }
 
     res.setHeader('Content-Disposition', `attachment; filename="${transfer.file_name}"`);
     response.data.pipe(res);

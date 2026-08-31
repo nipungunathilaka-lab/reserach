@@ -12,7 +12,10 @@ export default function ReceivedFiles() {
   const [downloading, setDownloading] = useState(null)
   const [error, setError] = useState('')
 
-  const load = () => api.get('/files/received').then(res => setFiles(res.data)).catch(err => setError(apiError(err))).finally(() => setLoading(false))
+  const load = () => api.get('/files/received')
+    .then(res => setFiles(Array.isArray(res.data) ? res.data : (res.data?.data || [])))
+    .catch(err => setError(apiError(err)))
+    .finally(() => setLoading(false))
   useEffect(() => { load() }, [])
 
   const download = async (transfer) => {
@@ -43,7 +46,7 @@ export default function ReceivedFiles() {
       <ErrorBanner message={error} />
 
       <div className="mt-4 grid gap-3 md:hidden">
-        {files.map(t => <article key={t.id} className="rounded-3xl border border-white/10 bg-white/5 p-4">
+        {(files || []).map(t => <article key={t?.id} className="rounded-3xl border border-white/10 bg-white/5 p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0"><p className="truncate font-bold">{t.file_name}</p><p className="text-xs text-slate-400">From {t.sender?.full_name || 'Unknown'}</p></div>
             <span className={`shrink-0 text-xs font-bold ${statusColor(t.integrity_status)}`}>{t.integrity_status}</span>
@@ -60,16 +63,16 @@ export default function ReceivedFiles() {
           <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-400"><p>Size: {fmtSize(t.file_size)}</p><p className="col-span-2">Date: {new Date(t.created_at).toLocaleString()}</p></div>
           <button onClick={() => download(t)} className="btn-secondary mt-4 w-full py-2" disabled={downloading === t.id}><Download size={15}/>{downloading === t.id ? 'Decrypting...' : 'Download/decrypt'}</button>
         </article>)}
-        {!files.length && <p className="rounded-2xl bg-white/5 p-5 text-center text-sm text-slate-400">No received files yet.</p>}
+        {!(files && files.length) && <p className="rounded-2xl bg-white/5 p-5 text-center text-sm text-slate-400">No received files yet.</p>}
       </div>
 
       <div className="mt-4 hidden overflow-x-auto md:block">
         <table className="w-full min-w-[860px] text-left text-sm">
           <thead className="text-slate-400"><tr><th className="py-3">File</th><th>Sender</th><th>AI Security</th><th>Size</th><th>Date</th><th>Integrity</th><th>Action</th></tr></thead>
           <tbody>
-            {files.map(t => (
-              <tr key={t.id} className="border-t border-white/10">
-                <td className="py-4 font-semibold">{t.file_name}</td>
+            {(files || []).map(t => (
+              <tr key={t?.id} className="border-t border-white/10">
+                <td className="py-4 font-semibold">{t?.file_name}</td>
                 <td>
                   <p>{t.sender?.full_name || 'Unknown'}</p>
                   <p className="text-xs text-slate-400">{t.sender?.email || 'N/A'}</p>
@@ -93,7 +96,7 @@ export default function ReceivedFiles() {
                 </td>
               </tr>
             ))}
-            {!files.length && <tr><td colSpan="7" className="py-8 text-center text-slate-400">No received files yet.</td></tr>}
+            {!(files && files.length) && <tr><td colSpan="7" className="py-8 text-center text-slate-400">No received files yet.</td></tr>}
           </tbody>
         </table>
       </div>

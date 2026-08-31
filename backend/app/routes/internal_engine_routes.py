@@ -90,18 +90,22 @@ async def internal_encrypt(
         "anomaly_reason": ai_result.get("reason", "")
     }
 
+from pydantic import BaseModel
+
+class DecryptRequest(BaseModel):
+    encrypted_path: str
+    receiver_id: str
+
 @router.post("/crypto/decrypt")
-async def internal_decrypt(
-    encrypted_path: str = Form(...),
-    receiver_id: str = Form(...),
-):
+async def internal_decrypt(req: DecryptRequest):
     try:
         pfce_engine = PFCEEngine()
         stream_generator = pfce_engine.process_download_stream(
-            pfce_package_path=encrypted_path, 
-            receiver_id=receiver_id
+            pfce_package_path=req.encrypted_path, 
+            receiver_id=req.receiver_id
         )
     except Exception as exc:
+        print(f"Decryption Error: {exc}")
         raise HTTPException(status_code=500, detail=str(exc))
         
     return StreamingResponse(stream_generator, media_type="application/octet-stream")
