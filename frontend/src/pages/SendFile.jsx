@@ -20,8 +20,11 @@ export default function SendFile() {
   useEffect(() => {
     api.get('/users/receivers')
       .then(res => {
-        setReceivers(res.data)
-        if (res.data[0]) setReceiverId(String(res.data[0].id))
+        const users = Array.isArray(res.data) ? res.data : (res.data?.data || [])
+        setReceivers(users)
+        if (users.length > 0) {
+          setReceiverId(String(users[0].id || users[0]._id))
+        }
       })
       .catch(err => setError(apiError(err)))
   }, [])
@@ -138,8 +141,9 @@ export default function SendFile() {
           <ErrorBanner message={error} />
           <label className="grid gap-2 text-sm text-slate-300">Receiver
             <select className="w-full rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-400 focus:bg-slate-900 focus:ring-1 focus:ring-cyan-400 focus:shadow-[0_0_15px_-3px_rgba(34,211,238,0.3)] appearance-none" value={receiverId} onChange={e => setReceiverId(e.target.value)} required>
+              <option value="" disabled hidden>{receivers.length ? 'Select a recipient...' : 'Loading users...'}</option>
               {receivers.map(u => (
-                <option key={u.id} value={u.id} className="bg-slate-900 text-white">
+                <option key={u.id || u._id} value={u.id || u._id} className="bg-slate-900 text-white">
                   {u.full_name} ({u.email}){u.company_name ? ` - ${u.company_name}` : ''}
                 </option>
               ))}

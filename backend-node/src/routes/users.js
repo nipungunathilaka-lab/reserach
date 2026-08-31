@@ -8,7 +8,16 @@ const router = express.Router();
 router.get('/receivers', protect, async (req, res) => {
   try {
     const users = await User.find({ _id: { $ne: req.user._id } }).select('full_name email company_name');
-    res.status(200).json({ success: true, data: users });
+    
+    // Map _id to id for the frontend
+    const mappedUsers = users.map(u => ({
+      id: u._id.toString(),
+      full_name: u.full_name,
+      email: u.email,
+      company_name: u.company_name
+    }));
+
+    res.status(200).json({ success: true, data: mappedUsers });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
