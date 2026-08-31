@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.rate_limiter import InMemoryRateLimitMiddleware
 from app.core.config import settings
+from app.database.db import ensure_storage_dirs
 from app.routes import internal_engine_routes
 from app.services.ai_service import AIService
 from app.services.malware_service import MalwareDetectionService
@@ -22,6 +23,7 @@ app.add_middleware(
 @app.on_event("startup")
 def startup() -> None:
     try:
+        ensure_storage_dirs()
         AIService.train_model()
         MalwareDetectionService.load_model()
     except Exception as e:

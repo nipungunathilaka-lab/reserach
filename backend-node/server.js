@@ -1,4 +1,10 @@
 const express = require('express');
+const fs = require('fs');
+
+// Ensure uploads directory exists for file streaming
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads', { recursive: true });
+}
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./src/config/db');
