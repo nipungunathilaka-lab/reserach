@@ -128,12 +128,10 @@ class CryptoService:
     def encrypt_file_for_receiver(cls, src_path: str, receiver_id: int, stored_name: str, classification: str = "Sensitive") -> EncryptionResult:
         ensure_storage_dirs()
         
-        # Adaptive Encryption based on classification
-        if classification == "Normal":
-            aes_key = os.urandom(16)  # AES-128 key
-        else:
-            aes_key = os.urandom(32)  # AES-256 key
-            
+        # Always use 32-byte keys (256-bit) because ChaCha20Poly1305 strictly requires 32 bytes,
+        # and polymorphic encryption may select it randomly regardless of classification.
+        aes_key = os.urandom(32)
+        
         file_nonce = os.urandom(12)  # Recommended nonce size
         
         # Polymorphic cipher selection logic

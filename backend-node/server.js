@@ -12,9 +12,6 @@ const connectDB = require('./src/config/db');
 // Load env vars
 dotenv.config();
 
-// Connect to database
-connectDB();
-
 const app = express();
 
 // Body parser
@@ -22,7 +19,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  credentials: true
+}));
 
 // Mount routers
 app.use('/api/auth', require('./src/routes/auth'));
@@ -40,6 +40,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, console.log(`Server running on port ${PORT}`));
+// Connect to database and then start the server
+connectDB().then(() => {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, console.log(`Server running on port ${PORT}`));
+}).catch(err => {
+  console.error("Failed to connect to database on startup:", err);
+});
