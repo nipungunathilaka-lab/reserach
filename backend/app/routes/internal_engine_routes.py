@@ -57,6 +57,15 @@ async def internal_encrypt(
         ai_result["reason"] = f"Malware detected (score: {threat_score:.2f})"
         ai_result["anomaly_score"] = max(ai_result.get("anomaly_score", 0), threat_score)
 
+    final_threat_score = ai_result.get("anomaly_score", 0)
+    anomaly_level = ai_result.get("level", "").lower()
+
+    if final_threat_score >= 0.4 or anomaly_level in ["medium", "high", "critical", "malicious"]:
+        raise HTTPException(
+            status_code=406, 
+            detail=f"Transfer blocked: Malware/Intrusion detected. Reason: {ai_result.get('reason', 'High anomaly score')}"
+        )
+
     classification_result = DataClassificationScanner.scan(sample_bytes, safe_name)
     
     # Encrypt

@@ -62,7 +62,7 @@ class PFCEEngine:
         return int(min_mb * 1024 * 1024), int(max_mb * 1024 * 1024)
 
 
-    def process_upload(self, file_stream: io.IOBase, receiver_id: int, stored_name_prefix: str, classification: str, pfce_package_path: str, progress_callback=None) -> PFCEUploadResult:
+    def process_upload(self, file_stream: io.IOBase, receiver_id: str | int, stored_name_prefix: str, classification: str, pfce_package_path: str, progress_callback=None) -> PFCEUploadResult:
         """
         Reads dynamically from the stream, slices into polymorphic fragments,
         encrypts using CryptoService, and packages into a .pfce ZIP.
@@ -205,7 +205,7 @@ class PFCEEngine:
             original_hash=master_hash.hexdigest()
         )
 
-    def process_download_stream(self, pfce_package_path: str, receiver_id: int) -> Generator[bytes, None, None]:
+    def process_download_stream(self, pfce_package_path: str, receiver_id: str | int) -> Generator[bytes, None, None]:
         if not os.path.exists(pfce_package_path):
             raise FileNotFoundError(f"PFCE package not found: {pfce_package_path}")
             

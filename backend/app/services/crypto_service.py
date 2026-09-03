@@ -50,7 +50,7 @@ class CryptoService:
         return base64.b64decode(data.encode("utf-8"))
 
     @staticmethod
-    def key_paths(user_id: int) -> dict[str, Path]:
+    def key_paths(user_id: str | int) -> dict[str, Path]:
         return {
             "rsa_private": KEYS_DIR / f"user_{user_id}_rsa_private.pem",
             "rsa_public": KEYS_DIR / f"user_{user_id}_rsa_public.pem",
@@ -59,7 +59,7 @@ class CryptoService:
         }
 
     @classmethod
-    def ensure_user_keypair(cls, user_id: int) -> None:
+    def ensure_user_keypair(cls, user_id: str | int) -> None:
         ensure_storage_dirs()
         paths = cls.key_paths(user_id)
         if not paths["rsa_private"].exists():
@@ -96,22 +96,22 @@ class CryptoService:
             )
 
     @classmethod
-    def _load_rsa_public(cls, user_id: int):
+    def _load_rsa_public(cls, user_id: str | int):
         cls.ensure_user_keypair(user_id)
         return serialization.load_pem_public_key(cls.key_paths(user_id)["rsa_public"].read_bytes())
 
     @classmethod
-    def _load_rsa_private(cls, user_id: int):
+    def _load_rsa_private(cls, user_id: str | int):
         cls.ensure_user_keypair(user_id)
         return serialization.load_pem_private_key(cls.key_paths(user_id)["rsa_private"].read_bytes(), password=None)
 
     @classmethod
-    def _load_ecdh_public(cls, user_id: int):
+    def _load_ecdh_public(cls, user_id: str | int):
         cls.ensure_user_keypair(user_id)
         return serialization.load_pem_public_key(cls.key_paths(user_id)["ecdh_public"].read_bytes())
 
     @classmethod
-    def _load_ecdh_private(cls, user_id: int):
+    def _load_ecdh_private(cls, user_id: str | int):
         cls.ensure_user_keypair(user_id)
         return serialization.load_pem_private_key(cls.key_paths(user_id)["ecdh_private"].read_bytes(), password=None)
 
@@ -125,7 +125,7 @@ class CryptoService:
         ).derive(shared_secret)
 
     @classmethod
-    def encrypt_file_for_receiver(cls, src_path: str, receiver_id: int, stored_name: str, classification: str = "Sensitive") -> EncryptionResult:
+    def encrypt_file_for_receiver(cls, src_path: str, receiver_id: str | int, stored_name: str, classification: str = "Sensitive") -> EncryptionResult:
         ensure_storage_dirs()
         
         # Always use 32-byte keys (256-bit) because ChaCha20Poly1305 strictly requires 32 bytes,
@@ -231,7 +231,7 @@ class CryptoService:
             ecdh_time_ms=round(ecdh_time_ms, 3),
         )
     @classmethod
-    def unwrap_key_with_ecdh(cls, receiver_id: int, ecdh_public_key_pem: str, ecdh_wrapped_key: str, ecdh_key_nonce: str, stored_name: str) -> bytes:
+    def unwrap_key_with_ecdh(cls, receiver_id: str | int, ecdh_public_key_pem: str, ecdh_wrapped_key: str, ecdh_key_nonce: str, stored_name: str) -> bytes:
         receiver_private = cls._load_ecdh_private(receiver_id)
         sender_ephemeral_public = serialization.load_pem_public_key(ecdh_public_key_pem.encode("utf-8"))
         shared_secret = receiver_private.exchange(ec.ECDH(), sender_ephemeral_public)
@@ -239,7 +239,7 @@ class CryptoService:
         return AESGCM(wrap_key).decrypt(cls._unb64(ecdh_key_nonce), cls._unb64(ecdh_wrapped_key), None)
 
     @classmethod
-    def unwrap_key_with_rsa(cls, receiver_id: int, encrypted_key: str) -> bytes:
+    def unwrap_key_with_rsa(cls, receiver_id: str | int, encrypted_key: str) -> bytes:
         receiver_private = cls._load_rsa_private(receiver_id)
         return receiver_private.decrypt(
             cls._unb64(encrypted_key),
@@ -251,7 +251,7 @@ class CryptoService:
         )
 
     @classmethod
-    def decrypt_transfer_bytes(cls, transfer, receiver_id: int) -> bytes:
+    def decrypt_transfer_bytes(cls, transfer, receiver_id: str | int) -> bytes:
         if transfer.ecdh_public_key and transfer.ecdh_wrapped_key and transfer.ecdh_key_nonce:
             try:
                 aes_key = cls.unwrap_key_with_ecdh(

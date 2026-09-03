@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const { sendFile, getReceivedFiles, downloadFile, uploadChunk, uploadStatus } = require('../controllers/fileController');
+const { sendFile, getReceivedFiles, getSentFiles, downloadFile, uploadChunk, uploadStatus, createShareLink } = require('../controllers/fileController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -10,6 +10,8 @@ router.post('/send', protect, upload.single('file'), sendFile);
 router.post('/upload-chunk', protect, upload.single('file'), uploadChunk);
 router.get('/status/:id', protect, uploadStatus);
 router.get('/received', protect, getReceivedFiles);
+router.get('/sent', protect, getSentFiles);
 router.get('/:id/download', protect, downloadFile);
+router.post('/:id/share', protect, createShareLink);
 
 module.exports = router;

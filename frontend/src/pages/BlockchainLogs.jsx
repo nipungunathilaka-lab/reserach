@@ -13,7 +13,7 @@ export default function BlockchainLogs() {
 
   const fetchLogs = async () => {
     try {
-      const res = await api.get('/blockchain/logs')
+      const res = await api.get('/audit/blockchain')
       setLogs(res.data)
     } catch (err) {
       setError('Failed to fetch blockchain ledger.')

@@ -8,7 +8,7 @@ export default function TransferLogs() {
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  useEffect(() => { api.get('/logs/transfers').then(res => setLogs(res.data)).catch(err => setError(apiError(err))).finally(() => setLoading(false)) }, [])
+  useEffect(() => { api.get('/audit/transfers').then(res => setLogs(res.data)).catch(err => setError(apiError(err))).finally(() => setLoading(false)) }, [])
   if (loading) return <p className="text-slate-300">Loading transfer logs...</p>
   return (
     <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-xl backdrop-blur-md">
