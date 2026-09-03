@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.rate_limiter import InMemoryRateLimitMiddleware
 from app.core.config import settings
 from app.database.db import ensure_storage_dirs
-from app.routes import internal_engine_routes, file_routes
+from app.routes import internal_engine_routes
 from app.services.ai_service import AIService
 from app.services.malware_service import MalwareDetectionService
 
@@ -36,4 +36,3 @@ def health_check():
 
 
 app.include_router(internal_engine_routes.router)
-app.include_router(file_routes.router)

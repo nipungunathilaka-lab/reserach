@@ -7,7 +7,7 @@ export default function AIAlerts() {
   const [alerts, setAlerts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  useEffect(() => { api.get('/logs/ai-alerts').then(res => setAlerts(res.data)).catch(err => setError(apiError(err))).finally(() => setLoading(false)) }, [])
+  useEffect(() => { api.get('/audit/ai-alerts').then(res => setAlerts(res.data)).catch(err => setError(apiError(err))).finally(() => setLoading(false)) }, [])
   if (loading) return <p className="text-slate-300">Loading AI alerts...</p>
   return (
     <div className="grid gap-6">

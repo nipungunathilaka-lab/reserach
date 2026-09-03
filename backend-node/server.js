@@ -30,6 +30,7 @@ app.use('/api/users', require('./src/routes/users'));
 app.use('/api/files', require('./src/routes/files'));
 app.use('/api/audit', require('./src/routes/audit'));
 app.use('/api/dashboard', require('./src/routes/dashboard'));
+app.use('/api/crypto', require('./src/routes/crypto'));
 
 // Basic error handler
 app.use((err, req, res, next) => {

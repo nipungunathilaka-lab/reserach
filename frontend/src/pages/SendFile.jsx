@@ -16,6 +16,7 @@ export default function SendFile() {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [progressData, setProgressData] = useState(null)
   const [telemetryData, setTelemetryData] = useState(null)
+  const [isBlocked, setIsBlocked] = useState(false)
 
   useEffect(() => {
     api.get('/users/receivers')
@@ -38,6 +39,7 @@ export default function SendFile() {
     setUploadProgress(0)
     setProgressData(null)
     setTelemetryData(null)
+    setIsBlocked(false)
 
     const chunkSize = 50 * 1024 * 1024 // 50MB
     const totalChunks = Math.ceil(file.size / chunkSize)
@@ -87,7 +89,11 @@ export default function SendFile() {
               setTimeout(() => setUploadProgress(0), 2000)
             } else if (statusRes.data.status === 'error' || statusRes.data.status === 'processing_error') {
               clearInterval(pollInterval)
-              setError(statusRes.data.message || 'Encryption failed')
+              const errorMsg = statusRes.data.message || 'Encryption failed'
+              setError(errorMsg)
+              if (errorMsg.toLowerCase().includes('blocked') || errorMsg.toLowerCase().includes('malware')) {
+                setIsBlocked(true)
+              }
               setResult(null)
               setProgressData(null)
               toast.error('Processing failed')
@@ -114,7 +120,11 @@ export default function SendFile() {
         })
       }
     } catch (err) {
-      setError(apiError(err))
+      const errMsg = apiError(err)
+      setError(errMsg)
+      if (errMsg.toLowerCase().includes('blocked') || errMsg.toLowerCase().includes('malware')) {
+        setIsBlocked(true)
+      }
       toast.error('Failed to encrypt and send file')
     } finally {
       // Only reset loading if we aren't starting a polling process
@@ -188,6 +198,20 @@ export default function SendFile() {
       <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-xl backdrop-blur-md flex flex-col">
         <h3 className="text-2xl font-bold tracking-tight text-white mb-6">Security & Telemetry Report</h3>
         
+        {isBlocked ? (
+          <div className="flex flex-1 flex-col items-center justify-center text-center p-10 animate-in fade-in zoom-in duration-500 bg-red-500/10 rounded-2xl border border-red-500/30 shadow-[0_0_40px_rgba(239,68,68,0.15)]">
+            <div className="mb-6 rounded-full border border-red-500/40 bg-red-500/20 p-6 text-red-500 shadow-[0_0_30px_rgba(239,68,68,0.4)]">
+              <AlertTriangle size={64} />
+            </div>
+            <p className="text-3xl font-black text-red-500 mb-3 tracking-tight">Transfer Blocked</p>
+            <p className="text-xl font-bold text-red-400 mb-4">Malware / Intrusion Detected</p>
+            <div className="bg-red-950/50 p-4 rounded-xl border border-red-500/20 max-w-md w-full">
+              <p className="text-sm font-mono text-red-300 break-words">{error}</p>
+            </div>
+            <p className="mt-6 text-sm text-slate-400 max-w-md">Your connection has been logged and the security operations center has been notified. This action was aborted to protect the network.</p>
+          </div>
+        ) : (
+          <>
         {!result && (
           <div className="flex flex-1 flex-col items-center justify-center text-center p-10 opacity-70">
             <div className="mb-6 animate-pulse rounded-full border border-cyan-500/20 bg-cyan-500/10 p-6 text-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
@@ -346,6 +370,8 @@ export default function SendFile() {
               </div>
             )}
           </div>
+        )}
+          </>
         )}
       </section>
     </div>
