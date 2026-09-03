@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives import serialization
 from sklearn.ensemble import IsolationForest
 
 try:
-    import oqs
+    from pqcrypto.kem import ml_kem_768
     OQS_AVAILABLE = True
 except Exception as e:
     OQS_AVAILABLE = False
@@ -35,20 +35,7 @@ class SecureEnclaveManager:
             print("[SECURE ENCLAVE] Hardware Memory Lock Released.")
 
 
-class Kyber768Mock:
-    length_public_key = 1184
-    length_secret_key = 2400
-    length_ciphertext = 1088
-    length_shared_secret = 32
-
-    def generate_keypair(self) -> Tuple[bytes, bytes]:
-        return os.urandom(self.length_public_key), os.urandom(self.length_secret_key)
-    def encap_secret(self, public_key: bytes) -> Tuple[bytes, bytes]:
-        shared_secret = os.urandom(self.length_shared_secret)
-        return shared_secret + os.urandom(self.length_ciphertext - self.length_shared_secret), shared_secret
-    def decap_secret(self, ciphertext: bytes, secret_key: bytes) -> bytes:
-        return ciphertext[:self.length_shared_secret]
-
+# Mock class removed - using pqcrypto.kem.ml_kem_768 instead.
 
 # --- BLOCK 2: AI CONTEXT ANALYSIS ENGINE (WITH DIFFERENTIAL PRIVACY) ---
 class AIContextAnalysisEngine:
@@ -118,14 +105,13 @@ class ContextAwarePolicyGenerator:
 class UniversalPolymorphicCryptoEngine:
     def __init__(self):
         print("[UPCE ENGINE] Initializing Universal Polymorphic Cryptographic Engine...")
-        self.kyber_alg = "Kyber768"
-        self.mock_kem = Kyber768Mock()
+        self.kyber_alg = "ML-KEM-768"
 
     def generate_hybrid_keypair(self) -> Dict[str, Dict[str, bytes]]:
         ecdh_priv = x25519.X25519PrivateKey.generate()
         ecdh_pub_bytes = ecdh_priv.public_key().public_bytes(encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw)
         ecdh_priv_bytes = ecdh_priv.private_bytes(encoding=serialization.Encoding.Raw, format=serialization.PrivateFormat.Raw, encryption_algorithm=serialization.NoEncryption())
-        kyber_pub, kyber_priv = self.mock_kem.generate_keypair()
+        kyber_pub, kyber_priv = ml_kem_768.keygen()
         return {"public_key": {"ecdh": ecdh_pub_bytes, "kyber": kyber_pub}, "private_key": {"ecdh": ecdh_priv_bytes, "kyber": kyber_priv}}
 
     def encapsulate_shared_secret(self, recipient_public_key: Dict[str, bytes]) -> Tuple[Dict[str, bytes], bytes]:
@@ -133,7 +119,7 @@ class UniversalPolymorphicCryptoEngine:
         eph_ecdh_pub_bytes = eph_ecdh_priv.public_key().public_bytes(encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw)
         rec_ecdh_pub = x25519.X25519PublicKey.from_public_bytes(recipient_public_key["ecdh"])
         ecdh_secret = eph_ecdh_priv.exchange(rec_ecdh_pub)
-        kyber_cipher, kyber_secret = self.mock_kem.encap_secret(recipient_public_key["kyber"])
+        kyber_cipher, kyber_secret = ml_kem_768.encaps(recipient_public_key["kyber"])
         derived_key = HKDF(algorithm=hashes.SHA256(), length=32, salt=None, info=b"upce-hybrid-kem-v1").derive(ecdh_secret + kyber_secret)
         return {"ephemeral_ecdh_pub": eph_ecdh_pub_bytes, "kyber_ciphertext": kyber_cipher}, derived_key
 

@@ -60,6 +60,9 @@ const TransferSchema = new mongoose.Schema({
     type: String,
     default: 'pending_download'
   },
+  cipher_algorithm: {
+    type: String
+  },
   anomaly_score: {
     type: Number
   },

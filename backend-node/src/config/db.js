@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+mongoose.set('toJSON', { virtuals: true });
+mongoose.set('toObject', { virtuals: true });
+
 // Listen to connection events for auto-reconnect transparency
 mongoose.connection.on('disconnected', () => {
   console.warn('⚠️ MongoDB disconnected! Mongoose will automatically attempt to reconnect...');

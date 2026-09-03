@@ -2,6 +2,7 @@ const User = require('../models/User');
 const MfaChallenge = require('../models/MfaChallenge');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/sendEmail');
 
 const sendTokenResponse = (user, statusCode, res) => {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -17,6 +18,45 @@ const sendTokenResponse = (user, statusCode, res) => {
       full_name: user.full_name,
       role: user.role
     }
+  });
+};
+
+const sendMfaChallenge = async (user, res, statusCode, context = 'login') => {
+  const crypto = require('crypto');
+  const otp = crypto.randomInt ? crypto.randomInt(100000, 999999).toString() : Math.floor(100000 + Math.random() * 900000).toString();
+  
+  const salt = await bcrypt.genSalt(10);
+  const otp_hash = await bcrypt.hash(otp, salt);
+  
+  const expires_at = new Date(Date.now() + 5 * 60 * 1000);
+
+  await MfaChallenge.create({
+    user_id: user._id,
+    otp_hash,
+    expires_at
+  });
+
+  const subject = context === 'register' ? 'Your Registration OTP' : 'Your Login OTP';
+  
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: subject,
+      message: `Your One-Time Password for ${context} is: ${otp}. It is valid for 5 minutes.`,
+      html: `<p>Your One-Time Password for ${context} is: <b>${otp}</b></p><p>It is valid for 5 minutes.</p>`
+    });
+    console.log(`[MFA] OTP sent to ${user.email}`);
+  } catch (error) {
+    console.error(`[MFA Error] Could not send email to ${user.email}:`, error);
+    console.log(`[MFA Fallback] OTP for user ${user.email} is: ${otp}`);
+  }
+
+  res.status(statusCode).json({ 
+    success: true, 
+    mfaRequired: true, 
+    user_id: user._id,
+    challenge_id: user._id, // Add challenge_id for frontend compatibility
+    message: `MFA challenge created. Please verify OTP.` 
   });
 };
 
@@ -42,7 +82,7 @@ exports.register = async (req, res) => {
       job_role
     });
     
-    sendTokenResponse(user, 201, res);
+    await sendMfaChallenge(user, res, 201, 'register');
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -65,8 +105,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ success: false, error: 'Invalid credentials' });
     }
     
-    // Deactivated MFA for now: immediately issue token
-    sendTokenResponse(user, 200, res);
+    await sendMfaChallenge(user, res, 200, 'login');
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -74,12 +113,13 @@ exports.login = async (req, res) => {
 
 exports.verifyMfa = async (req, res) => {
   try {
-    const { user_id, otp } = req.body;
-    // user_id in the original request might actually be email or challenge_id.
-    // The fast api expected challenge mapping. Let's assume we use challenge ID or email.
-    // If they pass user_id, we can find the latest challenge.
+    const { user_id, challenge_id, otp } = req.body;
+    const uid = user_id || challenge_id;
     
-    const challenge = await MfaChallenge.findOne({ user_id }).sort({ created_at: -1 });
+    // The fast api expected challenge mapping. Let's assume we use challenge ID or email.
+    // If they pass user_id or challenge_id, we can find the latest challenge.
+    
+    const challenge = await MfaChallenge.findOne({ user_id: uid }).sort({ created_at: -1 });
     if (!challenge || challenge.consumed_at || new Date() > challenge.expires_at) {
       return res.status(400).json({ success: false, error: 'Invalid or expired OTP' });
     }
@@ -94,7 +134,7 @@ exports.verifyMfa = async (req, res) => {
     challenge.consumed_at = new Date();
     await challenge.save();
     
-    const user = await User.findById(user_id);
+    const user = await User.findById(uid);
     sendTokenResponse(user, 200, res);
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

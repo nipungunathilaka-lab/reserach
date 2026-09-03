@@ -48,7 +48,7 @@ export default function ReceivedFiles() {
       <div className="mt-4 grid gap-3 md:hidden">
         {(files || []).map(t => <article key={t?.id} className="rounded-3xl border border-white/10 bg-white/5 p-4">
           <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0"><p className="truncate font-bold">{t.file_name}</p><p className="text-xs text-slate-400">From {t.sender?.full_name || 'Unknown'}</p></div>
+            <div className="min-w-0"><p className="truncate font-bold">{t.file_name}</p><p className="text-xs text-slate-400">From {t.sender_id?.full_name || 'Unknown'}</p></div>
             <span className={`shrink-0 text-xs font-bold ${statusColor(t.integrity_status)}`}>{t.integrity_status}</span>
           </div>
           
@@ -74,8 +74,8 @@ export default function ReceivedFiles() {
               <tr key={t?.id} className="border-t border-white/10">
                 <td className="py-4 font-semibold">{t?.file_name}</td>
                 <td>
-                  <p>{t.sender?.full_name || 'Unknown'}</p>
-                  <p className="text-xs text-slate-400">{t.sender?.email || 'N/A'}</p>
+                  <p>{t.sender_id?.full_name || 'Unknown'}</p>
+                  <p className="text-xs text-slate-400">{t.sender_id?.email || 'N/A'}</p>
                 </td>
                 <td>
                   <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-emerald-400">

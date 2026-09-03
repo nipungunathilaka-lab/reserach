@@ -5,7 +5,7 @@ from app.services.pfce_engine import PFCEEngine
 from app.services.crypto_service import CryptoService
 
 def test_pfce_stream():
-    engine = PFCEEngine(min_chunk_size_mb=1, max_chunk_size_mb=2)
+    engine = PFCEEngine()
     
     # Create dummy data
     data = b"Streaming PFCE test data! " * 1024 * 100 # ~2.6 MB
