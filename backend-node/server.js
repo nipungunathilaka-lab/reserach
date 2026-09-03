@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174', 'http://127.0.0.1:5174', 'http://localhost:5175', 'http://127.0.0.1:5175'],
   credentials: true
 }));
 
@@ -41,10 +41,19 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to database and then start the server
-connectDB().then(() => {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, console.log(`Server running on port ${PORT}`));
-}).catch(err => {
+// Global process error handlers to prevent total crash
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
+// Start the server immediately, then attempt DB connection in the background
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, console.log(`Server running on port ${PORT}`));
+
+connectDB().catch(err => {
   console.error("Failed to connect to database on startup:", err);
 });

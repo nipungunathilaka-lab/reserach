@@ -24,8 +24,7 @@ class PFCEUploadResult:
     ecdh_time_ms: float
     fragment_count: int         
     original_hash: str          
-
-
+    cipher_algorithm: str
 # ==========================================
 # PFCE CORE ENGINE: DYNAMIC & ADAPTIVE FRAGMENTATION
 # ==========================================
@@ -42,7 +41,7 @@ class PFCEEngine:
         """
         classification_lower = classification.lower() if classification else ""
         
-        if "confidential" in classification_lower or "restricted" in classification_lower or "secret" in classification_lower:
+        if "confidential" in classification_lower or "restricted" in classification_lower or "secret" in classification_lower or "sensitive" in classification_lower:
             # High Security: Small, highly scattered fragments (0.5MB to 2MB)
             min_mb, max_mb = 0.5, 2.0
             logger.info(f"Policy: HIGH SECURITY. Fragmentation set to highly scattered (0.5MB - 2MB).")
@@ -195,6 +194,9 @@ class PFCEEngine:
             
         execution_time = time.time() - start_time
         
+        unique_ciphers = list(set([f.get("cipher_algorithm", "Unknown") for f in metadata["fragments"]]))
+        cipher_algorithm_used = ", ".join(unique_ciphers) if unique_ciphers else "None"
+        
         return PFCEUploadResult(
             pfce_package_path=pfce_package_path,
             execution_time_seconds=execution_time,
@@ -202,7 +204,8 @@ class PFCEEngine:
             rsa_key_wrap_time_ms=round(total_rsa_wrap_time_ms, 3),
             ecdh_time_ms=round(total_ecdh_time_ms, 3),
             fragment_count=fragment_id,
-            original_hash=master_hash.hexdigest()
+            original_hash=master_hash.hexdigest(),
+            cipher_algorithm=cipher_algorithm_used
         )
 
     def process_download_stream(self, pfce_package_path: str, receiver_id: str | int) -> Generator[bytes, None, None]:
@@ -236,7 +239,21 @@ class PFCEEngine:
                 stored_name_approx = fragment["filename"].replace(".enc", "")
                 
                 aes_key = None
-                if fragment.get("ecdh_public_key") and fragment.get("ecdh_wrapped_key") and fragment.get("ecdh_key_nonce"):
+                
+                # 1. Attempt Post-Quantum Decapsulation (ML-KEM-768)
+                if fragment.get("pqc_ciphertext") and fragment.get("pqc_public_key") and fragment.get("pqc_ciphertext") != "pqc_kyber_ciphertext_mock":
+                    try:
+                        aes_key = CryptoService.unwrap_key_with_pqc(
+                            receiver_id=receiver_id,
+                            pqc_ciphertext_b64=fragment["pqc_ciphertext"],
+                            pqc_public_key_combined=fragment["pqc_public_key"],
+                            stored_name=stored_name_approx
+                        )
+                    except Exception as e:
+                        logger.error(f"PQC unwrap failed: {e}")
+                
+                # 2. Fallback to ECDH
+                if aes_key is None and fragment.get("ecdh_public_key") and fragment.get("ecdh_wrapped_key") and fragment.get("ecdh_key_nonce"):
                     try:
                         aes_key = CryptoService.unwrap_key_with_ecdh(
                             receiver_id=receiver_id,
@@ -245,9 +262,10 @@ class PFCEEngine:
                             ecdh_key_nonce=fragment["ecdh_key_nonce"],
                             stored_name=stored_name_approx
                         )
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.error(f"ECDH unwrap failed: {e}")
                 
+                # 3. Fallback to RSA
                 if aes_key is None:
                     aes_key = CryptoService.unwrap_key_with_rsa(
                         receiver_id=receiver_id, 

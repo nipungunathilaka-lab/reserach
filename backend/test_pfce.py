@@ -4,7 +4,7 @@ from app.services.pfce_engine import PFCEEngine
 from app.services.crypto_service import CryptoService
 
 def test_pfce():
-    engine = PFCEEngine(min_chunk_size_mb=1, max_chunk_size_mb=2)
+    engine = PFCEEngine()
     
     file_content = b"Hello, PFCE. " * 1000
     file_stream = io.BytesIO(file_content)

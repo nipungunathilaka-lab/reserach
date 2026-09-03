@@ -2,6 +2,7 @@ import io
 import os
 import uuid
 import time
+import psutil
 from pathlib import Path
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
@@ -29,6 +30,9 @@ async def internal_encrypt(
     mfa_failed_attempts: int = Form(0),
     failed_login_attempts: int = Form(0),
 ):
+    start_time = time.time()
+    psutil.cpu_percent(interval=None)  # Initialize CPU counter
+    
     safe_name = Path(file.filename or "uploaded_file").name
     file_size_mb = round(file.size / (1024 * 1024), 4) if file.size else 0
 
@@ -85,6 +89,14 @@ async def internal_encrypt(
     
     original_hash = getattr(pfce_result, "original_hash", "")
     
+    exec_time_ms = (time.time() - start_time) * 1000
+    cpu_usage_percent = psutil.cpu_percent(interval=None)
+    
+    # Avoid division by zero
+    processing_bandwidth_mbps = 0.0
+    if exec_time_ms > 0:
+        processing_bandwidth_mbps = (file_size_mb / (exec_time_ms / 1000))
+    
     return {
         "stored_name": stored_name,
         "original_hash": original_hash,
@@ -96,7 +108,11 @@ async def internal_encrypt(
         "anomaly_score": ai_result["anomaly_score"],
         "is_anomaly": ai_result["is_anomaly"],
         "anomaly_level": ai_result.get("level", ""),
-        "anomaly_reason": ai_result.get("reason", "")
+        "anomaly_reason": ai_result.get("reason", ""),
+        "cipher_algorithm": getattr(pfce_result, "cipher_algorithm", "Polymorphic"),
+        "execution_time_ms": exec_time_ms,
+        "cpu_usage_percent": cpu_usage_percent,
+        "processing_bandwidth_mbps": processing_bandwidth_mbps
     }
 
 from pydantic import BaseModel

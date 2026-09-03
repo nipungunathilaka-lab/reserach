@@ -19,7 +19,7 @@ export default function TransferLogs() {
       <div className="mt-4 grid gap-3 md:hidden">
         {logs.map(t => <article key={t.id} className="rounded-3xl border border-white/10 bg-white/5 p-4">
           <p className="truncate font-bold">{t.file_name}</p>
-          <p className="mt-1 text-xs text-slate-400">{t.sender?.full_name || 'Unknown'} → {t.receiver?.full_name || 'Unknown'}</p>
+          <p className="mt-1 text-xs text-slate-400">{t.sender_id?.full_name || 'Unknown'} → {t.receiver_id?.full_name || 'Unknown'}</p>
           <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-400"><p>{fmtSize(t.file_size)}</p><p>{t.status}</p><p>Integrity: {t.integrity_status}</p><p>{new Date(t.created_at).toLocaleDateString()}</p></div>
           <p className="mt-3 break-all rounded-2xl bg-slate-950/50 p-3 font-mono text-[11px] text-slate-400">SHA-256: {t.original_hash}</p>
         </article>)}
@@ -30,7 +30,7 @@ export default function TransferLogs() {
         <table className="w-full min-w-[1050px] text-left text-sm text-slate-300">
           <thead className="border-b border-white/10 bg-white/[0.02] text-slate-400"><tr><th className="px-4 py-4 font-semibold">File</th><th className="px-4 py-4 font-semibold">Sender</th><th className="px-4 py-4 font-semibold">Receiver</th><th className="px-4 py-4 font-semibold">Size</th><th className="px-4 py-4 font-semibold">Status</th><th className="px-4 py-4 font-semibold">Integrity</th><th className="px-4 py-4 font-semibold">SHA-256 Hash</th><th className="px-4 py-4 font-semibold">Date</th></tr></thead>
           <tbody className="divide-y divide-white/5">
-            {logs.map(t => <tr key={t.id} className="transition-colors hover:bg-white/[0.02]"><td className="px-4 py-4 font-semibold text-white">{t.file_name}</td><td className="px-4 py-4">{t.sender?.full_name || 'Unknown'}</td><td className="px-4 py-4">{t.receiver?.full_name || 'Unknown'}</td><td className="px-4 py-4">{fmtSize(t.file_size)}</td><td className="px-4 py-4">{t.status}</td><td className="px-4 py-4">{t.integrity_status}</td><td className="px-4 py-4 max-w-xs truncate font-mono text-xs text-slate-400">{t.original_hash}</td><td className="px-4 py-4">{new Date(t.created_at).toLocaleString()}</td></tr>)}
+            {logs.map(t => <tr key={t.id} className="transition-colors hover:bg-white/[0.02]"><td className="px-4 py-4 font-semibold text-white">{t.file_name}</td><td className="px-4 py-4">{t.sender_id?.full_name || 'Unknown'}</td><td className="px-4 py-4">{t.receiver_id?.full_name || 'Unknown'}</td><td className="px-4 py-4">{fmtSize(t.file_size)}</td><td className="px-4 py-4">{t.status}</td><td className="px-4 py-4">{t.integrity_status}</td><td className="px-4 py-4 max-w-xs truncate font-mono text-xs text-slate-400">{t.original_hash}</td><td className="px-4 py-4">{new Date(t.created_at).toLocaleString()}</td></tr>)}
             {!logs.length && <tr><td colSpan="8" className="py-8 text-center text-slate-400">No transfer logs yet.</td></tr>}
           </tbody>
         </table>

@@ -56,6 +56,8 @@ class CryptoService:
             "rsa_public": KEYS_DIR / f"user_{user_id}_rsa_public.pem",
             "ecdh_private": KEYS_DIR / f"user_{user_id}_ecdh_private.pem",
             "ecdh_public": KEYS_DIR / f"user_{user_id}_ecdh_public.pem",
+            "mlkem_private": KEYS_DIR / f"user_{user_id}_mlkem_private.bin",
+            "mlkem_public": KEYS_DIR / f"user_{user_id}_mlkem_public.bin",
         }
 
     @classmethod
@@ -94,6 +96,11 @@ class CryptoService:
                     format=serialization.PublicFormat.SubjectPublicKeyInfo,
                 )
             )
+        if not paths["mlkem_private"].exists():
+            from pqcrypto.kem import ml_kem_768
+            pk, sk = ml_kem_768.keygen()
+            paths["mlkem_public"].write_bytes(pk)
+            paths["mlkem_private"].write_bytes(sk)
 
     @classmethod
     def _load_rsa_public(cls, user_id: str | int):
@@ -115,6 +122,16 @@ class CryptoService:
         cls.ensure_user_keypair(user_id)
         return serialization.load_pem_private_key(cls.key_paths(user_id)["ecdh_private"].read_bytes(), password=None)
 
+    @classmethod
+    def _load_mlkem_public(cls, user_id: str | int) -> bytes:
+        cls.ensure_user_keypair(user_id)
+        return cls.key_paths(user_id)["mlkem_public"].read_bytes()
+
+    @classmethod
+    def _load_mlkem_private(cls, user_id: str | int) -> bytes:
+        cls.ensure_user_keypair(user_id)
+        return cls.key_paths(user_id)["mlkem_private"].read_bytes()
+
     @staticmethod
     def _derive_ecdh_wrap_key(shared_secret: bytes, transfer_context: bytes) -> bytes:
         return HKDF(
@@ -135,45 +152,29 @@ class CryptoService:
         file_nonce = os.urandom(12)  # Recommended nonce size
         
         # Polymorphic cipher selection logic
-        available_ciphers = ["AES-256-GCM", "ChaCha20-Poly1305"]
-        cipher_algorithm = "Polymorphic (AES/ChaCha20)"
+        classification_lower = classification.lower() if classification else ""
+        if "confidential" in classification_lower or "restricted" in classification_lower or "secret" in classification_lower or "sensitive" in classification_lower:
+            selected_cipher = "ChaCha20-Poly1305"
+        else:
+            available_ciphers = ["AES-256-GCM", "ChaCha20-Poly1305"]
+            selected_cipher = random.choice(available_ciphers)
+        cipher_algorithm = selected_cipher
 
         t0 = time.perf_counter()
         
         encrypted_path = ENCRYPTED_DIR / f"{stored_name}.enc"
         
-        from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-        import random
+        chunk = Path(src_path).read_bytes()
         
-        # We will write the file dynamically
-        with open(src_path, 'rb') as f_in, open(encrypted_path, 'wb') as f_out:
-            while True:
-                # --- DYNAMIC FRAGMENTATION (Variable Chunk Sizes) ---
-                # Randomize chunk size between 512KB and 2MB
-                min_chunk_size = 512 * 1024     # 512 KB
-                max_chunk_size = 2 * 1024 * 1024 # 2 MB
-                dynamic_chunk_size = random.randint(min_chunk_size, max_chunk_size)
-                
-                chunk = f_in.read(dynamic_chunk_size)
-                
-                if not chunk or len(chunk) == 0:
-                    break
-                
-                # --- POLYMORPHIC ENCRYPTION ---
-                # Randomly pick an algorithm for this specific fragment
-                selected_cipher = random.choice(available_ciphers)
-                
-                if selected_cipher == "AES-256-GCM":
-                    encryptor = Cipher(
-                        algorithms.AES(aes_key),
-                        modes.GCM(file_nonce)
-                    ).encryptor()
-                    f_out.write(encryptor.update(chunk) + encryptor.finalize() + encryptor.tag)
-                    
-                else: # ChaCha20-Poly1305
-                    chacha = ChaCha20Poly1305(aes_key)
-                    encrypted_chunk = chacha.encrypt(file_nonce, chunk, None)
-                    f_out.write(encrypted_chunk)
+        # --- POLYMORPHIC ENCRYPTION ---
+        if selected_cipher == "AES-256-GCM":
+            encrypted_chunk = AESGCM(aes_key).encrypt(file_nonce, chunk, None)
+            Path(encrypted_path).write_bytes(encrypted_chunk)
+            
+        else: # ChaCha20-Poly1305
+            chacha = ChaCha20Poly1305(aes_key)
+            encrypted_chunk = chacha.encrypt(file_nonce, chunk, None)
+            Path(encrypted_path).write_bytes(encrypted_chunk)
 
         aes_time_ms = (time.perf_counter() - t0) * 1000
 
@@ -212,9 +213,24 @@ class CryptoService:
             ecdh_wrapped_key_b64 = cls._b64(ecdh_wrapped_key)
             wrap_nonce_b64 = cls._b64(wrap_nonce)
 
-        # Hybrid PQC Mock
-        pqc_public_key = "pqc_kyber_pub_key_mock"
-        pqc_ciphertext = "pqc_kyber_ciphertext_mock"
+        # Actual ML-KEM-768
+        receiver_mlkem_public = cls._load_mlkem_public(receiver_id)
+        from pqcrypto.kem import ml_kem_768
+        pqc_ciphertext_bytes, pqc_shared_secret = ml_kem_768.encaps(receiver_mlkem_public)
+        
+        # Wrap the AES key using the PQC shared secret
+        pqc_wrap_nonce = os.urandom(12)
+        pqc_wrap_key = HKDF(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=stored_name.encode("utf-8"),
+            info=b"secure-file-transfer-mlkem-aes-key-wrap",
+        ).derive(pqc_shared_secret)
+        pqc_wrapped_key = AESGCM(pqc_wrap_key).encrypt(pqc_wrap_nonce, aes_key, None)
+        
+        pqc_ciphertext = cls._b64(pqc_ciphertext_bytes)
+        # Store wrapped key and nonce separated by colon
+        pqc_public_key = cls._b64(pqc_wrapped_key) + ":" + cls._b64(pqc_wrap_nonce)
 
         return EncryptionResult(
             encrypted_path=str(encrypted_path),
@@ -237,6 +253,25 @@ class CryptoService:
         shared_secret = receiver_private.exchange(ec.ECDH(), sender_ephemeral_public)
         wrap_key = cls._derive_ecdh_wrap_key(shared_secret, stored_name.encode("utf-8"))
         return AESGCM(wrap_key).decrypt(cls._unb64(ecdh_key_nonce), cls._unb64(ecdh_wrapped_key), None)
+
+    @classmethod
+    def unwrap_key_with_pqc(cls, receiver_id: str | int, pqc_ciphertext_b64: str, pqc_public_key_combined: str, stored_name: str) -> bytes:
+        receiver_mlkem_private = cls._load_mlkem_private(receiver_id)
+        from pqcrypto.kem import ml_kem_768
+        pqc_ciphertext_bytes = cls._unb64(pqc_ciphertext_b64)
+        pqc_shared_secret = ml_kem_768.decaps(receiver_mlkem_private, pqc_ciphertext_bytes)
+        
+        parts = pqc_public_key_combined.split(":")
+        pqc_wrapped_key = cls._unb64(parts[0])
+        pqc_wrap_nonce = cls._unb64(parts[1])
+        
+        pqc_wrap_key = HKDF(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=stored_name.encode("utf-8"),
+            info=b"secure-file-transfer-mlkem-aes-key-wrap",
+        ).derive(pqc_shared_secret)
+        return AESGCM(pqc_wrap_key).decrypt(pqc_wrap_nonce, pqc_wrapped_key, None)
 
     @classmethod
     def unwrap_key_with_rsa(cls, receiver_id: str | int, encrypted_key: str) -> bytes:
@@ -267,4 +302,8 @@ class CryptoService:
             aes_key = cls.unwrap_key_with_rsa(receiver_id=receiver_id, encrypted_key=transfer.encrypted_key)
 
         encrypted_bytes = Path(transfer.encrypted_path).read_bytes()
-        return AESGCM(aes_key).decrypt(cls._unb64(transfer.nonce), encrypted_bytes, None)
+        cipher_algo = getattr(transfer, "cipher_algorithm", "AES-256-GCM")
+        if cipher_algo == "ChaCha20-Poly1305":
+            return ChaCha20Poly1305(aes_key).decrypt(cls._unb64(transfer.nonce), encrypted_bytes, None)
+        else:
+            return AESGCM(aes_key).decrypt(cls._unb64(transfer.nonce), encrypted_bytes, None)
