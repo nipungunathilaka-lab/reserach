@@ -306,14 +306,14 @@ exports.uploadChunk = async (req, res) => {
 
         const resultDict = {
           message: "File uploaded successfully",
-          classification_type: "standard",
-          encryption_mechanism_used: "PFCE Streaming (AES-256 + RSA)",
+          classification_type: pythonData.classification_type || "standard",
+          encryption_mechanism_used: pythonData.cipher_algorithm || "PFCE Streaming (AES-256 + RSA)",
           execution_time_ms: pythonData.execution_time_ms || 120.5,
           cpu_usage_percent: pythonData.cpu_usage_percent || 15.2,
           processing_bandwidth_mbps: pythonData.processing_bandwidth_mbps || 45.3,
           transfer: populatedTransfer,
           encryption: {
-              algorithm: "PFCE Streaming (AES-256 + RSA)",
+              algorithm: pythonData.cipher_algorithm || "PFCE Streaming (AES-256 + RSA)",
               aes_time_ms: 40,
               rsa_key_wrap_time_ms: 20,
               ecdh_time_ms: 60,
@@ -352,26 +352,32 @@ exports.uploadChunk = async (req, res) => {
         console.error('Background Processing Error:', bgErr.response?.data || bgErr.message);
         
         if (bgErr.response?.status === 406) {
+          const detail = bgErr.response?.data?.detail;
+          const reasonMsg = typeof detail === 'object' ? detail.message : detail;
+          const threatScore = typeof detail === 'object' ? detail.anomaly_score : 1.0;
+          
           // Log the blocked intrusion to the blockchain
           await appendToBlockchain('MALWARE_BLOCKED', {
             sender_id: req.user._id,
             file_name: file_name,
-            reason: bgErr.response?.data?.detail
+            reason: reasonMsg
           });
 
           // Save alert to database for SOC view
           await AIAlert.create({
             user_id: req.user._id,
             level: 'critical',
-            reason: bgErr.response?.data?.detail || 'Malware detected',
-            score: 1.0,
+            reason: reasonMsg || 'Malware detected',
+            score: threatScore,
             file_name: file_name
           });
         }
 
+        const errDetail = bgErr.response?.data?.detail;
         UPLOAD_STATUSES[upload_id] = { 
           status: 'error', 
-          message: bgErr.response?.data?.detail || bgErr.message || 'Processing failed' 
+          message: (typeof errDetail === 'object' ? errDetail.message : errDetail) || bgErr.message || 'Processing failed',
+          anomaly_score: typeof errDetail === 'object' ? errDetail.anomaly_score : undefined
         };
       }
     });
