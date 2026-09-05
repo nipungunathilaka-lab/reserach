@@ -34,31 +34,17 @@ class PFCEEngine:
         # We removed fixed chunk limits. Everything is dynamically generated now!
         pass
 
-    def _get_adaptive_chunk_range(self, classification: str, total_mb: float):
-        """
-        Block 3 & 4.1: Adaptive Policy & Dynamic Fragmentation (Variable Size)
-        Determines the random chunk limits based on AI-classified security context.
-        """
-        classification_lower = classification.lower() if classification else ""
-        
-        if "confidential" in classification_lower or "restricted" in classification_lower or "secret" in classification_lower or "sensitive" in classification_lower:
-            # High Security: Small, highly scattered fragments (0.5MB to 2MB)
-            min_mb, max_mb = 0.5, 2.0
-            logger.info(f"Policy: HIGH SECURITY. Fragmentation set to highly scattered (0.5MB - 2MB).")
-        elif "internal" in classification_lower or "private" in classification_lower:
-            # Medium Security: Medium fragments (2MB to 5MB)
-            min_mb, max_mb = 2.0, 5.0
-            logger.info(f"Policy: MEDIUM SECURITY. Fragmentation set to standard (2MB - 5MB).")
+    def _get_adaptive_chunk_range(self, classification):
+        c = (classification or "").strip().lower()
+
+        if c in ["sensitive", "confidential", "restricted", "secret"]:
+            return 512 * 1024, 2 * 1024 * 1024
+
+        elif c in ["internal", "private"]:
+            return 2 * 1024 * 1024, 5 * 1024 * 1024
+
         else:
-            # Public/General: Larger fragments for maximum performance (5MB to 15MB)
-            min_mb, max_mb = 5.0, 15.0
-            logger.info(f"Policy: NORMAL SECURITY. Fragmentation set for performance (5MB - 15MB).")
-            
-        # Handle very small files correctly
-        if total_mb > 0 and total_mb <= min_mb:
-            return max(1024, int((total_mb / 3) * 1024 * 1024)), int((total_mb / 2) * 1024 * 1024)
-            
-        return int(min_mb * 1024 * 1024), int(max_mb * 1024 * 1024)
+            return 5 * 1024 * 1024, 15 * 1024 * 1024
 
 
     def process_upload(self, file_stream: io.IOBase, receiver_id: str | int, stored_name_prefix: str, classification: str, pfce_package_path: str, progress_callback=None) -> PFCEUploadResult:
@@ -90,7 +76,7 @@ class PFCEEngine:
         last_logged_bytes = 0
         
         # --- BLOCK 4.1: Calculate adaptive bounds based on Context Policy ---
-        min_bytes, max_bytes = self._get_adaptive_chunk_range(classification, total_mb)
+        min_bytes, max_bytes = self._get_adaptive_chunk_range(classification)
         
         try:
             fragment_id = 0

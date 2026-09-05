@@ -17,6 +17,7 @@ export default function SendFile() {
   const [progressData, setProgressData] = useState(null)
   const [telemetryData, setTelemetryData] = useState(null)
   const [isBlocked, setIsBlocked] = useState(false)
+  const [blockedScore, setBlockedScore] = useState(null)
 
   useEffect(() => {
     api.get('/users/receivers')
@@ -40,6 +41,7 @@ export default function SendFile() {
     setProgressData(null)
     setTelemetryData(null)
     setIsBlocked(false)
+    setBlockedScore(null)
 
     const chunkSize = 50 * 1024 * 1024 // 50MB
     const totalChunks = Math.ceil(file.size / chunkSize)
@@ -93,6 +95,9 @@ export default function SendFile() {
               setError(errorMsg)
               if (errorMsg.toLowerCase().includes('blocked') || errorMsg.toLowerCase().includes('malware')) {
                 setIsBlocked(true)
+                if (statusRes.data.anomaly_score !== undefined) {
+                  setBlockedScore(statusRes.data.anomaly_score)
+                }
               }
               setResult(null)
               setProgressData(null)
@@ -124,6 +129,9 @@ export default function SendFile() {
       setError(errMsg)
       if (errMsg.toLowerCase().includes('blocked') || errMsg.toLowerCase().includes('malware')) {
         setIsBlocked(true)
+        if (err.response?.data?.anomaly_score !== undefined) {
+          setBlockedScore(err.response.data.anomaly_score)
+        }
       }
       toast.error('Failed to encrypt and send file')
     } finally {
@@ -205,6 +213,12 @@ export default function SendFile() {
             </div>
             <p className="text-3xl font-black text-red-500 mb-3 tracking-tight">Transfer Blocked</p>
             <p className="text-xl font-bold text-red-400 mb-4">Malware / Intrusion Detected</p>
+            {blockedScore !== null && (
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/50 bg-red-950/60 px-4 py-1.5">
+                <span className="text-sm font-semibold uppercase tracking-wider text-red-300">AI Threat Score</span>
+                <span className="text-lg font-black text-red-400">{Number(blockedScore).toFixed(4)}</span>
+              </div>
+            )}
             <div className="bg-red-950/50 p-4 rounded-xl border border-red-500/20 max-w-md w-full">
               <p className="text-sm font-mono text-red-300 break-words">{error}</p>
             </div>

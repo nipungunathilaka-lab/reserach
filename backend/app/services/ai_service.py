@@ -213,7 +213,7 @@ class AIService:
     ) -> tuple[bool, str, str, float, list[str]]:
         reasons: list[str] = []
         risk = 0.0
-        if file_size_mb >= settings.ai_large_file_mb:
+        if file_size_mb >= max(settings.ai_large_file_mb, 1024.0):
             reasons.append("large file size for security policy")
             risk += 0.3
         if hour_of_day < 6 or hour_of_day > 22:
