@@ -1,7 +1,6 @@
 import requests
 import time
 import statistics
-import getpass
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 URL = "http://localhost:5000/api/files/received"
