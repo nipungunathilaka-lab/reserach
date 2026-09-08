@@ -153,7 +153,7 @@ class PQCKey(Base):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     algorithm: Mapped[str] = mapped_column(String(50), default="ML-KEM-768", nullable=False)
     key_version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
-    public_key: Mapped[str] = mapped_column(Text, nullable=False) # Storing base64 encoded bytes
+    public_key: Mapped[bytes] = mapped_column(Text, nullable=False) # Storing base64 encoded bytes
     encrypted_private_key: Mapped[str] = mapped_column(Text, nullable=False) # Base64 encoded AES-GCM output
     private_key_nonce: Mapped[str] = mapped_column(String(64), nullable=False) # Base64 encoded nonce
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)

@@ -1,0 +1,7 @@
+*
+!app/
+app/storage/
+!tests/
+!*.py
+!requirements.txt
+!Dockerfile

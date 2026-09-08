@@ -143,12 +143,14 @@ class PFCEEngine:
                 # Generate Deterministic AAD
                 pqc_aad = None
                 if pqc_kek:
-                    pqc_aad = CryptoService.construct_pqc_aad(
-                        transfer_id=os.path.basename(pfce_package_path),
-                        receiver_id=receiver_id,
-                        fragment_id=fragment_id,
-                        key_version=receiver_key_version
-                    )
+                    aad_dict = {
+                        "transfer_id": os.path.basename(pfce_package_path),
+                        "receiver_id": receiver_id,
+                        "fragment_id": fragment_id,
+                        "algorithm": "ML-KEM-768",
+                        "key_version": receiver_key_version
+                    }
+                    pqc_aad = json.dumps(aad_dict, sort_keys=True).encode("utf-8")
 
                 # Encrypt the variable chunk
                 frag_stored_name = f"{stored_name_prefix}_frag_{fragment_id}"
@@ -290,12 +292,14 @@ class PFCEEngine:
                     try:
                         pqc_aad = None
                         if "pqc" in metadata and "receiver_key_version" in metadata["pqc"]:
-                            pqc_aad = CryptoService.construct_pqc_aad(
-                                transfer_id=os.path.basename(pfce_package_path),
-                                receiver_id=receiver_id,
-                                fragment_id=fragment["fragment_id"],
-                                key_version=metadata["pqc"]["receiver_key_version"]
-                            )
+                            aad_dict = {
+                                "transfer_id": os.path.basename(pfce_package_path),
+                                "receiver_id": receiver_id,
+                                "fragment_id": fragment["fragment_id"],
+                                "algorithm": "ML-KEM-768",
+                                "key_version": metadata["pqc"]["receiver_key_version"]
+                            }
+                            pqc_aad = json.dumps(aad_dict, sort_keys=True).encode("utf-8")
                             
                         aes_key = CryptoService.unwrap_pqc_key(
                             pqc_kek=pqc_kek,

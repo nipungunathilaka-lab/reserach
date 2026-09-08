@@ -3,7 +3,6 @@ import hashlib
 import os
 import time
 import random
-import json
 from dataclasses import dataclass
 from pathlib import Path
 from cryptography.hazmat.primitives import hashes, serialization
@@ -124,17 +123,6 @@ class CryptoService:
             salt=transfer_context,
             info=b"secure-file-transfer-ecdh-aes-key-wrap",
         ).derive(shared_secret)
-
-    @staticmethod
-    def construct_pqc_aad(transfer_id: str, receiver_id: int | str, fragment_id: int, key_version: int) -> bytes:
-        aad_dict = {
-            "transfer_id": str(transfer_id),
-            "receiver_id": str(receiver_id),
-            "fragment_id": int(fragment_id),
-            "algorithm": "ML-KEM-768",
-            "key_version": int(key_version)
-        }
-        return json.dumps(aad_dict, sort_keys=True).encode("utf-8")
 
     @classmethod
     def encrypt_file_for_receiver(cls, src_path: str, receiver_id: str | int, stored_name: str, classification: str = "Sensitive", pqc_kek: bytes | None = None, pqc_aad: bytes | None = None) -> EncryptionResult:

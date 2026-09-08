@@ -31,7 +31,8 @@ def startup() -> None:
         MalwareDetectionService.load_model()
     except Exception as e:
         print(f"Error during startup: {e}")
-        raise e
+        import sys
+        sys.exit(1)
 
 
 @app.get("/")

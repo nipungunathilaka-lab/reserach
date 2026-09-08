@@ -21,7 +21,8 @@ storage_dir = Path("app/storage/encrypted")
 packages = list(storage_dir.glob("*.pfce"))
 
 if not packages:
-    raise RuntimeError("No .pfce packages found.")
+    print("ERROR: No .pfce packages found.")
+    raise SystemExit(1)
 
 original = max(packages, key=lambda p: p.stat().st_mtime)
 
@@ -62,7 +63,8 @@ with tempfile.TemporaryDirectory() as temp:
     fragments = metadata.get("fragments", [])
 
     if not fragments:
-        raise RuntimeError("No encrypted fragments found.")
+        print("ERROR: No encrypted fragments found.")
+        raise SystemExit(1)
 
     fragment_name = fragments[0]["filename"]
     fragment_path = temp_path / fragment_name
@@ -70,7 +72,8 @@ with tempfile.TemporaryDirectory() as temp:
     data = bytearray(fragment_path.read_bytes())
 
     if not data:
-        raise RuntimeError("Selected fragment is empty.")
+        print("ERROR: Selected fragment is empty.")
+        raise SystemExit(1)
 
     # Change one bit in the middle of encrypted fragment
     position = len(data) // 2
