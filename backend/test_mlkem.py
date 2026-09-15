@@ -146,7 +146,7 @@ def test_end_to_end_pfce(test_user, test_receiver):
     try:
         upce = UniversalPolymorphicCryptoEngine()
         policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.0}, 0.0)
-        result = engine.process_upload(file_stream, test_receiver.id, "e2e_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
+        result = engine.process_upload(file_stream, 1, test_receiver.id, "e2e_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
         assert os.path.exists(package_path)
         
         # 4. Decrypt
@@ -187,7 +187,7 @@ def test_corrupted_wrapped_key(test_user, test_receiver):
     try:
         upce = UniversalPolymorphicCryptoEngine()
         policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.0}, 0.0)
-        engine.process_upload(file_stream, test_receiver.id, "corrupt_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
+        engine.process_upload(file_stream, 1, test_receiver.id, "corrupt_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
         
         # Modify the package to corrupt the wrapped key
         import zipfile
@@ -219,7 +219,7 @@ def test_aad_modification_fails(test_receiver):
     try:
         upce = UniversalPolymorphicCryptoEngine()
         policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.0}, 0.0)
-        engine.process_upload(file_stream, test_receiver.id, "aad_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
+        engine.process_upload(file_stream, 1, test_receiver.id, "aad_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
         
         # Modify the receiver_id in metadata (corrupting AAD conceptually)
         import zipfile
@@ -261,7 +261,7 @@ def test_key_rotation(test_user, test_receiver):
     engine = PFCEEngine()
     upce = UniversalPolymorphicCryptoEngine()
     policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.0}, 0.0)
-    engine.process_upload(io.BytesIO(data1), test_receiver.id, "file_a", "Sensitive", "file_a.pfce", crypto_engine=upce, security_policy=policy)
+    engine.process_upload(io.BytesIO(data1), 1, test_receiver.id, "file_a", "Sensitive", "file_a.pfce", crypto_engine=upce, security_policy=policy)
     
     # Rotate to Version 2
     MLKEMService.rotate_keypair(test_receiver.id)
@@ -269,7 +269,7 @@ def test_key_rotation(test_user, test_receiver):
     assert v2_info["key_version"] == 2
     
     data2 = b"File B Content"
-    engine.process_upload(io.BytesIO(data2), test_receiver.id, "file_b", "Sensitive", "file_b.pfce", crypto_engine=upce, security_policy=policy)
+    engine.process_upload(io.BytesIO(data2), 1, test_receiver.id, "file_b", "Sensitive", "file_b.pfce", crypto_engine=upce, security_policy=policy)
     
     try:
         # File A decrypts using key version 1

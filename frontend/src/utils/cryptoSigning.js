@@ -125,23 +125,45 @@ export async function signChallenge(userId, nonce) {
   return arrayBufferToBase64(signatureBuffer);
 }
 
-// Calculate SHA-256 of a File (streaming for large files)
+// Calculate SHA-256 of a File (streaming for large files) using hash-wasm
+import { createSHA256 } from 'hash-wasm';
+
 export async function calculateFileHash(file) {
+  const hasher = await createSHA256();
+  const chunkSize = 20 * 1024 * 1024; // 20MB chunks
+  const fileSize = file.size;
+  let offset = 0;
+
+  hasher.init();
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = async (e) => {
+
+    reader.onload = (e) => {
       try {
-        const buffer = e.target.result;
-        const hashBuffer = await window.crypto.subtle.digest('SHA-256', buffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        resolve(hashHex);
+        const buffer = new Uint8Array(e.target.result);
+        hasher.update(buffer);
+
+        offset += chunkSize;
+
+        if (offset < fileSize) {
+          readNextChunk();
+        } else {
+          resolve(hasher.digest('hex'));
+        }
       } catch (err) {
         reject(err);
       }
     };
+
     reader.onerror = (e) => reject(e);
-    reader.readAsArrayBuffer(file);
+
+    const readNextChunk = () => {
+      const slice = file.slice(offset, offset + chunkSize);
+      reader.readAsArrayBuffer(slice);
+    };
+
+    readNextChunk();
   });
 }
 

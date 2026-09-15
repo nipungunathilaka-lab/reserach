@@ -18,9 +18,7 @@ def test_pfce_stream():
     CryptoService.ensure_user_keypair(receiver_id)
     
     print("Testing stream upload...")
-    result = engine.process_upload(
-        file_stream=file_stream, 
-        receiver_id=receiver_id, 
+    result = engine.process_upload(file_stream=file_stream, sender_id=1, receiver_id=receiver_id, 
         stored_name_prefix="test_pfce_stream", 
         classification="Sensitive", 
         pfce_package_path=package_path

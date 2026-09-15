@@ -33,7 +33,17 @@ export default function ReceivedFiles() {
       window.URL.revokeObjectURL(url)
       await load()
     } catch (err) {
-      setError(apiError(err))
+      if (err.response?.data instanceof Blob) {
+        try {
+          const text = await err.response.data.text()
+          const json = JSON.parse(text)
+          setError(json.detail || json.error || 'Download failed')
+        } catch {
+          setError(apiError(err))
+        }
+      } else {
+        setError(apiError(err))
+      }
     } finally {
       setDownloading(null)
     }

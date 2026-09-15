@@ -325,13 +325,13 @@ export default function SendFile() {
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-300">CPU Usage</span>
                 </div>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-3xl font-black tracking-tighter text-white drop-shadow-md">{result.cpu_usage_percent || 0}</span>
+                  <span className="text-3xl font-black tracking-tighter text-white drop-shadow-md">{result.performance?.cpu_usage_percent ? Number(result.performance.cpu_usage_percent).toFixed(2) : (result.cpu_usage_percent || 0)}</span>
                   <span className="text-sm font-bold text-slate-500">%</span>
                 </div>
                 <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-800 shadow-inner">
                   <div 
                     className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-[0_0_12px_rgba(56,189,248,0.8)]" 
-                    style={{ width: `${Math.min(100, Math.max(0, result.cpu_usage_percent || 0))}%` }}
+                    style={{ width: `${Math.min(100, Math.max(0, result.performance?.cpu_usage_percent || result.cpu_usage_percent || 0))}%` }}
                   />
                 </div>
               </div>
@@ -346,7 +346,7 @@ export default function SendFile() {
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Exec Time</span>
                 </div>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-3xl font-black tracking-tighter text-white drop-shadow-md">{result.execution_time_ms || 0}</span>
+                  <span className="text-3xl font-black tracking-tighter text-white drop-shadow-md">{result.performance?.execution_time_ms ? Number(result.performance.execution_time_ms).toFixed(2) : (result.execution_time_ms || 0)}</span>
                   <span className="text-sm font-bold text-slate-500">ms</span>
                 </div>
                 <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-800 shadow-inner">
@@ -364,13 +364,13 @@ export default function SendFile() {
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Bandwidth</span>
                 </div>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-3xl font-black tracking-tighter text-white drop-shadow-md">{result.processing_bandwidth_mbps || 0}</span>
+                  <span className="text-3xl font-black tracking-tighter text-white drop-shadow-md">{result.performance?.processing_throughput_mb_s ? Number(result.performance.processing_throughput_mb_s).toFixed(2) : (result.processing_bandwidth_mbps || 0)}</span>
                   <span className="text-sm font-bold text-slate-500">MB/s</span>
                 </div>
                 <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-800 shadow-inner">
                   <div 
                     className="h-full rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 shadow-[0_0_12px_rgba(217,70,239,0.8)]"
-                    style={{ width: `${Math.min(100, (result.processing_bandwidth_mbps || 0) / 10)}%` }}
+                    style={{ width: `${Math.min(100, (result.performance?.processing_throughput_mb_s || result.processing_bandwidth_mbps || 0) / 10)}%` }}
                   />
                 </div>
               </div>

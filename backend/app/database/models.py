@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, BigInteger, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, BigInteger, UniqueConstraint, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.db import Base
 
@@ -213,3 +213,15 @@ class QuarantineItem(Base):
     scan_metadata: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     user = relationship("User")
+
+
+# ---------------------------------------------------------
+# APPEND-ONLY PROTECTIONS FOR AUDIT LEDGER
+# ---------------------------------------------------------
+@event.listens_for(AuditBlock, 'before_update')
+def receive_before_update(mapper, connection, target):
+    raise Exception("SECURITY VIOLATION: AuditBlock records are append-only and cannot be updated.")
+
+@event.listens_for(AuditBlock, 'before_delete')
+def receive_before_delete(mapper, connection, target):
+    raise Exception("SECURITY VIOLATION: AuditBlock records are append-only and cannot be deleted.")

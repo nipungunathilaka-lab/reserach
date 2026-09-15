@@ -1,0 +1,2 @@
+test_type,file_size_gb,source_sha256,upload_seconds,download_seconds,total_seconds,average_throughput_mbps,node_peak_rss_mb,fastapi_peak_rss_mb,malware_status,hash_match,result
+Resume/Corrupt,0.01048576,0b64cd12aff494ba514b30e87defc46994a66b98ceae1025f11a6caef9bbc875,7.2,0.37,7.57,1.32,336.3046875,347.4296875,COMPLETED,True,VALIDATED

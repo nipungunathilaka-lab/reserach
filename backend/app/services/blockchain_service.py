@@ -7,7 +7,10 @@ from typing import Tuple, List, Dict, Any, Optional
 
 from sqlalchemy.orm import Session
 from web3 import Web3
-from web3.middleware import geth_poa_middleware
+try:
+    from web3.middleware import geth_poa_middleware
+except ImportError:
+    from web3.middleware import ExtraDataToPOAMiddleware as geth_poa_middleware
 from eth_account import Account
 
 from app.database.models import AuditBlock
@@ -130,8 +133,12 @@ class BlockchainService:
         if not cls._contract_address:
             # We would usually read this from a config or env var, but for testing
             # we deploy if it doesn't exist
-            addr = cls._deploy_contract()
-            if not addr:
+            try:
+                addr = cls._deploy_contract()
+                if not addr:
+                    return None
+            except Exception as e:
+                logger.error("Contract deployment failed: %s", e)
                 return None
                 
         cls._contract_instance = w3.eth.contract(address=cls._contract_address, abi=cls._contract_abi)
@@ -196,9 +203,31 @@ class BlockchainService:
         # Attempt Blockchain Anchoring
         if BLOCKCHAIN_ENABLED:
             w3 = cls._get_web3()
+            if not w3 or not BLOCKCHAIN_SIGNER_PRIVATE_KEY:
+                if BLOCKCHAIN_REQUIRED:
+                    raise RuntimeError("Blockchain anchoring required but node/keys not available")
+                else:
+                    return block
+                    
             contract = cls.get_contract()
-            if w3 and contract and BLOCKCHAIN_SIGNER_PRIVATE_KEY:
+            if not contract:
+                if BLOCKCHAIN_REQUIRED:
+                    raise RuntimeError("Blockchain anchoring required but contract unavailable")
+                else:
+                    return block
+
+            max_retries = 3
+            for attempt in range(max_retries):
                 try:
+                    # Idempotency check: verify if already anchored
+                    try:
+                        existing = contract.functions.anchors(block.id).call()
+                        if existing[2] != "":
+                            # Already anchored, break retry loop
+                            break
+                    except Exception:
+                        pass # Ignore check failures, proceed to anchor
+                        
                     account = Account.from_key(BLOCKCHAIN_SIGNER_PRIVATE_KEY)
                     nonce = w3.eth.get_transaction_count(account.address)
                     
@@ -223,7 +252,6 @@ class BlockchainService:
                     signed_tx = w3.eth.account.sign_transaction(tx, private_key=BLOCKCHAIN_SIGNER_PRIVATE_KEY)
                     tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
                     
-                    # Wait for confirmation to ensure it's finalized (simplified for this script, normally async)
                     receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=10)
                     
                     if receipt.status == 1:
@@ -239,66 +267,165 @@ class BlockchainService:
                         
                     db.commit()
                     db.refresh(block)
-                except Exception as e:
-                    logger.error("Blockchain anchoring failed: %s", e)
-                    block.blockchain_status = "FAILED"
-                    db.commit()
                     
-                    if BLOCKCHAIN_REQUIRED:
-                        raise RuntimeError(f"Blockchain anchoring required but failed: {e}")
-            else:
-                if BLOCKCHAIN_REQUIRED:
-                    raise RuntimeError("Blockchain anchoring required but node/keys not available")
+                    if block.blockchain_status == "CONFIRMED":
+                        break
+                    elif attempt == max_retries - 1 and BLOCKCHAIN_REQUIRED:
+                        raise RuntimeError("Blockchain transaction reverted")
+                        
+                except Exception as e:
+                    logger.error("Blockchain anchoring attempt %d failed: %s", attempt + 1, e)
+                    if attempt == max_retries - 1:
+                        block.blockchain_status = "FAILED"
+                        db.commit()
+                        if BLOCKCHAIN_REQUIRED:
+                            raise RuntimeError(f"Blockchain anchoring required but failed: {e}")
 
         return block
 
     @classmethod
-    def verify_chain(cls, db: Session) -> Tuple[bool, List[str]]:
-        blocks = db.query(AuditBlock).order_by(AuditBlock.id.asc()).all()
-        errors: List[str] = []
-        expected_previous = "0" * 64
-        
-        w3 = cls._get_web3() if BLOCKCHAIN_ENABLED else None
-        contract = cls.get_contract()
-
-        for block in blocks:
-            # 1. Off-chain Database Verification
-            if block.previous_hash != expected_previous:
-                errors.append(f"Block {block.id}: previous hash mismatch in local DB")
-
-            expected_hash = cls._calculate_hash(
-                event_type=block.event_type,
-                details_json=block.details_json,
-                previous_hash=block.previous_hash,
-                timestamp=block.created_at.isoformat(),
-            )
-            if expected_hash != block.block_hash:
-                errors.append(f"Block {block.id}: block hash mismatch in local DB")
-
-            expected_previous = block.block_hash
+    def verify_chain(cls, db: Session) -> Dict[str, Any]:
+        try:
+            blocks = db.query(AuditBlock).order_by(AuditBlock.id.asc()).all()
             
-            # 2. On-chain Verification
-            if BLOCKCHAIN_ENABLED and w3 and contract and block.blockchain_status == "CONFIRMED":
-                try:
-                    anchor = contract.functions.anchors(block.id).call()
-                    # Anchor tuple: sequenceNumber, auditIdHash, eventHash, previousAuditHash, eventTypeHash, timestamp
-                    chain_event_hash = anchor[2]
-                    
-                    if chain_event_hash == "":
-                        errors.append(f"Block {block.id}: Blockchain anchor not found on network")
-                    elif chain_event_hash != expected_hash:
-                        errors.append(f"Block {block.id}: Blockchain event_hash mismatch (Tampering detected!) DB Hash: {expected_hash}, Chain Hash: {chain_event_hash}")
-                    
-                    # Verify transaction receipt exists and was successful
-                    if block.blockchain_transaction_hash:
-                        try:
-                            receipt = w3.eth.get_transaction_receipt(block.blockchain_transaction_hash)
-                            if receipt.status != 1:
-                                errors.append(f"Block {block.id}: Blockchain transaction receipt indicates failure")
-                        except Exception:
-                            errors.append(f"Block {block.id}: Blockchain transaction receipt not found")
-                            
-                except Exception as e:
-                    errors.append(f"Block {block.id}: Error verifying against blockchain: {e}")
+            if not blocks:
+                return {
+                    "valid": True,
+                    "status": "EMPTY",
+                    "message": "No audit records currently exist",
+                    "checked_records": 0,
+                    "verified_at": datetime.utcnow().isoformat() + "Z",
+                    "invalid_record_id": None,
+                    "invalid_sequence": None,
+                    "reason": None
+                }
 
-        return len(errors) == 0, errors
+            expected_previous = "0" * 64
+            
+            w3 = cls._get_web3() if BLOCKCHAIN_ENABLED else None
+            contract = cls.get_contract()
+
+            for sequence, block in enumerate(blocks, start=1):
+                # 1. Off-chain Database Verification
+                if block.previous_hash != expected_previous:
+                    return {
+                        "valid": False,
+                        "status": "INVALID",
+                        "message": "Audit ledger verification failed",
+                        "checked_records": sequence - 1,
+                        "verified_at": datetime.utcnow().isoformat() + "Z",
+                        "invalid_record_id": str(block.id),
+                        "invalid_sequence": sequence,
+                        "reason": "PREVIOUS_HASH_MISMATCH"
+                    }
+
+                expected_hash = cls._calculate_hash(
+                    event_type=block.event_type,
+                    details_json=block.details_json,
+                    previous_hash=block.previous_hash,
+                    timestamp=block.created_at.isoformat(),
+                )
+                if expected_hash != block.block_hash:
+                    return {
+                        "valid": False,
+                        "status": "INVALID",
+                        "message": "Audit ledger verification failed",
+                        "checked_records": sequence - 1,
+                        "verified_at": datetime.utcnow().isoformat() + "Z",
+                        "invalid_record_id": str(block.id),
+                        "invalid_sequence": sequence,
+                        "reason": "BLOCK_HASH_MISMATCH"
+                    }
+
+                expected_previous = block.block_hash
+                
+                # 2. On-chain Verification
+                if BLOCKCHAIN_ENABLED and w3 and contract and block.blockchain_status == "CONFIRMED":
+                    try:
+                        anchor = contract.functions.anchors(block.id).call()
+                        # Anchor tuple: sequenceNumber, auditIdHash, eventHash, previousAuditHash, eventTypeHash, timestamp
+                        chain_event_hash = anchor[2]
+                        
+                        if chain_event_hash == "":
+                            return {
+                                "valid": False,
+                                "status": "INVALID",
+                                "message": "Audit ledger verification failed",
+                                "checked_records": sequence - 1,
+                                "verified_at": datetime.utcnow().isoformat() + "Z",
+                                "invalid_record_id": str(block.id),
+                                "invalid_sequence": sequence,
+                                "reason": "ONCHAIN_ANCHOR_MISSING"
+                            }
+                        elif chain_event_hash != expected_hash:
+                            return {
+                                "valid": False,
+                                "status": "INVALID",
+                                "message": "Audit ledger verification failed",
+                                "checked_records": sequence - 1,
+                                "verified_at": datetime.utcnow().isoformat() + "Z",
+                                "invalid_record_id": str(block.id),
+                                "invalid_sequence": sequence,
+                                "reason": "ONCHAIN_HASH_MISMATCH"
+                            }
+                        
+                        # Verify transaction receipt exists and was successful
+                        if block.blockchain_transaction_hash:
+                            try:
+                                receipt = w3.eth.get_transaction_receipt(block.blockchain_transaction_hash)
+                                if receipt.status != 1:
+                                    return {
+                                        "valid": False,
+                                        "status": "INVALID",
+                                        "message": "Audit ledger verification failed",
+                                        "checked_records": sequence - 1,
+                                        "verified_at": datetime.utcnow().isoformat() + "Z",
+                                        "invalid_record_id": str(block.id),
+                                        "invalid_sequence": sequence,
+                                        "reason": "ONCHAIN_TX_FAILED"
+                                    }
+                            except Exception:
+                                return {
+                                    "valid": False,
+                                    "status": "INVALID",
+                                    "message": "Audit ledger verification failed",
+                                    "checked_records": sequence - 1,
+                                    "verified_at": datetime.utcnow().isoformat() + "Z",
+                                    "invalid_record_id": str(block.id),
+                                    "invalid_sequence": sequence,
+                                    "reason": "ONCHAIN_RECEIPT_NOT_FOUND"
+                                }
+                                
+                    except Exception as e:
+                        return {
+                            "valid": False,
+                            "status": "VERIFICATION_ERROR",
+                            "message": "Audit ledger verification could not be completed",
+                            "checked_records": sequence - 1,
+                            "verified_at": datetime.utcnow().isoformat() + "Z",
+                            "invalid_record_id": str(block.id),
+                            "invalid_sequence": sequence,
+                            "reason": f"ONCHAIN_VERIFICATION_EXCEPTION"
+                        }
+
+            return {
+                "valid": True,
+                "status": "VALID",
+                "message": "Audit ledger hash chain verified successfully",
+                "checked_records": len(blocks),
+                "verified_at": datetime.utcnow().isoformat() + "Z",
+                "invalid_record_id": None,
+                "invalid_sequence": None,
+                "reason": None
+            }
+        except Exception as e:
+            return {
+                "valid": False,
+                "status": "VERIFICATION_ERROR",
+                "message": "Audit ledger verification could not be completed",
+                "checked_records": 0,
+                "verified_at": datetime.utcnow().isoformat() + "Z",
+                "invalid_record_id": None,
+                "invalid_sequence": None,
+                "reason": "DATABASE_UNAVAILABLE_OR_EXCEPTION"
+            }

@@ -25,7 +25,7 @@ def test_audit_chain_verification():
         details={"value": 2},
     )
 
-    valid, errors = BlockchainService.verify_chain(db)
+    verification = BlockchainService.verify_chain(db)
 
-    assert valid is True
-    assert errors == []
+    assert verification["valid"] is True
+    assert verification["reason"] is None

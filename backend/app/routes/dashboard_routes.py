@@ -21,7 +21,8 @@ def dashboard_summary(current_user: User = Depends(get_current_user), db: Sessio
     received_files = db.query(Transfer).filter(Transfer.receiver_id == current_user.id).count()
     total_transfers = transfer_query.count()
     ai_alerts = alert_query.count()
-    valid, message = BlockchainService.verify_chain(db)
+    verification = BlockchainService.verify_chain(db)
+    valid = verification["valid"]
     recent_activity = (
         transfer_query.options(joinedload(Transfer.sender), joinedload(Transfer.receiver))
         .order_by(Transfer.created_at.desc())

@@ -115,9 +115,7 @@ try:
     policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.1}, 0.0)
     package_path = os.path.join(tmp_path, "encrypted", "test_package.pfce")
     
-    pfce.process_upload(
-        file_stream=file_stream,
-        receiver_id=receiver_a,
+    pfce.process_upload(file_stream=file_stream, sender_id=1, receiver_id=receiver_a,
         stored_name_prefix="test_frag",
         classification="sensitive",
         pfce_package_path=package_path,

@@ -1,5 +1,5 @@
 # Universal Polymorphic Cryptographic Engine (UPCE)
-**A Highly Secure, Hybrid File Transfer System Utilizing Post-Quantum Cryptography (PQC), AI Threat Detection, and Blockchain-inspired Tamper-Evident Ledgers.**
+**A Highly Secure, Hybrid File Transfer System Utilizing Post-Quantum Cryptography (PQC), AI Threat Detection, and Permissioned Decentralized Blockchain-Backed Audit Ledgers.**
 
 ---
 
@@ -7,7 +7,7 @@
 
 The UPCE project is a cutting-edge, dual-engine microservices architecture designed to facilitate the secure transfer of highly sensitive files. By decoupling standard web application logic from intense cryptographic and machine-learning workloads, the system achieves maximum performance without compromising on zero-trust principles.
 
-The application stack seamlessly blends the **MERN Stack** (MongoDB, Express, React, Node.js) with a **Python FastAPI Engine**, allowing for real-time dashboard analytics, flawless 100GB+ file streaming, and quantum-resistant encryption.
+The application stack seamlessly blends the **MERN Stack** (MongoDB, Express, React, Node.js) with a **Python FastAPI Engine**, allowing for real-time dashboard analytics, bounded-memory large-file streaming, and quantum-resistant encryption.
 
 ---
 
@@ -22,12 +22,13 @@ The application stack seamlessly blends the **MERN Stack** (MongoDB, Express, Re
 - **Real-Time Behavioral Analysis**: Uses an **Isolation Forest** machine learning model to analyze file sizes, transfer frequencies, login failures, and time-of-day access to detect malicious insider threats.
 - **Malware Scanning**: Automatically intercepts and quarantines files exhibiting malicious byte-patterns before they can be decrypted by the receiver.
 
-### 3. Immutable Blockchain Audit Ledger
+### 3. Permissioned Decentralized Blockchain Audit Ledger
 - **Tamper-Evident Logs**: Every authentication event and file transfer generates a cryptographically hashed block.
-- **Cryptographic Chain Verification**: Each block relies on the hash of the previous block, ensuring that if a malicious actor alters a database entry, the entire audit chain instantly invalidates.
+- **Layer 2 Smart Contract Anchoring**: Off-chain database hashes are strictly anchored into a Hyperledger Besu QBFT blockchain using smart contracts (`AuditLedger.sol`). 
+- **Strict Fail-Closed Enforcement**: If decentralized consensus is unavailable or tampering is detected on the local DB, the system strictly halts sensitive operations, preventing audit evasion.
 
 ### 4. Enterprise-Grade Architecture
-- **Metadata-Only MongoDB**: MongoDB is strictly used for lightweight metadata. The 100GB+ binary payloads never touch the database, circumventing storage limits and RAM exhaustion.
+- **Metadata-Only MongoDB**: MongoDB is strictly used for lightweight metadata. The large binary payloads never touch the database, circumventing storage limits and RAM exhaustion.
 - **Chunked Disk-Streaming**: Uploads and downloads are heavily optimized using data stream generators (`fs.createReadStream`, `StreamingResponse`, and `PFCEEngine`), streaming massive files directly to the local disk in tiny 1MB memory footprints.
 - **Defensive React UI**: The frontend employs deep optional-chaining and defensive rendering patterns, guaranteeing the UI never crashes due to empty data or missing network payloads.
 
@@ -106,6 +107,16 @@ Thanks to a unified `package.json` utilizing `concurrently`, running the entire 
    - **Frontend:** http://localhost:5173
    - **Node.js API:** http://localhost:5000
    - **Python Engine:** http://localhost:8000
+
+---
+
+## 📈 Performance Testing & Validation
+
+The current implementation uses bounded-memory chunked/streaming processing and has been experimentally validated using a 10GB end-to-end transfer with matching source and reconstructed SHA-256 digests. Known whole-file memory bottlenecks have been removed.
+
+* **Bounded Memory Constraints (Gained):** A true file streaming architecture is implemented natively across all bounds. File chunks flow via `hash-wasm` (browser UI), Node.js `Readable/Writable` streams, and FastAPI `StreamingResponse`. Complete file data is never fully loaded into memory.
+* **100GB+ Validation Status:** Transfers exceeding 100GB remain an architectural design target and have not yet been experimentally validated due to the storage capacity of the present test environment.
+* **Malware Scanning Limitations:** The currently integrated malware scanning engine does not support streaming validation for files exceeding 1GB. As such, full-file malware scanning on extremely large files is classified as an unresolved limitation and is skipped to prevent OOM errors. This is explicitly reported in the transfer audit. 
 
 ---
 ## 📝 License

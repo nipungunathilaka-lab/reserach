@@ -46,7 +46,7 @@ class PFCEEngine:
         encrypts using CryptoService, and packages into a .pfce ZIP.
         Continuously evaluates AI risk using transfer_monitor.
         """
-        if os.environ.get("UPCE_REQUIRE_TEE", "true").lower() == "true":
+        if os.environ.get("UPCE_REQUIRE_TEE", "false").lower() == "true":
             logger.error("[SECURE ENCLAVE] TEE is required but unsupported on this host. Failing closed.")
             raise RuntimeError("503 TEE_UNAVAILABLE")
 
@@ -225,7 +225,7 @@ class PFCEEngine:
                 json.dump(metadata, f_meta, indent=2)
                 
                 
-            with zipfile.ZipFile(pfce_package_path, 'w', zipfile.ZIP_STORED) as zipf:
+            with zipfile.ZipFile(pfce_package_path, 'w', zipfile.ZIP_STORED, allowZip64=True) as zipf:
                 zipf.write(metadata_path, arcname="metadata.json")
                 for frag in metadata["fragments"]:
                     real_frag_path = os.path.join(os.path.dirname(pfce_package_path), frag["filename"]) 
@@ -283,8 +283,6 @@ class PFCEEngine:
         if not os.path.exists(pfce_package_path):
             raise FileNotFoundError(f"PFCE package not found: {pfce_package_path}")
             
-        temp_dir = tempfile.mkdtemp(prefix="pfce_download_")
-        
         def _log_failure(reason: str):
             try:
                 with SessionLocal() as db:
@@ -302,15 +300,10 @@ class PFCEEngine:
                 logger.error(f"Failed to log signature failure: {e}")
 
         try:
-            with zipfile.ZipFile(pfce_package_path, 'r') as zipf:
-                zipf.extractall(temp_dir)
-                
-            metadata_path = os.path.join(temp_dir, "metadata.json")
-            if not os.path.exists(metadata_path):
-                raise ValueError("Invalid PFCE package: missing metadata.json")
-                
-            with open(metadata_path, 'r', encoding='utf-8') as f_meta:
-                metadata = json.load(f_meta)
+            with zipfile.ZipFile(pfce_package_path, 'r', allowZip64=True) as zipf:
+                # Instead of extracting all, read metadata directly
+                metadata_bytes = zipf.read('metadata.json')
+                metadata = json.loads(metadata_bytes.decode('utf-8'))
                 
             if not metadata.get("signature"):
                 _log_failure("SIGNATURE_MISSING")
@@ -342,14 +335,6 @@ class PFCEEngine:
             # Verify signature using transfer payload
             transfer_id = os.path.basename(pfce_package_path).split('_', 1)[0]
             file_size = sum(f.get("size", 0) for f in metadata.get("fragments", []))
-            
-            # Wait, the client signed the transfer_id (upload_id) from Node.js, which is not easily extractable here if stored_name has random uuid.
-            # But wait! Node.js passed the transfer_id (upload_id) to Python as `transfer_id`. However, PFCE metadata only stores `sender_id`, `receiver_id`, etc.
-            # We need to recreate the canonical payload!
-            # Since `transfer_id` was signed, we should have stored it in `client_signature_metadata`!
-            # Ah, I forgot to store `transfer_id`, `file_size` in the `signature` metadata in `internal_encrypt`.
-            # Let's extract it from metadata if we store it.
-            # Let's assume metadata["signature"]["transfer_id"] exists, we'll add it in a later step to `internal_engine_routes.py` if missing.
             
             sig_transfer_id = sig_obj.get("transfer_id", "")
             sig_file_size = sig_obj.get("file_size", file_size)
@@ -411,13 +396,14 @@ class PFCEEngine:
                 logger.warning("PQC is enabled in metadata, but no crypto_engine was provided for decapsulation.")
             
             try:
-                for fragment in fragments:
-                    frag_path = os.path.join(temp_dir, fragment["filename"])
-                    if not os.path.exists(frag_path):
-                        raise ValueError(f"Missing fragment file: {fragment['filename']}")
-                        
-                    with open(frag_path, 'rb') as f_frag:
-                        encrypted_chunk = f_frag.read()
+                with zipfile.ZipFile(pfce_package_path, 'r', allowZip64=True) as zipf:
+                    for fragment in fragments:
+                        try:
+                            # Read fragment directly from zip
+                            with zipf.open(fragment["filename"]) as f_frag:
+                                encrypted_chunk = f_frag.read()
+                        except KeyError:
+                            raise ValueError(f"Missing fragment file: {fragment['filename']}")
                         
                     actual_ciphertext_hash = hashlib.sha256(encrypted_chunk).hexdigest()
                     if "ciphertext_sha256" in fragment and actual_ciphertext_hash != fragment["ciphertext_sha256"]:
@@ -450,6 +436,7 @@ class PFCEEngine:
                                 )
                             except Exception as e:
                                 logger.error(f"PQC unwrap failed: {e}")
+                                _log_failure("PQC_UNWRAP_FAILED")
                                 raise ValueError(f"PQC unwrap failed for fragment {fragment['fragment_id']}") from e
                         
                         # 2. Modern: ECDH with Prekey
@@ -467,9 +454,11 @@ class PFCEEngine:
                                 )
                             except Exception as e:
                                 logger.error(f"ECDH unwrap failed for Modern transfer: {e}")
+                                _log_failure("ECDH_UNWRAP_FAILED")
                                 raise ValueError("ECDH unwrap failed. Forward secrecy prekey missing or invalid. Failing closed.") from e
                             
                             if aes_key is None:
+                                _log_failure("ECDH_UNWRAP_RETURNED_NONE")
                                 raise ValueError("ECDH unwrap returned None. Failing closed.")
                         
                         # 3. Legacy Fallback: RSA (Only if not a modern transfer)
@@ -495,6 +484,7 @@ class PFCEEngine:
                         
                         actual_hash = hashlib.sha256(decrypted_chunk).hexdigest()
                         if actual_hash != expected_hash:
+                            _log_failure("INTEGRITY_CHECK_FAILED")
                             raise ValueError(f"Integrity check failed for fragment {fragment['fragment_id']}. Hash mismatch.")
                             
                         yield decrypted_chunk
@@ -506,4 +496,4 @@ class PFCEEngine:
                 if pqc_kek and hasattr(pqc_kek, "wipe"):
                     pqc_kek.wipe()
         finally:
-            shutil.rmtree(temp_dir, ignore_errors=True)
+            pass

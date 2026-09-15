@@ -12,6 +12,10 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.database.models import AIAlert, User
 from app.services.crypto_service import CryptoService
+from app.services.blockchain_service import BlockchainService
+import logging
+
+logger = logging.getLogger(__name__)
 
 ALGORITHM = "HS256"
 
@@ -80,6 +84,18 @@ class AuthService:
                 "high",
                 0.95,
             )
+            try:
+                BlockchainService.append_block(
+                    db=db,
+                    event_type="MFA_SECURITY_EVENT",
+                    details={
+                        "user_id": user.id,
+                        "failed_attempts": user.failed_login_attempts,
+                        "reason": f"Suspicious login behaviour: account locked after {user.failed_login_attempts} failed password attempt(s)."
+                    }
+                )
+            except Exception as e:
+                logger.error(f"Failed to anchor MFA event to blockchain: {e}")
         elif user.failed_login_attempts >= 3:
             AuthService._record_login_alert(
                 db,
@@ -88,6 +104,18 @@ class AuthService:
                 "medium",
                 0.7,
             )
+            try:
+                BlockchainService.append_block(
+                    db=db,
+                    event_type="MFA_SECURITY_EVENT",
+                    details={
+                        "user_id": user.id,
+                        "failed_attempts": user.failed_login_attempts,
+                        "reason": f"Suspicious login behaviour: {user.failed_login_attempts} failed password attempt(s)."
+                    }
+                )
+            except Exception as e:
+                logger.error(f"Failed to anchor MFA event to blockchain: {e}")
         db.commit()
 
     @staticmethod

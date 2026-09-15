@@ -28,7 +28,17 @@ export default function Dashboard() {
           <StatCard icon={FileCheck2} label="Total transfers" value={data?.total_transfers || 0} helper="Visible within your authorization scope" />
           <StatCard icon={Inbox} label="Received files" value={data?.received_files || 0} helper="Ready for decrypt/download" />
           <StatCard icon={AlertTriangle} label="AI alerts" value={data?.ai_alerts || 0} helper="Transfer and MFA/login-pattern alerts" />
-          <StatCard icon={Blocks} label="Blockchain status" value={data?.blockchain_valid ? 'Valid' : 'Invalid'} helper={data?.blockchain_status || 'Unknown status'} />
+          <StatCard 
+            icon={Blocks} 
+            label="Audit Ledger Integrity" 
+            value={
+              data?.blockchain_status === 'VALID' ? 'Valid' : 
+              data?.blockchain_status === 'INVALID' ? 'Integrity Failure' : 
+              data?.blockchain_status === 'EMPTY' ? 'No Records' : 
+              data?.blockchain_status === 'VERIFICATION_ERROR' ? 'Verification Unavailable' : 'Unknown'
+            } 
+            helper={data?.blockchain_message || (data?.blockchain_status === 'VALID' ? 'Hash chain verified' : 'Unable to verify ledger integrity')} 
+          />
         </div>
         <div className="grid gap-6 xl:grid-cols-2">
           <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-xl backdrop-blur-md">
@@ -58,7 +68,7 @@ export default function Dashboard() {
           </section>
         </div>
         <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-xl backdrop-blur-md">
-          <h3 className="text-xl font-bold tracking-tight text-white">Blockchain Audit Logs</h3>
+          <h3 className="text-xl font-bold tracking-tight text-white">Tamper-Evident Audit Ledger</h3>
           <div className="mt-4 grid gap-3 md:hidden">
             {(data?.audit_logs || []).map(log => (
               <article key={log?.id || log?.transaction_id} className="rounded-2xl border border-white/10 bg-white/5 p-4">

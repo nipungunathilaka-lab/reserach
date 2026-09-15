@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.database.models import AIAlert, MfaChallenge, User
 from app.services.email_service import EmailService
+from app.services.blockchain_service import BlockchainService
 import logging
 
 logger = logging.getLogger(__name__)
@@ -56,6 +57,18 @@ class MfaService:
                 score=score,
             )
         )
+        try:
+            BlockchainService.append_block(
+                db=db,
+                event_type="MFA_SECURITY_EVENT",
+                details={
+                    "user_id": user.id,
+                    "failed_attempts": failed_attempts,
+                    "reason": f"Repeated failed MFA attempts during login ({failed_attempts} failed attempt(s))."
+                }
+            )
+        except Exception as e:
+            logger.error(f"Failed to anchor MFA event to blockchain: {e}")
 
     @staticmethod
     def create_challenge(db: Session, user: User, resend_count: int = 0) -> tuple[MfaChallenge, str, str]:

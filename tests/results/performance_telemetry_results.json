@@ -1,0 +1,110 @@
+[
+    {
+        "test_case": "TC-08",
+        "timestamp": 1789480585.2736495,
+        "file_name": "tc08_test_1MB.bin",
+        "file_size_bytes": 1048576,
+        "file_size_mb": 1,
+        "execution_time_ms": 2498.5476000001654,
+        "cpu_usage_percent": 16.25944608779809,
+        "processing_throughput_mb_s": 0.4002325190842607,
+        "processing_bandwidth_mbps": 3.2018601526740857,
+        "result": "success"
+    },
+    {
+        "test_case": "TC-09",
+        "timestamp": 1789480590.7193055,
+        "file_name": "tc08_test_1MB.bin",
+        "file_size_bytes": 1048576,
+        "file_size_mb": 1,
+        "execution_time_ms": 2392.542899999171,
+        "cpu_usage_percent": 12.408345948576423,
+        "processing_throughput_mb_s": 0.41796533721520585,
+        "processing_bandwidth_mbps": 3.3437226977216468,
+        "result": "success"
+    },
+    {
+        "test_case": "TC-09",
+        "timestamp": 1789480596.1859753,
+        "file_name": "tc08_test_1MB.bin",
+        "file_size_bytes": 1048576,
+        "file_size_mb": 1,
+        "execution_time_ms": 2405.230499998652,
+        "cpu_usage_percent": 15.591021317924008,
+        "processing_throughput_mb_s": 0.41576056847797355,
+        "processing_bandwidth_mbps": 3.3260845478237884,
+        "result": "success"
+    },
+    {
+        "test_case": "TC-08",
+        "timestamp": 1789480601.9112453,
+        "file_name": "tc08_test_5MB.bin",
+        "file_size_bytes": 5242880,
+        "file_size_mb": 5,
+        "execution_time_ms": 2573.029700000916,
+        "cpu_usage_percent": 24.8976916201073,
+        "processing_throughput_mb_s": 1.9432344679108136,
+        "processing_bandwidth_mbps": 15.545875743286508,
+        "result": "success"
+    },
+    {
+        "test_case": "TC-09",
+        "timestamp": 1789480607.540684,
+        "file_name": "tc08_test_5MB.bin",
+        "file_size_bytes": 5242880,
+        "file_size_mb": 5,
+        "execution_time_ms": 2511.763999998948,
+        "cpu_usage_percent": 16.173892133184893,
+        "processing_throughput_mb_s": 1.9906328779304483,
+        "processing_bandwidth_mbps": 15.925063023443586,
+        "result": "success"
+    },
+    {
+        "test_case": "TC-09",
+        "timestamp": 1789480613.2592287,
+        "file_name": "tc08_test_5MB.bin",
+        "file_size_bytes": 5242880,
+        "file_size_mb": 5,
+        "execution_time_ms": 2600.5785999986983,
+        "cpu_usage_percent": 22.230629752943802,
+        "processing_throughput_mb_s": 1.9226490597140584,
+        "processing_bandwidth_mbps": 15.381192477712467,
+        "result": "success"
+    },
+    {
+        "test_case": "TC-08",
+        "timestamp": 1789480619.22073,
+        "file_name": "tc08_test_10MB.bin",
+        "file_size_bytes": 10485760,
+        "file_size_mb": 10,
+        "execution_time_ms": 2714.1203000010137,
+        "cpu_usage_percent": 25.906184040542986,
+        "processing_throughput_mb_s": 3.684435063543891,
+        "processing_bandwidth_mbps": 29.47548050835113,
+        "result": "success"
+    },
+    {
+        "test_case": "TC-09",
+        "timestamp": 1789480625.2708464,
+        "file_name": "tc08_test_10MB.bin",
+        "file_size_bytes": 10485760,
+        "file_size_mb": 10,
+        "execution_time_ms": 2798.193699998592,
+        "cpu_usage_percent": 27.91979697475529,
+        "processing_throughput_mb_s": 3.573734012768677,
+        "processing_bandwidth_mbps": 28.589872102149418,
+        "result": "success"
+    },
+    {
+        "test_case": "TC-09",
+        "timestamp": 1789480631.1524966,
+        "file_name": "tc08_test_10MB.bin",
+        "file_size_bytes": 10485760,
+        "file_size_mb": 10,
+        "execution_time_ms": 2680.324599999949,
+        "cpu_usage_percent": 18.654457001215803,
+        "processing_throughput_mb_s": 3.730891400243161,
+        "processing_bandwidth_mbps": 29.847131201945288,
+        "result": "success"
+    }
+]

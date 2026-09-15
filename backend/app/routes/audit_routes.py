@@ -16,11 +16,11 @@ def read_chain(
     db: Session = Depends(get_db),
 ):
     blocks = db.query(AuditBlock).order_by(AuditBlock.id.asc()).all()
-    valid, errors = BlockchainService.verify_chain(db)
+    verification = BlockchainService.verify_chain(db)
 
     return {
-        "valid": valid,
-        "errors": errors,
+        "valid": verification["valid"],
+        "errors": [verification["reason"]] if verification["reason"] else [],
         "blocks": [
             {
                 "id": block.id,
@@ -50,10 +50,11 @@ def verify_single_audit(
     if not block:
         return {"error": "Audit not found"}
         
-    valid, errors = BlockchainService.verify_chain(db)
+    verification = BlockchainService.verify_chain(db)
     
-    # Filter errors relevant to this block
-    block_errors = [e for e in errors if f"Block {audit_id}:" in e]
+    # Check if verification failed on this block specifically
+    is_tampered = not verification["valid"] and verification.get("invalid_record_id") == str(audit_id)
+    block_errors = [verification["reason"]] if is_tampered else []
     
     return {
         "audit_id": audit_id,
@@ -61,6 +62,6 @@ def verify_single_audit(
         "blockchain_network_id": block.blockchain_network_id,
         "blockchain_transaction_hash": block.blockchain_transaction_hash,
         "blockchain_block_number": block.blockchain_block_number,
-        "verification_result": "VERIFIED" if not block_errors else "TAMPERING DETECTED",
+        "verification_result": "TAMPERING DETECTED" if is_tampered else "VERIFIED",
         "errors": block_errors
     }

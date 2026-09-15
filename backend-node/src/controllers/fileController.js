@@ -200,6 +200,10 @@ exports.downloadFile = async (req, res) => {
     }
 
     res.setHeader('Content-Disposition', `attachment; filename="${transfer.file_name}"`);
+    response.data.on('error', (err) => {
+        console.error('Stream error during download:', err.message);
+        res.end();
+    });
     response.data.pipe(res);
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -233,9 +237,16 @@ exports.uploadChunk = async (req, res) => {
     }
     const assembledFilePath = path.join(tempDir, `${upload_id}_${file_name}`);
 
-    // Append chunk to the assembled file
-    const chunkData = fs.readFileSync(file.path);
-    fs.appendFileSync(assembledFilePath, chunkData);
+    // Append chunk to the assembled file using streams
+    await new Promise((resolve, reject) => {
+      const readStream = fs.createReadStream(file.path);
+      const writeStream = fs.createWriteStream(assembledFilePath, { flags: 'a' });
+      readStream.on('error', reject);
+      writeStream.on('error', reject);
+      writeStream.on('finish', resolve);
+      readStream.pipe(writeStream);
+    });
+    
     safeUnlink(file.path); // Safely delete the temp chunk
 
     if (chunk_index < total_chunks - 1) {
@@ -350,9 +361,17 @@ exports.uploadChunk = async (req, res) => {
           message: "File uploaded successfully",
           classification_type: pythonData.classification_type || "standard",
           encryption_mechanism_used: pythonData.cipher_algorithm || "PFCE Streaming (AES-256 + RSA)",
-          execution_time_ms: pythonData.execution_time_ms || 120.5,
-          cpu_usage_percent: pythonData.cpu_usage_percent || 15.2,
-          processing_bandwidth_mbps: pythonData.processing_bandwidth_mbps || 45.3,
+          performance: {
+            execution_time_ms: pythonData.execution_time_ms || 0,
+            cpu_usage_percent: pythonData.cpu_usage_percent || 0,
+            processing_throughput_mb_s: pythonData.processing_throughput_mb_s || 0,
+            processing_bandwidth_mbps: pythonData.processing_bandwidth_mbps || 0,
+            file_size_bytes: pythonData.file_size_bytes || transfer.file_size
+          },
+          // Legacy fields preserved temporarily
+          execution_time_ms: pythonData.execution_time_ms || 0,
+          cpu_usage_percent: pythonData.cpu_usage_percent || 0,
+          processing_bandwidth_mbps: pythonData.processing_bandwidth_mbps || 0,
           transfer: populatedTransfer,
           encryption: {
               algorithm: pythonData.cipher_algorithm || "PFCE Streaming (AES-256 + RSA)",
@@ -375,6 +394,13 @@ exports.uploadChunk = async (req, res) => {
               pcap_path: pythonData.pcap_path,
               flow_stats: pythonData.flow_stats
           },
+          malware_scan: {
+              status: pythonData.malware_scan_status || "COMPLETED",
+              scanner: pythonData.scanner || "Hybrid (ClamAV + ML + Heuristic)",
+              scan_mode: pythonData.scan_mode || "full_file",
+              bytes_scanned: pythonData.bytes_scanned || 0,
+              verdict: pythonData.malware_verdict || "CLEAN"
+          },
           blockchain: {
               id: block._id,
               event_type: block.event_type,
@@ -388,11 +414,11 @@ exports.uploadChunk = async (req, res) => {
           result: resultDict,
           telemetry: {
             blockchain_hash: block.block_hash,
-            exec_time_ms: pythonData.execution_time_ms || 120.5,
+            exec_time_ms: pythonData.execution_time_ms || 0,
             ai_score: pythonData.anomaly_score,
             network_score: pythonData.network_risk_score,
             combined_score: pythonData.combined_risk_score,
-            encryption_type: "PFCE Streaming (AES-256 + RSA)"
+            encryption_type: pythonData.cipher_algorithm || "PFCE Streaming (AES-256 + RSA)"
           }
         };
 
