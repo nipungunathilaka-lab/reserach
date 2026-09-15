@@ -1,0 +1,13 @@
+{
+  "config" : {
+    "chainId" : 1337,
+    "qbft" : {
+      "epochLength" : 30000,
+      "blockPeriodSeconds" : 2,
+      "requestTimeoutSeconds" : 4
+    }
+  },
+  "gasLimit" : "0x1fffffffffffff",
+  "difficulty" : "0x1",
+  "extraData" : "0xf87aa00000000000000000000000000000000000000000000000000000000000000000f8549487e57fddf37466e44ce0499c2e43e40a747eab5794c6f3b46ab451f44daca515f349493cb5b7764eb7945f7e6443506e8861ce0fb57ab89cd82e30e7f99094e0a4c462ffb455a035402e5dc1b125e0b80cceecc080c0"
+}

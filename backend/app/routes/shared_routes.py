@@ -9,6 +9,7 @@ from app.database.db import get_db
 from app.database.models import Transfer
 from app.services.crypto_service import CryptoService
 from app.services.pfce_engine import PFCEEngine
+from app.services.upce_quantum_service import UniversalPolymorphicCryptoEngine
 
 router = APIRouter(prefix="/shared", tags=["Public Shared Files"])
 
@@ -43,9 +44,11 @@ def download_shared_file(share_token: str, payload: DownloadPinRequest, db: Sess
     
     try:
         pfce_engine = PFCEEngine()
+        upce = UniversalPolymorphicCryptoEngine()
         stream_generator = pfce_engine.process_download_stream(
             pfce_package_path=transfer.encrypted_path, 
-            receiver_id=transfer.receiver_id
+            receiver_id=transfer.receiver_id,
+            crypto_engine=upce
         )
     except Exception as exc:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Decryption failed: {exc}")

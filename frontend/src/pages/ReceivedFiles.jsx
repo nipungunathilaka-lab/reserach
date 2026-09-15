@@ -59,6 +59,16 @@ export default function ReceivedFiles() {
               <p className="text-[10px] text-emerald-500/80 leading-tight">Risk Score: {(t.anomaly_score || 0).toFixed(2)}</p>
             </div>
           </div>
+          
+          {t.signature_verified && (
+            <div className="mt-2 flex items-center gap-2 rounded-xl border border-blue-500/20 bg-blue-500/10 px-3 py-2 text-blue-400">
+              <ShieldCheck size={16} className="shrink-0" />
+              <div>
+                <p className="text-xs font-bold leading-tight">Sender Signature Verified</p>
+                <p className="text-[10px] text-blue-500/80 leading-tight font-mono truncate max-w-[150px]">FP: {t.signing_key_fingerprint}</p>
+              </div>
+            </div>
+          )}
 
           <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-400"><p>Size: {fmtSize(t.file_size)}</p><p className="col-span-2">Date: {new Date(t.created_at).toLocaleString()}</p></div>
           <button onClick={() => download(t)} className="btn-secondary mt-4 w-full py-2" disabled={downloading === t.id}><Download size={15}/>{downloading === t.id ? 'Decrypting...' : 'Download/decrypt'}</button>
@@ -85,6 +95,15 @@ export default function ReceivedFiles() {
                       <p className="text-[10px] text-emerald-500/80 leading-tight">Risk Score: {(t.anomaly_score || 0).toFixed(2)}</p>
                     </div>
                   </div>
+                  {t.signature_verified && (
+                    <div className="mt-1 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-blue-400">
+                      <ShieldCheck size={14} className="shrink-0" />
+                      <div>
+                        <p className="text-xs font-bold leading-tight">Sender Signature Verified</p>
+                        <p className="text-[10px] text-blue-500/80 leading-tight font-mono">FP: {(t.signing_key_fingerprint || '').substring(0,8)}...</p>
+                      </div>
+                    </div>
+                  )}
                 </td>
                 <td>{fmtSize(t.file_size)}</td>
                 <td>{new Date(t.created_at).toLocaleString()}</td>

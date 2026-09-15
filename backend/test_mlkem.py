@@ -7,13 +7,17 @@ from unittest.mock import patch, MagicMock
 # Environment setup for tests
 os.environ["MLKEM_PRIVATE_KEY_MASTER_KEY"] = "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE=" # exactly 32 'a's encoded
 os.environ["PQC_ENABLED"] = "true"
-os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+import tempfile
+temp_db_fd, temp_db_path = tempfile.mkstemp(suffix=".db")
+os.close(temp_db_fd)
+os.environ["DATABASE_URL"] = f"sqlite:///{temp_db_path}"
 
 from app.core.config import settings
 from app.database.db import Base, engine, SessionLocal
 from app.database.models import User, PQCKey
 from app.services.mlkem_service import MLKEMService
 from app.services.pfce_engine import PFCEEngine
+from app.services.upce_quantum_service import UniversalPolymorphicCryptoEngine
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_database():
@@ -86,8 +90,11 @@ def test_encapsulation_roundtrip(test_receiver):
     # Decapsulate
     receiver_shared_secret = MLKEMService.decapsulate(kem_ciphertext, test_receiver.id, receiver_key_version)
     
-    assert sender_shared_secret == receiver_shared_secret
-    assert len(sender_shared_secret) == 32
+    assert sender_shared_secret.bytes == receiver_shared_secret.bytes
+    assert len(sender_shared_secret.bytes) == 32
+    
+    sender_shared_secret.wipe()
+    receiver_shared_secret.wipe()
 
 def test_receiver_isolation(test_user, test_receiver):
     """Test 4 - Receiver isolation"""
@@ -105,18 +112,24 @@ def test_receiver_isolation(test_user, test_receiver):
     wrong_shared_secret = MLKEMService.decapsulate(kem_ciphertext, test_user.id, user_pqc_info["key_version"])
     
     # ML-KEM returns a pseudo-random string on failure instead of exception
-    assert wrong_shared_secret != shared_secret
+    assert wrong_shared_secret.bytes != shared_secret.bytes
 
-def test_database_persistence(test_user):
+def test_database_persistence(test_user, db_session):
     """Test 5 - Database persistence"""
     MLKEMService.generate_keypair(test_user.id)
-    # Simulate reload
+    info = MLKEMService.get_active_public_key(test_user.id)
+    
+    # Simulate a new process decrypting
+    secret_key_buf = MLKEMService._get_secret_key(test_user.id, info["key_version"])
+    assert len(secret_key_buf.bytes) > 0
+    secret_key_buf.wipe()
+    
     pqc_info = MLKEMService.get_active_public_key(test_user.id)
     kem_ciphertext, sender_shared_secret = MLKEMService.encapsulate(pqc_info["public_key"])
     
     # This proves we load from DB
     receiver_shared_secret = MLKEMService.decapsulate(kem_ciphertext, test_user.id, pqc_info["key_version"])
-    assert sender_shared_secret == receiver_shared_secret
+    assert sender_shared_secret.bytes == receiver_shared_secret.bytes
 
 def test_end_to_end_pfce(test_user, test_receiver):
     """Test 6 - End-to-end PFCE test"""
@@ -131,12 +144,14 @@ def test_end_to_end_pfce(test_user, test_receiver):
     engine = PFCEEngine()
     package_path = "test_end_to_end.pfce"
     try:
-        result = engine.process_upload(file_stream, test_receiver.id, "e2e_test", "Sensitive", package_path)
+        upce = UniversalPolymorphicCryptoEngine()
+        policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.0}, 0.0)
+        result = engine.process_upload(file_stream, test_receiver.id, "e2e_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
         assert os.path.exists(package_path)
         
         # 4. Decrypt
         decrypted_chunks = []
-        for chunk in engine.process_download_stream(package_path, test_receiver.id):
+        for chunk in engine.process_download_stream(package_path, test_receiver.id, crypto_engine=upce):
             decrypted_chunks.append(chunk)
             
         decrypted_data = b"".join(decrypted_chunks)
@@ -170,7 +185,9 @@ def test_corrupted_wrapped_key(test_user, test_receiver):
     engine = PFCEEngine()
     package_path = "test_corrupt.pfce"
     try:
-        engine.process_upload(file_stream, test_receiver.id, "corrupt_test", "Sensitive", package_path)
+        upce = UniversalPolymorphicCryptoEngine()
+        policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.0}, 0.0)
+        engine.process_upload(file_stream, test_receiver.id, "corrupt_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
         
         # Modify the package to corrupt the wrapped key
         import zipfile
@@ -187,7 +204,7 @@ def test_corrupted_wrapped_key(test_user, test_receiver):
             zipw.writestr(frag_name, frag_data)
             
         with pytest.raises(Exception):
-            list(engine.process_download_stream(package_path, test_receiver.id))
+            list(engine.process_download_stream(package_path, test_receiver.id, crypto_engine=upce))
     finally:
         if os.path.exists(package_path):
             os.remove(package_path)
@@ -200,7 +217,9 @@ def test_aad_modification_fails(test_receiver):
     engine = PFCEEngine()
     package_path = "test_aad_corrupt.pfce"
     try:
-        engine.process_upload(file_stream, test_receiver.id, "aad_test", "Sensitive", package_path)
+        upce = UniversalPolymorphicCryptoEngine()
+        policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.0}, 0.0)
+        engine.process_upload(file_stream, test_receiver.id, "aad_test", "Sensitive", package_path, crypto_engine=upce, security_policy=policy)
         
         # Modify the receiver_id in metadata (corrupting AAD conceptually)
         import zipfile
@@ -217,7 +236,7 @@ def test_aad_modification_fails(test_receiver):
             zipw.writestr(frag_name, frag_data)
             
         with pytest.raises(Exception):
-            list(engine.process_download_stream(package_path, test_receiver.id))
+            list(engine.process_download_stream(package_path, test_receiver.id, crypto_engine=upce))
     finally:
         if os.path.exists(package_path):
             os.remove(package_path)
@@ -240,7 +259,9 @@ def test_key_rotation(test_user, test_receiver):
     
     data1 = b"File A Content"
     engine = PFCEEngine()
-    engine.process_upload(io.BytesIO(data1), test_receiver.id, "file_a", "Sensitive", "file_a.pfce")
+    upce = UniversalPolymorphicCryptoEngine()
+    policy = upce.select_crypto_policy({"classification": "sensitive"}, {"anomaly_score": 0.0}, 0.0)
+    engine.process_upload(io.BytesIO(data1), test_receiver.id, "file_a", "Sensitive", "file_a.pfce", crypto_engine=upce, security_policy=policy)
     
     # Rotate to Version 2
     MLKEMService.rotate_keypair(test_receiver.id)
@@ -248,15 +269,15 @@ def test_key_rotation(test_user, test_receiver):
     assert v2_info["key_version"] == 2
     
     data2 = b"File B Content"
-    engine.process_upload(io.BytesIO(data2), test_receiver.id, "file_b", "Sensitive", "file_b.pfce")
+    engine.process_upload(io.BytesIO(data2), test_receiver.id, "file_b", "Sensitive", "file_b.pfce", crypto_engine=upce, security_policy=policy)
     
     try:
         # File A decrypts using key version 1
-        decrypted_a = b"".join(list(engine.process_download_stream("file_a.pfce", test_receiver.id)))
+        decrypted_a = b"".join(list(engine.process_download_stream("file_a.pfce", test_receiver.id, crypto_engine=upce)))
         assert decrypted_a == data1
         
         # File B decrypts using key version 2
-        decrypted_b = b"".join(list(engine.process_download_stream("file_b.pfce", test_receiver.id)))
+        decrypted_b = b"".join(list(engine.process_download_stream("file_b.pfce", test_receiver.id, crypto_engine=upce)))
         assert decrypted_b == data2
     finally:
         for f in ["file_a.pfce", "file_b.pfce"]:

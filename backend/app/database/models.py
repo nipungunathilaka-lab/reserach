@@ -143,6 +143,15 @@ class AuditBlock(Base):
         DateTime,
         default=datetime.utcnow
     )
+    
+    # Blockchain Audit Anchoring Layer
+    blockchain_network_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    blockchain_contract_address: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    blockchain_transaction_hash: Mapped[str | None] = mapped_column(String(66), nullable=True)
+    blockchain_block_number: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    blockchain_block_hash: Mapped[str | None] = mapped_column(String(66), nullable=True)
+    blockchain_status: Mapped[str] = mapped_column(String(32), default="LOCAL_ONLY")
+    anchor_timestamp: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
 class PQCKey(Base):
@@ -162,3 +171,45 @@ class PQCKey(Base):
 
     user = relationship("User")
 
+
+class ECDHPrekey(Base):
+    __tablename__ = "ecdh_prekeys"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    prekey_id: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)
+    public_key_pem: Mapped[str] = mapped_column(Text, nullable=False)
+    private_key_pem: Mapped[str] = mapped_column(Text, nullable=False)
+    consumed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    transfer_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+
+    user = relationship("User")
+
+
+class QuarantineItem(Base):
+    __tablename__ = "quarantine_items"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    transfer_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    user_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    safe_identifier: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    file_size: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    mime_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    detection_engine: Mapped[str] = mapped_column(String(100), nullable=False)
+    detection_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    malware_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    quarantine_reason: Mapped[str] = mapped_column(Text, nullable=False)
+    quarantine_status: Mapped[str] = mapped_column(String(50), default="QUARANTINED", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    reviewed_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    released_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    scan_metadata: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    user = relationship("User")

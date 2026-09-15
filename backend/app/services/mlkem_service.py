@@ -8,15 +8,16 @@ from cryptography.hazmat.primitives import hashes
 from app.core.config import settings
 from app.database.db import SessionLocal
 from app.database.models import PQCKey, User
+from app.security.secure_memory import SecureBuffer
+
+logger = logging.getLogger(__name__)
 
 OQS_AVAILABLE = False
 try:
     import oqs
     OQS_AVAILABLE = True
-except Exception as e:
+except (Exception, SystemExit) as e:
     logger.warning(f"Failed to import oqs: {e}")
-
-logger = logging.getLogger(__name__)
 
 class MLKEMService:
     @classmethod
@@ -129,7 +130,7 @@ class MLKEMService:
             }
 
     @classmethod
-    def _get_secret_key(cls, user_id: int, key_version: int) -> bytes:
+    def _get_secret_key(cls, user_id: int, key_version: int) -> SecureBuffer:
         with SessionLocal() as db:
             pqc_key = db.query(PQCKey).filter(PQCKey.user_id == user_id, PQCKey.key_version == key_version).first()
             if not pqc_key:
@@ -140,30 +141,38 @@ class MLKEMService:
             master_key = cls.get_master_key()
             
             try:
-                secret_key = AESGCM(master_key).decrypt(nonce, encrypted_secret_key, None)
-                return secret_key
+                secret_key_raw = AESGCM(master_key).decrypt(nonce, encrypted_secret_key, None)
+                return SecureBuffer(secret_key_raw)
             except Exception as e:
                 logger.error(f"Failed to decrypt ML-KEM private key for user {user_id}: {e}")
                 raise
 
     @classmethod
-    def encapsulate(cls, receiver_public_key: bytes) -> tuple[bytes, bytes]:
+    def encapsulate(cls, receiver_public_key: bytes) -> tuple[bytes, SecureBuffer]:
         with oqs.KeyEncapsulation("ML-KEM-768") as kem:
-            ciphertext, shared_secret = kem.encap_secret(receiver_public_key)
-            return ciphertext, shared_secret
+            ciphertext, shared_secret_raw = kem.encap_secret(receiver_public_key)
+            return ciphertext, SecureBuffer(shared_secret_raw)
 
     @classmethod
-    def decapsulate(cls, ciphertext: bytes, receiver_id: int, key_version: int) -> bytes:
-        secret_key = cls._get_secret_key(receiver_id, key_version)
-        with oqs.KeyEncapsulation("ML-KEM-768", secret_key) as kem:
-            shared_secret = kem.decap_secret(ciphertext)
-            return shared_secret
+    def decapsulate(cls, ciphertext: bytes, receiver_id: int, key_version: int) -> SecureBuffer:
+        secret_key_buf = cls._get_secret_key(receiver_id, key_version)
+        try:
+            with oqs.KeyEncapsulation("ML-KEM-768", secret_key_buf.bytes) as kem:
+                shared_secret_raw = kem.decap_secret(ciphertext)
+                return SecureBuffer(shared_secret_raw)
+        finally:
+            secret_key_buf.wipe()
 
     @classmethod
-    def derive_key_encryption_key(cls, shared_secret: bytes, salt: bytes, context: bytes = b"UPCE-MLKEM-768-KEY-WRAP-v1") -> bytes:
-        return HKDF(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=salt,
-            info=context,
-        ).derive(shared_secret)
+    def derive_key_encryption_key(cls, shared_secret: SecureBuffer, salt: bytes, context: bytes = b"UPCE-MLKEM-768-KEY-WRAP-v1") -> SecureBuffer:
+        try:
+            raw_kek = HKDF(
+                algorithm=hashes.SHA256(),
+                length=32,
+                salt=salt,
+                info=context,
+            ).derive(shared_secret.bytes)
+            return SecureBuffer(raw_kek)
+        finally:
+            if hasattr(shared_secret, "wipe"):
+                shared_secret.wipe()

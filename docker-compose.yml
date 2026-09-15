@@ -1,0 +1,106 @@
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+      - sqlite_data:/app/data
+    ports:
+      - "8000:8000"
+    environment:
+      - DEV_SHOW_OTP=false
+      - BLOCKCHAIN_ENABLED=true
+      - BLOCKCHAIN_REQUIRED=true
+      - BLOCKCHAIN_RPC_URL=http://besu-validator-1:8545
+      - BLOCKCHAIN_CHAIN_ID=1337
+      - BLOCKCHAIN_SIGNER_ADDRESS=0x906818496d579Ee37bb743e8f060aA16C2Cc943C
+      - BLOCKCHAIN_SIGNER_PRIVATE_KEY=0xdecfc029e90f96395a231e3d444bd070b7a858fcffe3db0fcbf5051fd556813d
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    depends_on:
+      - besu-validator-1
+      - besu-validator-2
+      - besu-validator-3
+      - besu-validator-4
+    networks:
+      besu_net:
+        ipv4_address: 172.16.239.10
+
+  clamav:
+    image: clamav/clamav:latest_base
+    ports:
+      - "3310:3310"
+    volumes:
+      - sqlite_data:/app/data
+    restart: unless-stopped
+    networks:
+      - besu_net
+
+  besu-validator-1:
+    image: hyperledger/besu:latest
+    command: ["--network-id=1337", "--genesis-file=/opt/besu/network/genesis.json", "--data-path=/opt/besu/data", "--host-allowlist=*", "--rpc-http-enabled", "--rpc-http-host=0.0.0.0", "--rpc-http-port=8545", "--rpc-http-cors-origins=*", "--rpc-http-api=ETH,NET,QBFT,WEB3,ADMIN,DEBUG", "--sync-min-peers=1", "--p2p-port=30303", "--p2p-host=172.16.239.11", "--bootnodes=", "--node-private-key-file=/opt/besu/network/key"]
+    volumes:
+      - ./backend/besu_network/nodes/genesis.json:/opt/besu/network/genesis.json
+      - ./backend/besu_network/nodes/keys/0x413ca19b723ecf42a4cfbb8b737e2ea06a70a793/key:/opt/besu/network/key
+      - besu_data_1:/opt/besu/data
+    ports:
+      - "8545:8545"
+    networks:
+      besu_net:
+        ipv4_address: 172.16.239.11
+
+  besu-validator-2:
+    image: hyperledger/besu:latest
+    command: ["--network-id=1337", "--genesis-file=/opt/besu/network/genesis.json", "--data-path=/opt/besu/data", "--sync-min-peers=1", "--p2p-port=30303", "--p2p-host=172.16.239.12", "--bootnodes=enode://652895da224024af4b151fac15840091c867e1e2809a3e8049c998b83c04fc9f96dfdce68c0e43e7cc2c0a53c6db1c947430c0e6e33df58aef2770680e70cd9a@172.16.239.11:30303", "--node-private-key-file=/opt/besu/network/key"]
+    volumes:
+      - ./backend/besu_network/nodes/genesis.json:/opt/besu/network/genesis.json
+      - ./backend/besu_network/nodes/keys/0x479a201621bfca7090f374e2e283a494d0ca8428/key:/opt/besu/network/key
+      - besu_data_2:/opt/besu/data
+    depends_on:
+      - besu-validator-1
+    networks:
+      besu_net:
+        ipv4_address: 172.16.239.12
+
+  besu-validator-3:
+    image: hyperledger/besu:latest
+    command: ["--network-id=1337", "--genesis-file=/opt/besu/network/genesis.json", "--data-path=/opt/besu/data", "--sync-min-peers=1", "--p2p-port=30303", "--p2p-host=172.16.239.13", "--bootnodes=enode://652895da224024af4b151fac15840091c867e1e2809a3e8049c998b83c04fc9f96dfdce68c0e43e7cc2c0a53c6db1c947430c0e6e33df58aef2770680e70cd9a@172.16.239.11:30303", "--node-private-key-file=/opt/besu/network/key"]
+    volumes:
+      - ./backend/besu_network/nodes/genesis.json:/opt/besu/network/genesis.json
+      - ./backend/besu_network/nodes/keys/0xdf106d68f9b2d3986ba1043eacdb086f02b0162d/key:/opt/besu/network/key
+      - besu_data_3:/opt/besu/data
+    depends_on:
+      - besu-validator-1
+    networks:
+      besu_net:
+        ipv4_address: 172.16.239.13
+
+  besu-validator-4:
+    image: hyperledger/besu:latest
+    command: ["--network-id=1337", "--genesis-file=/opt/besu/network/genesis.json", "--data-path=/opt/besu/data", "--sync-min-peers=1", "--p2p-port=30303", "--p2p-host=172.16.239.14", "--bootnodes=enode://652895da224024af4b151fac15840091c867e1e2809a3e8049c998b83c04fc9f96dfdce68c0e43e7cc2c0a53c6db1c947430c0e6e33df58aef2770680e70cd9a@172.16.239.11:30303", "--node-private-key-file=/opt/besu/network/key"]
+    volumes:
+      - ./backend/besu_network/nodes/genesis.json:/opt/besu/network/genesis.json
+      - ./backend/besu_network/nodes/keys/0xf11424e726126d5db62bd89aa78f0c32c829c797/key:/opt/besu/network/key
+      - besu_data_4:/opt/besu/data
+    depends_on:
+      - besu-validator-1
+    networks:
+      besu_net:
+        ipv4_address: 172.16.239.14
+
+volumes:
+  sqlite_data:
+  besu_data_1:
+  besu_data_2:
+  besu_data_3:
+  besu_data_4:
+
+networks:
+  besu_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.239.0/24

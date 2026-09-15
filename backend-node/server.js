@@ -31,6 +31,7 @@ app.use('/api/files', require('./src/routes/files'));
 app.use('/api/audit', require('./src/routes/audit'));
 app.use('/api/dashboard', require('./src/routes/dashboard'));
 app.use('/api/crypto', require('./src/routes/crypto'));
+app.use('/api/security', require('./src/routes/security'));
 
 // Basic error handler
 app.use((err, req, res, next) => {

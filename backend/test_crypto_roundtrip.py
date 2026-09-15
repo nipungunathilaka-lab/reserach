@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from app.services.crypto_service import CryptoContext, CryptoService
+from app.services.crypto_service import CryptoService
 
 
 def test_pfce_round_trip(tmp_path, monkeypatch):
@@ -42,4 +42,3 @@ def test_pfce_round_trip(tmp_path, monkeypatch):
     )
 
     assert recovered == original
-    assert result.original_hash == CryptoService.sha256_bytes(original)

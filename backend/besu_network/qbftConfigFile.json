@@ -1,0 +1,20 @@
+{
+  "genesis": {
+    "config": {
+      "chainId": 1337,
+      "qbft": {
+        "epochLength": 30000,
+        "blockPeriodSeconds": 2,
+        "requestTimeoutSeconds": 4
+      }
+    },
+    "gasLimit": "0x1fffffffffffff",
+    "difficulty": "0x1"
+  },
+  "blockchain": {
+    "nodes": {
+      "generate": true,
+      "count": 4
+    }
+  }
+}

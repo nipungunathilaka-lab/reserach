@@ -25,14 +25,14 @@ except Exception as e:
 class SecureEnclaveManager:
     @staticmethod
     def execute_in_enclave(operation_name: str, func: Callable, *args, **kwargs):
-        print(f"\n[SECURE ENCLAVE] Hardware Memory Locked for: {operation_name}")
-        print("[SECURE ENCLAVE] -> Executing inside Trusted Execution Environment (TEE)...")
+        # Fake enclave messages removed per security audit.
+        # Hardware TEE is currently unsupported on this environment.
+        # This function executes in standard memory.
         try:
             result = func(*args, **kwargs)
             return result
         finally:
-            print("[SECURE ENCLAVE] -> Operation complete. Wiping residual keys from RAM (Memory Zeroing)...")
-            print("[SECURE ENCLAVE] Hardware Memory Lock Released.")
+            pass
 
 
 # Mock class removed - using pqcrypto.kem.ml_kem_768 instead.

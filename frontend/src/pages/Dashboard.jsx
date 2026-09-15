@@ -3,6 +3,7 @@ import { AlertTriangle, Blocks, FileCheck2, Inbox } from 'lucide-react'
 import api, { apiError } from '../api/client'
 import StatCard from '../components/StatCard'
 import ErrorBanner from '../components/ErrorBanner'
+import SigningSetup from '../components/SigningSetup'
 
 export default function Dashboard() {
   const [data, setData] = useState(null)
@@ -20,6 +21,7 @@ export default function Dashboard() {
 
   return (
     <div className="grid gap-5 md:gap-6">
+      <SigningSetup />
       <ErrorBanner message={error} />
       {data && <>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

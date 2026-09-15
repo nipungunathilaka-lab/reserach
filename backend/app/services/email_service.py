@@ -18,7 +18,10 @@ class EmailService:
         mail_from = settings.mail_from or os.getenv("MAIL_FROM") or mail_username
 
         if not mail_username or not mail_password:
-            logger.warning(f"Email credentials not configured. OTP for {email} is: {otp}")
+            if settings.dev_show_otp:
+                logger.warning(f"Email credentials not configured. OTP for {email} is: {otp}")
+            else:
+                logger.warning(f"Email credentials not configured. Email suppressed. Configure MAIL_USERNAME.")
             return
 
         html_content = f"""

@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     # Post-Quantum Cryptography settings
     pqc_enabled: bool = True
     pqc_required: bool = True
-    mlkem_private_key_master_key: str = "T3RoZXJ3aXNlLXlvdS1tdXN0LWNoYW5nZS10aGlzISEx" # Example 32-byte base64 key
+    mlkem_private_key_master_key: str = "T3RoZXJ3aXNlLXlvdS1tdXN0LWNoYW5nZS10aGlzISE=" # Example 32-byte base64 key
 
     # Authentication hardening.
     auth_max_failed_logins: int = 5
@@ -39,7 +39,13 @@ class Settings(BaseSettings):
     ai_min_training_rows: int = 50
     ai_large_file_mb: float = 10.0
     ai_high_risk_file_extensions: str = "exe,bat,cmd,ps1,js,vbs,jar,msi,zip,rar,7z"
-
+    
+    # Continuous Monitoring settings
+    ai_continuous_monitoring_enabled: bool = True
+    ai_monitor_interval_seconds: int = 2
+    ai_monitor_every_n_chunks: int = 5
+    ai_block_threshold: float = 0.8
+    
     # Demo seed data.
     seed_demo_users: bool = True
 

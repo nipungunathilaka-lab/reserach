@@ -10,6 +10,8 @@ const crypto = require('crypto');
 const path = require('path');
 const os = require('os');
 const BlockchainLog = require('../models/BlockchainLog');
+const SigningKey = require('../models/SigningKey');
+const SigningChallenge = require('../models/SigningChallenge');
 
 const UPLOAD_STATUSES = {};
 
@@ -141,7 +143,9 @@ exports.sendFile = async (req, res) => {
       receiver: receiver.email,
       file_size: file.size,
       classification,
-      ai_score: pythonData.anomaly_score
+      ai_score: pythonData.anomaly_score,
+      network_score: pythonData.network_risk_score,
+      combined_score: pythonData.combined_risk_score
     });
 
     res.status(200).json({
@@ -176,11 +180,17 @@ exports.downloadFile = async (req, res) => {
 
     // Forward to Python microservice to decapsulate and decrypt using JSON matching Pydantic schema
     const pythonUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
+    
+    // Fetch sender's active signing key
+    const signingKey = await SigningKey.findOne({ user_id: transfer.sender_id, status: 'ACTIVE' });
+    const sender_public_key_spki = signingKey ? signingKey.public_key_spki : '';
+
     let response;
     try {
       response = await axios.post(`${pythonUrl}/internal/crypto/decrypt`, {
         encrypted_path: transfer.encrypted_path,
-        receiver_id: req.user._id.toString()
+        receiver_id: req.user._id.toString(),
+        sender_public_key_spki
       }, {
         responseType: 'stream'
       });
@@ -256,12 +266,38 @@ exports.uploadChunk = async (req, res) => {
         formData.append('mfa_failed_attempts', mfa_failed_attempts.toString());
         formData.append('failed_login_attempts', req.user.failed_login_attempts?.toString() || '0');
 
+        // Append Digital Signature Metadata
+        if (req.body.client_signature) {
+          formData.append('transfer_id', upload_id);
+          formData.append('client_signature', req.body.client_signature);
+          formData.append('signed_payload_version', req.body.signed_payload_version || 'UPCE-TRANSFER-SIGNATURE-V1');
+          formData.append('client_nonce', req.body.client_nonce || '');
+          formData.append('original_file_sha256', req.body.original_file_sha256 || '');
+          formData.append('issued_at', req.body.issued_at || '');
+
+          // Look up sender's registered public key
+          const signingKey = await SigningKey.findOne({ user_id: req.user._id, status: 'ACTIVE' });
+          if (signingKey) {
+            formData.append('sender_public_key_spki', signingKey.public_key_spki);
+          } else {
+            formData.append('sender_public_key_spki', '');
+          }
+        }
+
         const pythonUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
         const pythonResponse = await axios.post(`${pythonUrl}/internal/crypto/encrypt`, formData, {
           headers: formData.getHeaders()
         });
 
         const pythonData = pythonResponse.data;
+
+        // Mark nonce as consumed AFTER successful cryptographic verification by Python
+        if (req.body.client_signature && req.body.client_nonce) {
+          await SigningChallenge.findOneAndUpdate(
+            { user_id: req.user._id, nonce: req.body.client_nonce, purpose: 'TRANSFER_SIGNING', consumed: false },
+            { $set: { consumed: true } }
+          );
+        }
 
         // Save transfer in Mongo
         const transfer = await Transfer.create({
@@ -283,7 +319,9 @@ exports.uploadChunk = async (req, res) => {
           is_anomaly: pythonData.is_anomaly,
           anomaly_level: pythonData.anomaly_level,
           anomaly_reason: pythonData.anomaly_reason,
-          cipher_algorithm: pythonData.cipher_algorithm
+          cipher_algorithm: pythonData.cipher_algorithm,
+          signature_verified: pythonData.signature_verified || false,
+          signing_key_fingerprint: pythonData.key_fingerprint || ''
         });
 
         // Cleanup assembled file
@@ -301,7 +339,11 @@ exports.uploadChunk = async (req, res) => {
           receiver: receiver.email,
           file_size: transfer.file_size,
           classification: 'standard',
-          ai_score: pythonData.anomaly_score
+          ai_score: pythonData.anomaly_score,
+          network_score: pythonData.network_risk_score,
+          combined_score: pythonData.combined_risk_score,
+          signature_verification: 'VERIFIED',
+          signing_key_fingerprint: pythonData.key_fingerprint || ''
         });
 
         const resultDict = {
@@ -326,7 +368,12 @@ exports.uploadChunk = async (req, res) => {
               is_anomaly: pythonData.is_anomaly,
               level: pythonData.anomaly_level,
               reason: pythonData.anomaly_reason,
-              anomaly_score: pythonData.anomaly_score
+              anomaly_score: pythonData.anomaly_score,
+              network_risk_score: pythonData.network_risk_score,
+              combined_risk_score: pythonData.combined_risk_score,
+              network_signals: pythonData.network_signals,
+              pcap_path: pythonData.pcap_path,
+              flow_stats: pythonData.flow_stats
           },
           blockchain: {
               id: block._id,
@@ -343,6 +390,8 @@ exports.uploadChunk = async (req, res) => {
             blockchain_hash: block.block_hash,
             exec_time_ms: pythonData.execution_time_ms || 120.5,
             ai_score: pythonData.anomaly_score,
+            network_score: pythonData.network_risk_score,
+            combined_score: pythonData.combined_risk_score,
             encryption_type: "PFCE Streaming (AES-256 + RSA)"
           }
         };

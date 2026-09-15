@@ -60,6 +60,13 @@ const TransferSchema = new mongoose.Schema({
     type: String,
     default: 'pending_download'
   },
+  signature_verified: {
+    type: Boolean,
+    default: false
+  },
+  signing_key_fingerprint: {
+    type: String
+  },
   cipher_algorithm: {
     type: String
   },

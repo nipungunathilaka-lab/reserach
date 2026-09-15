@@ -6,7 +6,10 @@ RUN apt-get update && apt-get install -y \
     cmake \
     ninja-build \
     libssl-dev \
+    libsodium-dev \
     git \
+    libpcap-dev \
+    tcpdump \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -14,6 +17,7 @@ WORKDIR /app
 # Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt pytest liboqs-python
+RUN python -c "import oqs"
 
 # Copy source code
 COPY . .

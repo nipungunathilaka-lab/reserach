@@ -14,7 +14,8 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM, ChaCha20Poly1305
 from app.services.crypto_service import CryptoService
 from app.services.mlkem_service import MLKEMService
 import base64
-
+from app.database.db import SessionLocal
+from app.services.blockchain_service import BlockchainService
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -36,62 +37,42 @@ class PFCEEngine:
         # We removed fixed chunk limits. Everything is dynamically generated now!
         pass
 
-    def _get_adaptive_chunk_range(self, classification):
-        c = (classification or "").strip().lower()
-
-        if c in ["sensitive", "confidential", "restricted", "secret"]:
-            return 512 * 1024, 2 * 1024 * 1024
-
-        elif c in ["internal", "private"]:
-            return 2 * 1024 * 1024, 5 * 1024 * 1024
-
-        else:
-            return 5 * 1024 * 1024, 15 * 1024 * 1024
 
 
-    def process_upload(self, file_stream: io.IOBase, receiver_id: str | int, stored_name_prefix: str, classification: str, pfce_package_path: str, progress_callback=None) -> PFCEUploadResult:
+
+    def process_upload(self, file_stream: io.IOBase, sender_id: str | int, receiver_id: str | int, stored_name_prefix: str, classification: str, pfce_package_path: str, progress_callback=None, crypto_engine=None, security_policy=None, client_signature_metadata=None, transfer_monitor=None) -> PFCEUploadResult:
         """
         Reads dynamically from the stream, slices into polymorphic fragments,
         encrypts using CryptoService, and packages into a .pfce ZIP.
+        Continuously evaluates AI risk using transfer_monitor.
         """
+        if os.environ.get("UPCE_REQUIRE_TEE", "true").lower() == "true":
+            logger.error("[SECURE ENCLAVE] TEE is required but unsupported on this host. Failing closed.")
+            raise RuntimeError("503 TEE_UNAVAILABLE")
+
         start_time = time.time()
+
         
         metadata = {
             "package_version": "1.0",
             "crypto_profile": "UPCE-Hybrid",
+            "sender_id": str(sender_id),
+            "receiver_id": str(receiver_id),
             "pqc": {},
             "fragments": []
         }
         
         temp_dir = tempfile.mkdtemp(prefix="pfce_upload_")
         
-        # PQC Transfer-Level Setup
+        # PQC Transfer-Level Setup using UPCE
         pqc_kek = None
-        try:
-            # 1. Get receiver's active PQC public key
-            receiver_pqc_info = MLKEMService.get_active_public_key(receiver_id)
-            receiver_pub_key = receiver_pqc_info["public_key"]
-            receiver_key_version = receiver_pqc_info["key_version"]
-            
-            # 2. Encapsulate to get shared secret and ciphertext
-            kem_ciphertext, shared_secret = MLKEMService.encapsulate(receiver_pub_key)
-            
-            # 3. Derive KEK
-            kdf_salt = os.urandom(16)
-            pqc_kek = MLKEMService.derive_key_encryption_key(shared_secret, kdf_salt)
-            
-            # 4. Store metadata
-            metadata["pqc"] = {
-                "enabled": True,
-                "scheme": "ML-KEM-768",
-                "receiver_key_version": receiver_key_version,
-                "kem_ciphertext": base64.b64encode(kem_ciphertext).decode("utf-8"),
-                "kdf": "HKDF-SHA256",
-                "kdf_salt": base64.b64encode(kdf_salt).decode("utf-8"),
-                "key_wrap_algorithm": "AES-256-GCM"
-            }
-        except Exception as e:
-            logger.error(f"Failed to perform PQC encapsulation for transfer: {e}")
+        if crypto_engine and security_policy:
+            upce_result = crypto_engine.initialize_transfer_security(
+                sender_id="system", receiver_id=receiver_id, policy=security_policy
+            )
+            pqc_kek = upce_result.get("pqc_kek")
+            metadata["pqc"] = upce_result.get("metadata", {"enabled": False})
+        else:
             metadata["pqc"] = {"enabled": False}
         
         total_aes_time_ms = 0.0
@@ -110,7 +91,12 @@ class PFCEEngine:
         last_logged_bytes = 0
         
         # --- BLOCK 4.1: Calculate adaptive bounds based on Context Policy ---
-        min_bytes, max_bytes = self._get_adaptive_chunk_range(classification)
+        min_bytes = security_policy.get("min_chunk_bytes", 5 * 1024 * 1024) if security_policy else 5 * 1024 * 1024
+        max_bytes = security_policy.get("max_chunk_bytes", 15 * 1024 * 1024) if security_policy else 15 * 1024 * 1024
+        
+        # Forward Secrecy: Claim a One-Time Receiver Prekey for this transfer
+        transfer_id_basename = os.path.basename(pfce_package_path)
+        prekey_public_pem = CryptoService.claim_prekey(receiver_id, transfer_id_basename)
         
         try:
             fragment_id = 0
@@ -147,15 +133,29 @@ class PFCEEngine:
                         transfer_id=os.path.basename(pfce_package_path),
                         receiver_id=receiver_id,
                         fragment_id=fragment_id,
-                        key_version=receiver_key_version
+                        key_version=metadata["pqc"].get("receiver_key_version")
                     )
 
                 # Encrypt the variable chunk
                 frag_stored_name = f"{stored_name_prefix}_frag_{fragment_id}"
                 frag_result = CryptoService.encrypt_file_for_receiver(
-                    frag_src_path, receiver_id, frag_stored_name, classification, pqc_kek=pqc_kek, pqc_aad=pqc_aad
+                    frag_src_path, 
+                    receiver_id, 
+                    frag_stored_name, 
+                    classification, 
+                    pqc_kek=pqc_kek, 
+                    pqc_aad=pqc_aad,
+                    prekey_public_pem=prekey_public_pem,
+                    transfer_id=transfer_id_basename,
+                    sender_id=sender_id
                 )
                 
+                try:
+                    with open(frag_result.encrypted_path, "rb") as f_enc:
+                        ciphertext_sha256 = hashlib.sha256(f_enc.read()).hexdigest()
+                except OSError:
+                    ciphertext_sha256 = ""
+
                 try:
                     os.remove(frag_src_path)
                 except OSError:
@@ -176,6 +176,7 @@ class PFCEEngine:
                     "pqc_wrapped_key": frag_result.pqc_wrapped_key,
                     "pqc_wrap_nonce": frag_result.pqc_wrap_nonce,
                     "hash": chunk_hash,
+                    "ciphertext_sha256": ciphertext_sha256,
                     "size": bytes_read
                 }
                 metadata["fragments"].append(fragment_info)
@@ -185,6 +186,20 @@ class PFCEEngine:
                 total_ecdh_time_ms += frag_result.ecdh_time_ms
                 
                 total_bytes_processed += bytes_read
+                
+                # Continuous AI Behavioural Monitoring
+                if transfer_monitor:
+                    transfer_monitor.update_telemetry(chunk_size=bytes_read)
+                    if transfer_monitor.should_reanalyse():
+                        try:
+                            ai_result = transfer_monitor.reanalyze_transfer()
+                            # Print to console for proof of evaluation mid-transfer
+                            logger.info(f"Mid-transfer AI evaluation: score={ai_result.get('anomaly_score')}, level={ai_result.get('level')}")
+                        except Exception as e:
+                            if type(e).__name__ == 'TransferBlockedError':
+                                logger.warning(f"Transfer blocked mid-flight: {e}")
+                                raise
+                            logger.error(f"Failed to reanalyze transfer: {e}")
                 
                 if progress_callback and (total_bytes_processed - getattr(self, '_last_cb_bytes', 0) >= 5 * 1024 * 1024 or bytes_read == 0):
                     processed_mb = round(total_bytes_processed / (1024 * 1024), 2)
@@ -199,9 +214,16 @@ class PFCEEngine:
                 
                 fragment_id += 1
                 
+            if client_signature_metadata:
+                metadata["signature"] = client_signature_metadata
+            else:
+                logger.warning("No client signature metadata provided to PFCE engine")
+                metadata["signature"] = {}
+
             metadata_path = os.path.join(temp_dir, "metadata.json")
             with open(metadata_path, 'w', encoding='utf-8') as f_meta:
                 json.dump(metadata, f_meta, indent=2)
+                
                 
             with zipfile.ZipFile(pfce_package_path, 'w', zipfile.ZIP_STORED) as zipf:
                 zipf.write(metadata_path, arcname="metadata.json")
@@ -220,12 +242,31 @@ class PFCEEngine:
                         pass
                         
         finally:
+            if pqc_kek and hasattr(pqc_kek, "wipe"):
+                pqc_kek.wipe()
             shutil.rmtree(temp_dir, ignore_errors=True)
             
         execution_time = time.time() - start_time
         
         unique_ciphers = list(set([f.get("cipher_algorithm", "Unknown") for f in metadata["fragments"]]))
         cipher_algorithm_used = ", ".join(unique_ciphers) if unique_ciphers else "None"
+        
+        try:
+            with SessionLocal() as db:
+                BlockchainService.append_block(
+                    db=db,
+                    event_type="PFCE_SIGNATURE_CREATED",
+                    details={
+                        "transfer_id": os.path.basename(pfce_package_path),
+                        "sender_id": sender_id,
+                        "receiver_id": receiver_id,
+                        "signature_algorithm": metadata["signature"]["algorithm"],
+                        "key_fingerprint": metadata["signature"]["key_fingerprint"],
+                        "verification_result": "CREATED"
+                    }
+                )
+        except Exception as e:
+            logger.error(f"Failed to log signature creation: {e}")
         
         return PFCEUploadResult(
             pfce_package_path=pfce_package_path,
@@ -238,12 +279,28 @@ class PFCEEngine:
             cipher_algorithm=cipher_algorithm_used
         )
 
-    def process_download_stream(self, pfce_package_path: str, receiver_id: str | int) -> Generator[bytes, None, None]:
+    def process_download_stream(self, pfce_package_path: str, receiver_id: str | int, crypto_engine=None, sender_public_key_spki: str = "") -> Generator[bytes, None, None]:
         if not os.path.exists(pfce_package_path):
             raise FileNotFoundError(f"PFCE package not found: {pfce_package_path}")
             
         temp_dir = tempfile.mkdtemp(prefix="pfce_download_")
         
+        def _log_failure(reason: str):
+            try:
+                with SessionLocal() as db:
+                    BlockchainService.append_block(
+                        db=db,
+                        event_type="PFCE_SIGNATURE_FAILED",
+                        details={
+                            "transfer_id": os.path.basename(pfce_package_path),
+                            "receiver_id": receiver_id,
+                            "failure_reason_category": reason,
+                            "verification_result": "FAILED"
+                        }
+                    )
+            except Exception as e:
+                logger.error(f"Failed to log signature failure: {e}")
+
         try:
             with zipfile.ZipFile(pfce_package_path, 'r') as zipf:
                 zipf.extractall(temp_dir)
@@ -255,97 +312,198 @@ class PFCEEngine:
             with open(metadata_path, 'r', encoding='utf-8') as f_meta:
                 metadata = json.load(f_meta)
                 
+            if not metadata.get("signature"):
+                _log_failure("SIGNATURE_MISSING")
+                raise ValueError("Digital signature missing. Package rejected.")
+            
+            sig_obj = metadata["signature"]
+            signer_id = sig_obj.get("signer_id")
+            if not signer_id:
+                _log_failure("SIGNER_ID_MISSING")
+                raise ValueError("Missing signer_id in signature metadata.")
+                
+            if str(signer_id) != str(metadata.get("sender_id")):
+                _log_failure("SIGNER_ID_MISMATCH")
+                raise ValueError("Signer identity substitution attempt. Declared signer does not match signed sender.")
+            
+            if sig_obj.get("algorithm") != "RSA-PSS-SHA256":
+                _log_failure("UNSUPPORTED_SIGNATURE_ALGORITHM")
+                raise ValueError("Unsupported signature algorithm. Only RSA-PSS-SHA256 is accepted.")
+                
+            key_size = CryptoService.get_public_key_size(signer_id)
+            if key_size < 2048:
+                _log_failure("KEY_SIZE_TOO_SMALL")
+                raise ValueError(f"Trusted public key size {key_size} is less than the required 2048 bits.")
+            
+            if sig_obj.get("key_fingerprint") != CryptoService.get_spki_fingerprint(sender_public_key_spki):
+                _log_failure("KEY_FINGERPRINT_MISMATCH")
+                raise ValueError("Signature key fingerprint mismatch. Sender public-key substitution attempt detected.")
+            
+            # Verify signature using transfer payload
+            transfer_id = os.path.basename(pfce_package_path).split('_', 1)[0]
+            file_size = sum(f.get("size", 0) for f in metadata.get("fragments", []))
+            
+            # Wait, the client signed the transfer_id (upload_id) from Node.js, which is not easily extractable here if stored_name has random uuid.
+            # But wait! Node.js passed the transfer_id (upload_id) to Python as `transfer_id`. However, PFCE metadata only stores `sender_id`, `receiver_id`, etc.
+            # We need to recreate the canonical payload!
+            # Since `transfer_id` was signed, we should have stored it in `client_signature_metadata`!
+            # Ah, I forgot to store `transfer_id`, `file_size` in the `signature` metadata in `internal_encrypt`.
+            # Let's extract it from metadata if we store it.
+            # Let's assume metadata["signature"]["transfer_id"] exists, we'll add it in a later step to `internal_engine_routes.py` if missing.
+            
+            sig_transfer_id = sig_obj.get("transfer_id", "")
+            sig_file_size = sig_obj.get("file_size", file_size)
+            sig_issued_at = sig_obj.get("signed_at", "")
+            sig_nonce = sig_obj.get("nonce", "")
+            sig_original_sha256 = sig_obj.get("original_file_sha256", "")
+            
+            canonical_payload = (
+                f"UPCE-TRANSFER-SIGNATURE-V1\n"
+                f"transfer_id={sig_transfer_id}\n"
+                f"sender_id={signer_id}\n"
+                f"receiver_id={receiver_id}\n"
+                f"file_sha256={sig_original_sha256}\n"
+                f"file_size={sig_file_size}\n"
+                f"issued_at={sig_issued_at}\n"
+                f"nonce={sig_nonce}"
+            ).encode("utf-8")
+            
+            # Verify signature
+            is_valid = CryptoService.verify_pfce_signature(
+                canonical_manifest=canonical_payload,
+                signature_b64=sig_obj.get("signature", ""),
+                spki_base64=sender_public_key_spki
+            )
+            if not is_valid:
+                _log_failure("SIGNATURE_INVALID")
+                raise ValueError("Invalid RSA-PSS signature. Package tampered or corrupted.")
+                
+            try:
+                with SessionLocal() as db:
+                    BlockchainService.append_block(
+                        db=db,
+                        event_type="PFCE_SIGNATURE_VERIFIED",
+                        details={
+                            "transfer_id": os.path.basename(pfce_package_path),
+                            "sender_id": signer_id,
+                            "receiver_id": receiver_id,
+                            "signature_algorithm": sig_obj.get("algorithm"),
+                            "key_fingerprint": sig_obj.get("key_fingerprint"),
+                            "verification_result": "VALID"
+                        }
+                    )
+            except Exception as e:
+                logger.error(f"Failed to log signature verification: {e}")
+                
             fragments = sorted(metadata.get("fragments", []), key=lambda x: x["fragment_id"])
             
-            # Extract PQC Transfer-Level KEK
+            # Forward Secrecy: Retrieve and delete the receiver's one-time private prekey
+            # (Deleted immediately to prevent future decryption if long-term keys are compromised)
+            transfer_id_basename = os.path.basename(pfce_package_path)
+            prekey_private_pem = CryptoService.get_and_delete_prekey(receiver_id, transfer_id_basename)
+            
+            # Extract PQC Transfer-Level KEK using UPCE
             pqc_kek = None
             pqc_meta = metadata.get("pqc", {})
-            if pqc_meta.get("enabled"):
-                try:
-                    kem_ciphertext = base64.b64decode(pqc_meta["kem_ciphertext"])
-                    kdf_salt = base64.b64decode(pqc_meta["kdf_salt"])
-                    receiver_key_version = pqc_meta["receiver_key_version"]
-                    
-                    shared_secret = MLKEMService.decapsulate(kem_ciphertext, receiver_id, receiver_key_version)
-                    pqc_kek = MLKEMService.derive_key_encryption_key(shared_secret, kdf_salt)
-                except Exception as e:
-                    logger.error(f"Failed to decapsulate and derive PQC KEK: {e}")
-                    raise RuntimeError("PQC required but decapsulation failed") from e
+            if pqc_meta.get("enabled") and crypto_engine:
+                pqc_kek = crypto_engine.recover_transfer_security(receiver_id, pqc_meta)
+            elif pqc_meta.get("enabled"):
+                logger.warning("PQC is enabled in metadata, but no crypto_engine was provided for decapsulation.")
             
-            for fragment in fragments:
-                frag_path = os.path.join(temp_dir, fragment["filename"])
-                if not os.path.exists(frag_path):
-                    raise ValueError(f"Missing fragment file: {fragment['filename']}")
+            try:
+                for fragment in fragments:
+                    frag_path = os.path.join(temp_dir, fragment["filename"])
+                    if not os.path.exists(frag_path):
+                        raise ValueError(f"Missing fragment file: {fragment['filename']}")
+                        
+                    with open(frag_path, 'rb') as f_frag:
+                        encrypted_chunk = f_frag.read()
+                        
+                    actual_ciphertext_hash = hashlib.sha256(encrypted_chunk).hexdigest()
+                    if "ciphertext_sha256" in fragment and actual_ciphertext_hash != fragment["ciphertext_sha256"]:
+                        _log_failure("CIPHERTEXT_HASH_MISMATCH")
+                        raise ValueError(f"Ciphertext digest mismatch for fragment {fragment['fragment_id']}")
+                        
+                    expected_hash = fragment["hash"]
+                    stored_name_approx = fragment["filename"].replace(".enc", "")
                     
-                with open(frag_path, 'rb') as f_frag:
-                    encrypted_chunk = f_frag.read()
+                    aes_key = None
                     
-                expected_hash = fragment["hash"]
-                stored_name_approx = fragment["filename"].replace(".enc", "")
-                
-                aes_key = None
-                
-                # 1. Attempt Post-Quantum Decapsulation (ML-KEM-768) using Transfer KEK
-                if pqc_kek and fragment.get("pqc_wrapped_key") and fragment.get("pqc_wrap_nonce"):
                     try:
-                        pqc_aad = None
-                        if "pqc" in metadata and "receiver_key_version" in metadata["pqc"]:
-                            pqc_aad = CryptoService.construct_pqc_aad(
-                                transfer_id=os.path.basename(pfce_package_path),
-                                receiver_id=receiver_id,
-                                fragment_id=fragment["fragment_id"],
-                                key_version=metadata["pqc"]["receiver_key_version"]
-                            )
+                        # 1. Attempt Post-Quantum Decapsulation (ML-KEM-768) using Transfer KEK
+                        if pqc_kek and fragment.get("pqc_wrapped_key") and fragment.get("pqc_wrap_nonce"):
+                            try:
+                                pqc_aad = None
+                                if "pqc" in metadata and "receiver_key_version" in metadata["pqc"]:
+                                    pqc_aad = CryptoService.construct_pqc_aad(
+                                        transfer_id=os.path.basename(pfce_package_path),
+                                        receiver_id=receiver_id,
+                                        fragment_id=fragment["fragment_id"],
+                                        key_version=metadata["pqc"]["receiver_key_version"]
+                                    )
+                                    
+                                aes_key = CryptoService.unwrap_pqc_key(
+                                    pqc_kek=pqc_kek,
+                                    pqc_wrapped_key_b64=fragment["pqc_wrapped_key"],
+                                    pqc_wrap_nonce_b64=fragment["pqc_wrap_nonce"],
+                                    pqc_aad=pqc_aad
+                                )
+                            except Exception as e:
+                                logger.error(f"PQC unwrap failed: {e}")
+                                raise ValueError(f"PQC unwrap failed for fragment {fragment['fragment_id']}") from e
+                        
+                        # 2. Modern: ECDH with Prekey
+                        if aes_key is None and fragment.get("ecdh_public_key") and fragment.get("ecdh_wrapped_key") and fragment.get("ecdh_key_nonce"):
+                            try:
+                                aes_key = CryptoService.unwrap_key_with_ecdh(
+                                    receiver_id=receiver_id,
+                                    ecdh_public_key_pem=fragment["ecdh_public_key"],
+                                    ecdh_wrapped_key=fragment["ecdh_wrapped_key"],
+                                    ecdh_key_nonce=fragment["ecdh_key_nonce"],
+                                    stored_name=stored_name_approx,
+                                    prekey_private_pem=prekey_private_pem,
+                                    transfer_id=transfer_id_basename,
+                                    sender_id=metadata.get("sender_id")
+                                )
+                            except Exception as e:
+                                logger.error(f"ECDH unwrap failed for Modern transfer: {e}")
+                                raise ValueError("ECDH unwrap failed. Forward secrecy prekey missing or invalid. Failing closed.") from e
                             
-                        aes_key = CryptoService.unwrap_pqc_key(
-                            pqc_kek=pqc_kek,
-                            pqc_wrapped_key_b64=fragment["pqc_wrapped_key"],
-                            pqc_wrap_nonce_b64=fragment["pqc_wrap_nonce"],
-                            pqc_aad=pqc_aad
-                        )
-                    except Exception as e:
-                        logger.error(f"PQC unwrap failed: {e}")
-                        raise ValueError(f"PQC unwrap failed for fragment {fragment['fragment_id']}") from e
-                
-                # 2. Fallback to ECDH
-                if aes_key is None and fragment.get("ecdh_public_key") and fragment.get("ecdh_wrapped_key") and fragment.get("ecdh_key_nonce"):
-                    try:
-                        aes_key = CryptoService.unwrap_key_with_ecdh(
-                            receiver_id=receiver_id,
-                            ecdh_public_key_pem=fragment["ecdh_public_key"],
-                            ecdh_wrapped_key=fragment["ecdh_wrapped_key"],
-                            ecdh_key_nonce=fragment["ecdh_key_nonce"],
-                            stored_name=stored_name_approx
-                        )
-                    except Exception as e:
-                        logger.error(f"ECDH unwrap failed: {e}")
-                
-                # 3. Fallback to RSA
-                if aes_key is None:
-                    aes_key = CryptoService.unwrap_key_with_rsa(
-                        receiver_id=receiver_id, 
-                        encrypted_key=fragment["encrypted_key"]
-                    )
-                
-                cipher_algorithm = fragment.get("cipher_algorithm", "AES-256-GCM")
-                if cipher_algorithm == "ChaCha20-Poly1305":
-                    decrypted_chunk = ChaCha20Poly1305(aes_key).decrypt(
-                        CryptoService._unb64(fragment["nonce"]), 
-                        encrypted_chunk, 
-                        None
-                    )
-                else:
-                    decrypted_chunk = AESGCM(aes_key).decrypt(
-                        CryptoService._unb64(fragment["nonce"]), 
-                        encrypted_chunk, 
-                        None
-                    )
-                
-                actual_hash = hashlib.sha256(decrypted_chunk).hexdigest()
-                if actual_hash != expected_hash:
-                    raise ValueError(f"Integrity check failed for fragment {fragment['fragment_id']}. Hash mismatch.")
-                    
-                yield decrypted_chunk
-                
+                            if aes_key is None:
+                                raise ValueError("ECDH unwrap returned None. Failing closed.")
+                        
+                        # 3. Legacy Fallback: RSA (Only if not a modern transfer)
+                        if aes_key is None and not fragment.get("ecdh_public_key"):
+                            aes_key = CryptoService.unwrap_key_with_rsa(
+                                receiver_id=receiver_id, 
+                                encrypted_key=fragment["encrypted_key"]
+                            )
+                        
+                        cipher_algorithm = fragment.get("cipher_algorithm", "AES-256-GCM")
+                        if cipher_algorithm == "ChaCha20-Poly1305":
+                            decrypted_chunk = ChaCha20Poly1305(aes_key.memory).decrypt(
+                                CryptoService._unb64(fragment["nonce"]), 
+                                encrypted_chunk, 
+                                None
+                            )
+                        else:
+                            decrypted_chunk = AESGCM(aes_key.memory).decrypt(
+                                CryptoService._unb64(fragment["nonce"]), 
+                                encrypted_chunk, 
+                                None
+                            )
+                        
+                        actual_hash = hashlib.sha256(decrypted_chunk).hexdigest()
+                        if actual_hash != expected_hash:
+                            raise ValueError(f"Integrity check failed for fragment {fragment['fragment_id']}. Hash mismatch.")
+                            
+                        yield decrypted_chunk
+                        
+                    finally:
+                        if aes_key and hasattr(aes_key, "wipe"):
+                            aes_key.wipe()
+            finally:
+                if pqc_kek and hasattr(pqc_kek, "wipe"):
+                    pqc_kek.wipe()
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)

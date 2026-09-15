@@ -3,10 +3,13 @@ import { Send, UploadCloud, File as FileIcon, Shield, Loader2, AlertTriangle, Ch
 import toast from 'react-hot-toast'
 import api, { apiError } from '../api/client'
 import ErrorBanner from '../components/ErrorBanner'
+import { useAuth } from '../auth/AuthContext'
+import { calculateFileHash, createCanonicalTransferPayload, signTransferPayload } from '../utils/cryptoSigning'
 
 const fmtSize = bytes => `${(bytes / 1024 / 1024).toFixed(3)} MB`
 
 export default function SendFile() {
+  const { user } = useAuth()
   const [receivers, setReceivers] = useState([])
   const [receiverId, setReceiverId] = useState('')
   const [file, setFile] = useState(null)
@@ -48,6 +51,26 @@ export default function SendFile() {
     const uploadId = window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2)
 
     try {
+      // 1. Digital Signature Preparation
+      setUploadProgress(1) // indicate hashing
+      const fileHash = await calculateFileHash(file)
+      
+      const challengeRes = await api.post('/crypto/transfer-challenge')
+      const nonce = challengeRes.nonce
+      const issuedAt = new Date().toISOString()
+      
+      const canonicalPayload = createCanonicalTransferPayload(
+        uploadId,
+        user.id,
+        receiverId,
+        fileHash,
+        file.size,
+        issuedAt,
+        nonce
+      )
+      
+      const signature = await signTransferPayload(user.id, canonicalPayload)
+      
       let finalResult = null
       for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
         const start = chunkIndex * chunkSize
@@ -61,6 +84,12 @@ export default function SendFile() {
         form.append('total_chunks', totalChunks)
         form.append('file_name', file.name)
         form.append('file', new File([chunk], file.name))
+        
+        // Append signature metadata
+        form.append('client_signature', signature)
+        form.append('client_nonce', nonce)
+        form.append('original_file_sha256', fileHash)
+        form.append('issued_at', issuedAt)
 
         const res = await api.post('/files/upload-chunk', form, { headers: { 'Content-Type': 'multipart/form-data' } })
 
