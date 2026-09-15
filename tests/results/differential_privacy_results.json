@@ -1,0 +1,26 @@
+[
+    {
+        "test_name": "DP Processing Overhead Measurement",
+        "timestamp": 1789504738.6805036,
+        "pass": true,
+        "mechanism": "SecureLaplaceMechanism",
+        "dp_enabled": true,
+        "overhead_ms": 0.109
+    },
+    {
+        "test_name": "Active Pipeline Integration",
+        "timestamp": 1789504739.9726987,
+        "pass": true,
+        "active_pipeline_invoked": true,
+        "dp_applied": true,
+        "budget_accounting_result": "SUCCESS",
+        "pipeline_overhead_ms": 1293.4283
+    },
+    {
+        "test_name": "Budget Exhaustion Fallback (Fail Closed)",
+        "timestamp": 1789504739.979071,
+        "pass": true,
+        "fallback_result": "BLOCKED",
+        "security_control_isolation_result": "PRESERVED"
+    }
+]
