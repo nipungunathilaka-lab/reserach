@@ -1,0 +1,901 @@
+file_size_mb,hour_of_day,transfers_last_hour,mfa_failed_attempts,failed_login_attempts,is_unusual_hour,high_risk_file_type,archive_file_type,integrity_status,unauthorized_attempt,encryption_time_ms,decryption_time_ms,ecdh_time_ms,rsa_key_wrap_time_ms,transfer_status,is_anomaly,anomaly_reason,anomaly_level
+4.39,13,1,0,0,0,0,0,verified,0,13.863,10.431,2.36,1.219,completed,0,,none
+35.39,13,1,0,0,0,0,0,verified,0,57.991,53.126,1.894,4.401,completed,0,,none
+33.68,21,1,0,1,0,0,0,verified,0,30.27,28.074,2.374,3.914,completed,0,,none
+3.07,17,2,0,0,0,0,0,verified,0,11.699,11.722,2.887,4.714,completed,0,,none
+805.16,23,7,2,5,1,0,1,failed,0,1616.444,1657.065,1.565,1.322,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+979.39,1,5,3,9,1,1,1,failed,0,1657.718,1674.3,4.06,5.744,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+12.32,13,3,0,0,0,0,0,verified,0,25.222,18.337,2.99,1.721,completed,0,,none
+11.84,15,3,0,0,0,0,0,verified,0,19.502,13.937,1.087,1.347,completed,0,,none
+49.2,17,2,0,0,0,0,0,verified,0,44.985,35.937,0.685,2.173,completed,0,,none
+22.48,17,0,0,0,0,0,1,verified,0,36.969,30.921,1.937,4.564,completed,0,,none
+24.19,19,3,0,0,0,0,0,verified,0,36.566,20.399,2.218,3.073,completed,0,,none
+726.14,23,5,3,6,1,1,1,verified,1,1550.559,1359.336,5.565,7.414,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+29.23,17,2,0,1,0,0,1,verified,0,33.236,33.636,1.771,4.012,completed,0,,none
+3.94,13,2,0,0,0,0,1,verified,0,13.523,12.524,2.942,2.912,completed,0,,none
+37.7,12,3,0,0,0,0,1,verified,0,65.062,33.879,2.16,1.383,completed,0,,none
+783.72,22,14,5,6,0,0,1,failed,0,1252.79,1729.079,5.994,1.818,completed,1,Off-hour massive transfer; repeated auth failures,high
+775.44,0,15,2,6,1,1,1,verified,0,937.545,1642.37,2.932,4.941,completed,1,Off-hour massive transfer; repeated auth failures,medium
+38.69,16,2,0,0,0,0,1,verified,0,41.477,28.702,2.442,4.355,completed,0,,none
+49.94,18,3,0,1,0,0,1,verified,0,84.539,33.012,2.282,3.23,completed,0,,none
+5.23,15,2,0,0,0,0,0,verified,0,16.175,14.209,2.942,4.542,completed,0,,none
+37.75,20,3,0,0,0,0,1,verified,0,49.738,32.096,2.639,4.406,completed,0,,none
+13.77,13,3,0,0,0,0,0,verified,0,21.358,18.787,2.239,2.82,completed,0,,none
+12.5,10,1,0,0,0,0,1,verified,0,26.494,14.989,0.553,2.464,completed,0,,none
+42.67,7,1,0,0,0,0,1,verified,0,55.134,32.212,2.531,2.372,completed,0,,none
+767.19,2,9,4,3,1,0,1,failed,0,1780.161,1629.508,3.513,7.811,completed,1,Off-hour massive transfer; repeated auth failures,medium
+49.61,21,1,0,0,0,0,1,verified,0,35.608,47.96,1.738,2.964,completed,0,,none
+43.51,16,0,0,0,0,0,0,verified,0,40.437,46.014,2.608,4.408,completed,0,,none
+37.91,17,3,0,0,0,0,1,verified,0,47.154,44.396,2.211,4.153,completed,0,,none
+13.55,11,0,0,0,0,0,1,verified,0,23.799,20.148,1.133,3.777,completed,0,,none
+23.83,17,2,0,1,0,0,0,verified,0,36.897,34.276,1.867,1.578,completed,0,,none
+42.5,18,0,0,0,0,0,0,verified,0,55.089,40.508,2.961,3.346,completed,0,,none
+36.31,20,0,0,0,0,0,0,verified,0,43.871,47.483,2.423,4.534,completed,0,,none
+930.6,3,8,1,9,1,0,1,failed,0,1023.971,1118.344,5.452,2.635,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+10.25,17,2,0,1,0,0,1,verified,0,21.317,18.535,1.716,2.286,completed,0,,none
+844.02,23,5,5,8,1,0,1,failed,0,1604.217,1621.937,3.473,3.179,blocked,1,Off-hour massive transfer; repeated auth failures,high
+44.85,21,2,0,0,0,0,1,verified,0,56.004,59.996,0.505,3.159,completed,0,,none
+21.79,9,3,0,0,0,0,1,verified,0,34.554,31.036,2.177,4.697,completed,0,,none
+35.0,20,1,0,0,0,0,1,verified,0,59.03,48.676,2.033,3.288,completed,0,,none
+9.47,15,1,0,1,0,0,0,verified,0,17.481,19.91,1.227,1.401,completed,0,,none
+675.26,23,14,2,9,1,1,1,failed,0,696.645,852.54,3.518,4.126,completed,1,Off-hour massive transfer; repeated auth failures,critical
+40.29,11,2,0,0,0,0,1,verified,0,32.8,50.466,1.836,2.941,completed,0,,none
+41.26,16,2,0,0,0,0,0,verified,0,43.127,60.314,1.612,3.43,completed,0,,none
+26.14,15,3,0,1,0,0,1,verified,0,35.471,24.412,2.003,3.943,completed,0,,none
+974.91,23,6,4,10,1,1,1,failed,1,2109.945,1252.855,2.537,3.957,completed,1,Off-hour massive transfer; repeated auth failures,high
+43.16,18,2,0,0,0,0,1,verified,0,38.877,33.803,1.831,3.631,completed,0,,none
+31.78,6,1,0,0,0,0,0,verified,0,49.708,25.595,2.481,4.42,completed,0,,none
+41.07,15,3,0,0,0,0,0,verified,0,33.767,40.293,1.858,2.703,completed,0,,none
+2.12,20,3,0,0,0,0,1,verified,0,11.984,10.211,2.862,4.527,completed,0,,none
+6.83,20,1,0,1,0,0,1,verified,0,17.73,12.278,0.956,3.329,completed,0,,none
+41.17,11,3,0,0,0,0,1,verified,0,60.34,32.304,1.186,2.309,completed,0,,none
+12.15,17,3,0,0,0,0,1,verified,0,22.915,21.657,1.275,3.925,completed,0,,none
+35.52,13,0,0,1,0,0,0,verified,0,42.289,46.001,1.064,2.685,completed,0,,none
+49.66,14,1,0,0,0,0,0,verified,0,80.024,47.029,1.291,2.762,completed,0,,none
+30.76,12,1,0,0,0,0,0,verified,0,37.876,46.967,1.276,2.508,completed,0,,none
+48.2,11,3,0,0,0,0,1,verified,0,76.446,49.065,0.519,1.788,completed,0,,none
+11.65,20,2,0,1,0,0,0,verified,0,20.395,16.254,1.628,2.204,completed,0,,none
+0.49,18,0,0,0,0,0,1,verified,0,10.43,8.386,1.189,4.16,completed,0,,none
+25.72,19,0,0,0,0,0,0,verified,0,34.195,21.745,1.897,3.627,completed,0,,none
+39.25,12,1,0,0,0,0,1,verified,0,54.636,58.089,2.853,4.203,completed,0,,none
+783.71,23,13,5,8,1,1,1,failed,1,1057.478,1151.415,1.784,3.869,completed,1,Off-hour massive transfer; repeated auth failures,critical
+39.9,17,0,0,0,0,0,1,verified,0,56.721,48.017,0.528,2.019,completed,0,,none
+11.11,15,3,0,0,0,0,1,verified,0,19.258,15.011,2.628,2.309,completed,0,,none
+566.64,2,7,1,3,1,1,1,failed,0,651.069,1228.129,4.217,9.78,completed,1,Off-hour massive transfer; repeated auth failures,medium
+693.48,23,9,2,4,1,0,1,verified,0,717.295,1207.382,1.341,8.579,blocked,1,Off-hour massive transfer; repeated auth failures,high
+680.89,22,12,2,4,0,0,1,failed,1,1321.366,932.993,3.947,1.605,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+45.48,7,3,0,0,0,0,1,verified,0,59.458,53.581,2.228,2.422,completed,0,,none
+13.13,21,2,0,1,0,0,0,verified,0,19.347,17.27,2.748,4.01,completed,0,,none
+43.96,17,3,0,0,0,0,1,verified,0,66.991,39.929,1.187,3.931,completed,0,,none
+14.36,19,3,0,0,0,0,0,verified,0,17.527,15.709,1.211,1.532,completed,0,,none
+684.01,5,11,3,6,1,0,1,failed,1,851.932,763.76,5.312,2.736,blocked,1,Off-hour massive transfer; repeated auth failures,high
+41.25,18,1,0,0,0,0,0,verified,0,31.501,36.619,1.941,2.943,completed,0,,none
+23.97,11,1,0,0,0,0,1,verified,0,29.524,31.411,2.006,4.422,completed,0,,none
+22.42,8,1,0,0,0,0,1,verified,0,36.456,32.173,2.515,1.505,completed,0,,none
+2.14,16,3,0,0,0,0,0,verified,0,12.592,10.391,1.261,4.838,completed,0,,none
+7.6,6,1,0,0,0,0,0,verified,0,16.521,11.833,1.631,3.378,completed,0,,none
+12.14,7,2,0,0,0,0,1,verified,0,22.615,16.916,2.266,2.859,completed,0,,none
+607.49,3,7,1,4,1,0,1,verified,1,1220.173,742.565,1.086,2.832,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+31.57,18,3,0,1,0,0,0,verified,0,30.863,37.881,2.712,4.661,completed,0,,none
+9.79,17,1,0,0,0,0,0,verified,0,21.97,13.201,0.885,4.297,completed,0,,none
+24.3,18,2,0,1,0,0,0,verified,0,43.037,31.213,1.719,4.74,completed,0,,none
+14.37,19,2,0,0,0,0,1,verified,0,30.598,17.291,2.552,2.61,completed,0,,none
+27.49,10,0,0,0,0,0,1,verified,0,46.337,37.09,1.718,3.697,completed,0,,none
+23.67,18,2,0,0,0,0,0,verified,0,25.489,34.389,2.172,3.415,completed,0,,none
+18.48,6,1,0,1,0,0,0,verified,0,25.039,30.997,1.933,1.92,completed,0,,none
+857.02,22,15,1,3,0,1,1,verified,1,2048.49,1033.47,2.487,1.899,completed,1,Off-hour massive transfer; repeated auth failures,high
+34.62,9,1,0,0,0,0,0,verified,0,45.341,27.917,1.958,3.641,completed,0,,none
+5.84,9,2,0,0,0,0,1,verified,0,16.696,11.749,0.548,4.866,completed,0,,none
+11.8,8,0,0,0,0,0,0,verified,0,21.652,14.667,1.114,2.133,completed,0,,none
+30.55,13,1,0,0,0,0,0,verified,0,42.301,42.14,0.98,1.85,completed,0,,none
+31.03,19,1,0,0,0,0,1,verified,0,56.395,28.258,0.719,2.737,completed,0,,none
+8.15,17,2,0,0,0,0,1,verified,0,16.027,14.781,2.295,4.354,completed,0,,none
+750.84,23,10,4,3,1,1,1,failed,0,1863.018,726.138,1.501,5.276,completed,1,Off-hour massive transfer; repeated auth failures,critical
+4.41,21,0,0,0,0,0,0,verified,0,13.204,13.3,2.685,2.455,completed,0,,none
+934.77,1,7,2,6,1,0,1,failed,1,2263.168,1713.144,5.937,3.275,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+4.22,14,2,0,0,0,0,1,verified,0,15.414,11.547,0.962,2.375,completed,0,,none
+37.45,18,2,0,0,0,0,1,verified,0,35.533,33.639,1.763,2.692,completed,0,,none
+43.62,21,2,0,0,0,0,0,verified,0,57.66,54.766,1.541,4.917,completed,0,,none
+29.07,12,1,0,0,0,0,0,verified,0,40.043,36.619,1.172,1.497,completed,0,,none
+3.64,7,0,0,0,0,0,1,verified,0,14.171,11.243,2.866,1.879,completed,0,,none
+16.42,13,3,0,0,0,0,1,verified,0,26.516,28.224,2.637,1.386,completed,0,,none
+43.29,8,3,0,0,0,0,1,verified,0,44.776,52.52,2.33,2.003,completed,0,,none
+855.43,23,5,1,5,1,1,1,failed,0,1623.418,1032.423,1.561,4.614,blocked,1,Off-hour massive transfer; repeated auth failures,high
+41.79,19,0,0,0,0,0,0,verified,0,51.633,51.348,2.855,4.587,completed,0,,none
+15.52,17,0,0,0,0,0,0,verified,0,27.851,22.155,2.054,1.84,completed,0,,none
+36.8,18,1,0,0,0,0,1,verified,0,47.284,46.121,0.825,4.494,completed,0,,none
+25.57,20,2,0,0,0,0,1,verified,0,28.426,29.093,2.437,1.936,completed,0,,none
+18.97,18,0,0,0,0,0,0,verified,0,23.964,23.265,1.364,2.45,completed,0,,none
+15.7,10,0,0,0,0,0,1,verified,0,21.276,23.538,2.98,2.216,completed,0,,none
+48.66,18,3,0,1,0,0,0,verified,0,47.124,45.954,0.545,4.314,completed,0,,none
+40.92,10,0,0,0,0,0,1,verified,0,57.58,51.382,2.468,4.919,completed,0,,none
+10.36,7,2,0,1,0,0,0,verified,0,20.314,13.568,1.74,4.645,completed,0,,none
+47.31,15,0,0,0,0,0,0,verified,0,45.014,67.784,2.201,4.569,completed,0,,none
+19.88,16,0,0,1,0,0,1,verified,0,26.767,20.244,0.538,2.214,completed,0,,none
+8.84,8,2,0,0,0,0,1,verified,0,15.68,16.734,2.918,3.521,completed,0,,none
+6.46,20,3,0,0,0,0,0,verified,0,18.053,14.828,1.543,2.289,completed,0,,none
+34.12,6,0,0,0,0,0,0,verified,0,47.909,39.537,2.228,4.343,completed,0,,none
+825.49,22,7,4,8,0,0,1,verified,1,1170.868,918.193,5.617,8.776,completed,1,Off-hour massive transfer; repeated auth failures,critical
+43.53,16,2,0,0,0,0,0,verified,0,53.341,53.331,2.392,4.055,completed,0,,none
+3.25,9,1,0,0,0,0,1,verified,0,11.996,11.72,1.167,1.513,completed,0,,none
+985.28,5,12,3,4,1,1,1,verified,0,2051.625,1289.861,0.602,4.63,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+820.78,1,9,3,4,1,0,1,failed,1,1591.496,852.725,2.659,7.973,completed,1,Off-hour massive transfer; repeated auth failures,medium
+533.13,3,13,5,4,1,1,1,verified,1,1092.191,1074.649,1.902,2.62,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+733.08,0,9,4,9,1,1,1,verified,0,1464.573,920.373,5.044,3.095,completed,1,Off-hour massive transfer; repeated auth failures,medium
+541.46,23,7,3,8,1,0,1,verified,0,1132.542,693.833,2.761,6.515,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+41.5,10,2,0,0,0,0,1,verified,0,46.641,29.687,2.45,4.64,completed,0,,none
+15.02,15,2,0,0,0,0,0,verified,0,31.45,23.906,2.005,4.126,completed,0,,none
+7.4,20,3,0,1,0,0,0,verified,0,16.077,12.452,2.591,2.085,completed,0,,none
+22.12,8,1,0,1,0,0,0,verified,0,34.741,22.358,1.156,2.342,completed,0,,none
+0.54,6,0,0,0,0,0,1,verified,0,10.592,8.567,0.818,4.973,completed,0,,none
+34.13,8,3,0,0,0,0,1,verified,0,58.698,32.512,0.849,1.72,completed,0,,none
+930.6,5,12,4,4,1,0,1,failed,1,1856.41,980.154,1.897,3.13,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+2.61,11,0,0,1,0,0,0,verified,0,13.681,10.004,2.962,4.679,completed,0,,none
+840.01,2,9,3,9,1,0,1,failed,1,1635.183,1499.023,4.061,5.88,completed,1,Off-hour massive transfer; repeated auth failures,critical
+536.18,23,7,3,8,1,1,1,verified,1,1335.448,552.745,5.567,2.823,completed,1,Off-hour massive transfer; repeated auth failures,medium
+25.57,13,2,0,0,0,0,1,verified,0,28.291,28.472,2.321,3.01,completed,0,,none
+642.22,2,10,4,10,1,1,1,failed,1,1100.194,916.121,5.118,8.455,completed,1,Off-hour massive transfer; repeated auth failures,critical
+831.22,23,7,4,3,1,1,1,verified,0,1693.495,1876.427,4.308,6.833,blocked,1,Off-hour massive transfer; repeated auth failures,high
+14.79,17,0,0,0,0,0,1,verified,0,27.261,21.567,0.646,3.853,completed,0,,none
+44.44,14,1,0,0,0,0,1,verified,0,58.506,61.16,0.649,4.594,completed,0,,none
+23.7,8,3,0,1,0,0,1,verified,0,40.845,22.537,2.119,2.508,completed,0,,none
+34.86,10,0,0,0,0,0,0,verified,0,61.517,26.709,0.902,2.754,completed,0,,none
+47.3,6,1,0,0,0,0,1,verified,0,57.366,32.651,0.911,3.789,completed,0,,none
+31.82,8,0,0,1,0,0,1,verified,0,50.765,44.37,2.255,1.788,completed,0,,none
+512.32,2,6,1,7,1,1,1,failed,0,506.046,949.328,3.124,6.895,blocked,1,Off-hour massive transfer; repeated auth failures,high
+24.3,13,0,0,0,0,0,1,verified,0,46.265,22.56,0.616,1.536,completed,0,,none
+2.25,19,1,0,0,0,0,0,verified,0,11.655,9.301,2.9,1.226,completed,0,,none
+14.33,15,0,0,0,0,0,1,verified,0,17.27,25.72,2.587,4.338,completed,0,,none
+2.62,9,2,0,1,0,0,1,verified,0,11.637,11.119,0.806,3.14,completed,0,,none
+0.89,7,2,0,0,0,0,1,verified,0,10.839,8.902,0.854,2.291,completed,0,,none
+17.2,10,2,0,1,0,0,1,verified,0,22.695,25.384,2.156,1.917,completed,0,,none
+13.16,17,3,0,0,0,0,1,verified,0,25.94,15.745,1.645,3.534,completed,0,,none
+29.84,7,1,0,0,0,0,0,verified,0,50.313,29.834,2.002,2.619,completed,0,,none
+9.84,13,0,0,0,0,0,1,verified,0,20.395,13.917,0.83,3.726,completed,0,,none
+525.8,23,12,1,4,1,0,1,verified,1,847.162,928.376,4.702,2.014,completed,1,Off-hour massive transfer; repeated auth failures,medium
+3.75,21,1,0,1,0,0,1,verified,0,13.347,11.067,1.704,4.266,completed,0,,none
+10.55,13,2,0,0,0,0,0,verified,0,15.454,18.74,2.208,4.905,completed,0,,none
+861.85,22,11,2,9,0,0,1,failed,1,1585.254,1984.703,3.198,2.537,completed,1,Off-hour massive transfer; repeated auth failures,medium
+5.82,19,1,0,0,0,0,1,verified,0,17.401,15.345,2.128,1.24,completed,0,,none
+899.61,4,5,5,5,1,0,1,failed,0,1693.477,2044.85,4.596,9.975,blocked,1,Off-hour massive transfer; repeated auth failures,high
+49.5,20,3,0,0,0,0,0,verified,0,58.793,58.016,2.034,2.388,completed,0,,none
+9.49,10,2,0,1,0,0,0,verified,0,17.726,15.127,1.206,4.725,completed,0,,none
+881.53,22,14,1,9,0,1,1,failed,1,1079.334,1068.084,4.41,6.965,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+23.7,15,3,0,1,0,0,1,verified,0,35.344,23.577,2.34,1.236,completed,0,,none
+31.77,21,1,0,0,0,0,1,verified,0,43.725,31.917,2.288,3.064,completed,0,,none
+49.64,7,1,0,1,0,0,0,verified,0,49.967,67.304,0.809,3.484,completed,0,,none
+48.29,17,0,0,0,0,0,1,verified,0,80.335,49.502,2.013,4.877,completed,0,,none
+21.17,21,3,0,0,0,0,0,verified,0,39.199,28.548,2.101,4.837,completed,0,,none
+31.3,8,2,0,0,0,0,1,verified,0,55.136,27.701,2.214,3.22,completed,0,,none
+22.46,14,3,0,0,0,0,1,verified,0,43.13,20.799,2.653,3.555,completed,0,,none
+44.05,19,3,0,0,0,0,1,verified,0,45.763,57.192,1.696,2.557,completed,0,,none
+927.2,4,8,2,7,1,0,1,failed,1,1362.262,1140.217,5.726,1.697,completed,1,Off-hour massive transfer; repeated auth failures,medium
+854.64,22,6,3,9,0,1,1,verified,0,1664.399,1952.156,5.947,3.195,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+19.32,17,3,0,0,0,0,1,verified,0,38.469,19.227,2.027,3.833,completed,0,,none
+47.35,11,0,0,0,0,0,0,verified,0,49.932,35.983,0.676,3.049,completed,0,,none
+852.59,22,14,2,6,0,1,1,verified,0,1984.362,1749.308,0.913,4.677,completed,1,Off-hour massive transfer; repeated auth failures,critical
+5.97,16,2,0,0,0,0,0,verified,0,18.468,12.917,2.371,3.218,completed,0,,none
+48.02,12,0,0,0,0,0,1,verified,0,51.005,48.227,2.828,3.413,completed,0,,none
+6.8,8,0,0,1,0,0,1,verified,0,16.462,16.096,2.158,4.584,completed,0,,none
+16.48,12,3,0,0,0,0,0,verified,0,33.149,25.064,2.169,4.517,completed,0,,none
+21.39,21,0,0,0,0,0,1,verified,0,33.252,30.619,1.306,2.286,completed,0,,none
+17.82,10,3,0,1,0,0,1,verified,0,34.385,23.111,1.242,1.301,completed,0,,none
+565.48,3,6,2,6,1,0,1,verified,0,638.823,697.134,3.431,8.506,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+540.16,3,7,3,9,1,1,1,failed,1,849.185,833.551,4.131,6.267,completed,1,Off-hour massive transfer; repeated auth failures,high
+3.04,14,1,0,1,0,0,1,verified,0,11.551,10.843,1.113,2.246,completed,0,,none
+21.36,14,2,0,1,0,0,1,verified,0,39.166,21.992,0.624,3.423,completed,0,,none
+1.2,21,3,0,0,0,0,0,verified,0,11.556,8.913,2.132,3.529,completed,0,,none
+47.4,9,1,0,1,0,0,0,verified,0,53.471,64.279,0.565,1.734,completed,0,,none
+32.17,12,1,0,0,0,0,0,verified,0,38.272,39.166,2.921,2.791,completed,0,,none
+14.74,10,1,0,0,0,0,0,verified,0,20.083,20.105,2.392,1.611,completed,0,,none
+34.46,15,2,0,0,0,0,1,verified,0,49.792,51.26,2.033,4.836,completed,0,,none
+25.08,14,0,0,0,0,0,1,verified,0,40.078,37.474,2.674,2.823,completed,0,,none
+16.76,18,1,0,0,0,0,0,verified,0,34.69,28.407,1.472,3.792,completed,0,,none
+703.31,0,9,5,8,1,0,1,failed,0,980.429,1615.787,4.886,7.156,blocked,1,Off-hour massive transfer; repeated auth failures,high
+36.88,14,1,0,1,0,0,1,verified,0,30.259,51.194,1.259,3.021,completed,0,,none
+43.35,17,1,0,1,0,0,0,verified,0,36.494,48.273,2.235,3.198,completed,0,,none
+611.84,1,6,1,9,1,1,1,verified,1,806.472,789.019,3.88,2.282,completed,1,Off-hour massive transfer; repeated auth failures,high
+644.28,23,7,1,9,1,1,1,failed,1,694.621,1248.246,4.308,9.598,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+20.15,10,2,0,1,0,0,0,verified,0,24.96,25.696,1.374,2.982,completed,0,,none
+27.79,13,3,0,0,0,0,0,verified,0,32.616,32.937,2.67,3.781,completed,0,,none
+26.89,7,0,0,0,0,0,0,verified,0,29.991,33.124,1.409,3.772,completed,0,,none
+39.39,9,2,0,0,0,0,1,verified,0,43.609,54.58,2.073,4.473,completed,0,,none
+31.3,7,3,0,0,0,0,1,verified,0,27.278,32.962,1.471,3.006,completed,0,,none
+623.32,1,13,4,2,1,1,1,verified,0,1109.956,927.302,1.592,9.108,completed,1,Off-hour massive transfer; repeated auth failures,critical
+17.29,13,2,0,0,0,0,1,verified,0,33.315,16.921,2.242,4.054,completed,0,,none
+46.61,9,2,0,0,0,0,0,verified,0,33.894,34.453,1.665,4.13,completed,0,,none
+37.23,6,3,0,0,0,0,0,verified,0,34.371,44.921,2.037,3.146,completed,0,,none
+49.62,19,1,0,0,0,0,1,verified,0,51.325,49.141,2.507,2.258,completed,0,,none
+26.45,6,0,0,0,0,0,0,verified,0,42.5,38.036,2.421,1.68,completed,0,,none
+14.76,10,0,0,0,0,0,1,verified,0,31.101,21.767,2.695,4.47,completed,0,,none
+40.17,14,0,0,0,0,0,0,verified,0,54.294,45.377,2.093,4.985,completed,0,,none
+4.33,11,3,0,0,0,0,0,verified,0,14.085,13.42,0.518,3.38,completed,0,,none
+33.55,21,0,0,0,0,0,1,verified,0,46.344,51.557,1.486,2.664,completed,0,,none
+961.0,22,7,3,10,0,1,1,verified,1,1527.625,1236.588,4.333,2.41,blocked,1,Off-hour massive transfer; repeated auth failures,high
+976.41,5,14,3,4,1,0,1,verified,0,1738.555,2004.226,5.822,3.626,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+36.09,7,2,0,1,0,0,1,verified,0,44.263,47.684,0.638,2.248,completed,0,,none
+3.85,6,2,0,1,0,0,1,verified,0,15.726,12.492,2.669,2.924,completed,0,,none
+42.01,16,0,0,0,0,0,1,verified,0,70.096,39.887,1.935,4.187,completed,0,,none
+16.56,8,0,0,0,0,0,1,verified,0,21.041,25.587,0.804,1.816,completed,0,,none
+754.64,4,13,3,7,1,0,1,verified,0,1017.325,1248.346,3.655,8.816,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+714.31,23,14,1,4,1,0,1,verified,0,1747.683,1264.601,3.674,7.188,completed,1,Off-hour massive transfer; repeated auth failures,high
+522.73,23,8,4,10,1,0,1,verified,0,586.444,916.811,3.489,3.837,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+19.61,18,1,0,1,0,0,1,verified,0,25.33,25.88,1.078,1.296,completed,0,,none
+7.62,17,1,0,0,0,0,1,verified,0,14.419,13.884,0.787,1.907,completed,0,,none
+756.67,1,12,3,9,1,0,1,failed,0,842.292,1261.677,5.096,7.278,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+507.17,4,11,2,10,1,0,1,verified,1,1227.876,640.806,3.879,8.172,completed,1,Off-hour massive transfer; repeated auth failures,critical
+7.58,17,0,0,1,0,0,0,verified,0,19.646,12.961,1.278,2.426,completed,0,,none
+5.93,9,1,0,1,0,0,0,verified,0,13.565,14.07,1.96,1.297,completed,0,,none
+48.27,19,3,0,0,0,0,0,verified,0,76.242,32.538,1.273,2.281,completed,0,,none
+6.39,18,0,0,0,0,0,0,verified,0,18.51,13.118,2.365,2.519,completed,0,,none
+42.26,15,3,0,0,0,0,1,verified,0,50.067,30.98,1.487,4.962,completed,0,,none
+31.37,8,1,0,1,0,0,1,verified,0,26.821,40.576,2.232,4.361,completed,0,,none
+660.47,22,9,4,6,0,0,1,failed,1,948.35,708.007,5.56,2.052,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+17.26,16,0,0,1,0,0,1,verified,0,29.593,19.664,2.968,3.796,completed,0,,none
+1.92,21,1,0,0,0,0,1,verified,0,12.021,10.347,0.515,2.766,completed,0,,none
+45.4,20,2,0,0,0,0,0,verified,0,44.013,54.111,1.052,4.045,completed,0,,none
+24.01,17,3,0,0,0,0,1,verified,0,23.434,25.338,2.555,3.072,completed,0,,none
+6.67,8,3,0,0,0,0,1,verified,0,14.208,16.223,2.328,2.089,completed,0,,none
+859.93,22,9,3,7,0,0,1,failed,1,2035.848,1356.55,3.349,9.568,blocked,1,Off-hour massive transfer; repeated auth failures,high
+14.55,7,2,0,1,0,0,1,verified,0,27.079,17.297,1.116,3.043,completed,0,,none
+11.8,11,2,0,0,0,0,1,verified,0,19.985,19.747,1.896,1.552,completed,0,,none
+3.4,11,2,0,0,0,0,0,verified,0,12.721,12.244,1.587,1.747,completed,0,,none
+26.56,14,2,0,1,0,0,0,verified,0,27.26,39.664,2.074,2.098,completed,0,,none
+47.23,8,1,0,0,0,0,1,verified,0,77.663,61.351,1.5,2.205,completed,0,,none
+22.77,13,2,0,1,0,0,1,verified,0,32.403,31.328,2.938,2.588,completed,0,,none
+1.76,21,1,0,1,0,0,0,verified,0,11.02,10.003,1.834,3.985,completed,0,,none
+36.64,7,0,0,0,0,0,1,verified,0,31.932,39.332,2.329,3.621,completed,0,,none
+10.67,6,2,0,0,0,0,1,verified,0,17.405,15.847,2.747,3.158,completed,0,,none
+38.34,11,3,0,0,0,0,1,verified,0,50.472,51.359,2.06,3.707,completed,0,,none
+23.5,17,2,0,1,0,0,1,verified,0,25.12,34.972,1.114,3.443,completed,0,,none
+0.45,12,3,0,0,0,0,1,verified,0,10.288,8.425,1.9,1.387,completed,0,,none
+33.24,6,2,0,0,0,0,1,verified,0,39.169,45.397,2.14,4.834,completed,0,,none
+3.75,13,2,0,0,0,0,1,verified,0,13.101,12.06,1.155,3.815,completed,0,,none
+15.62,10,1,0,1,0,0,0,verified,0,20.781,21.545,2.141,4.515,completed,0,,none
+30.38,20,2,0,0,0,0,0,verified,0,48.95,41.276,1.268,4.437,completed,0,,none
+23.73,19,1,0,0,0,0,1,verified,0,39.473,20.592,2.074,1.527,completed,0,,none
+46.44,15,1,0,0,0,0,1,verified,0,44.957,40.242,2.157,3.618,completed,0,,none
+41.65,13,2,0,1,0,0,1,verified,0,62.929,44.441,2.624,1.69,completed,0,,none
+11.51,12,2,0,0,0,0,0,verified,0,23.533,16.321,1.003,2.206,completed,0,,none
+3.94,19,3,0,0,0,0,1,verified,0,11.977,12.833,2.984,1.347,completed,0,,none
+47.88,21,0,0,0,0,0,1,verified,0,73.043,67.476,2.027,2.527,completed,0,,none
+14.48,15,3,0,1,0,0,0,verified,0,19.814,25.763,1.866,4.445,completed,0,,none
+895.57,23,7,3,9,1,1,1,failed,1,2130.862,819.962,1.401,9.934,completed,1,Off-hour massive transfer; repeated auth failures,medium
+35.72,12,2,0,0,0,0,0,verified,0,45.775,54.363,2.869,3.038,completed,0,,none
+18.22,14,1,0,0,0,0,0,verified,0,30.74,30.268,2.203,3.5,completed,0,,none
+18.57,16,1,0,1,0,0,1,verified,0,27.026,29.152,1.611,1.614,completed,0,,none
+749.94,2,9,2,2,1,0,1,failed,1,1827.67,937.359,1.447,5.193,completed,1,Off-hour massive transfer; repeated auth failures,medium
+558.39,5,10,3,5,1,1,1,verified,1,1194.99,1238.621,1.557,4.103,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+44.42,12,0,0,0,0,0,0,verified,0,55.565,37.532,1.173,4.825,completed,0,,none
+49.37,7,3,0,0,0,0,0,verified,0,69.449,70.21,2.371,2.878,completed,0,,none
+22.1,7,0,0,1,0,0,0,verified,0,41.063,19.338,1.161,4.652,completed,0,,none
+18.02,7,1,0,1,0,0,1,verified,0,20.563,28.137,2.906,1.73,completed,0,,none
+900.06,1,10,2,8,1,0,1,failed,0,883.383,1513.825,2.711,4.114,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+49.58,14,3,0,0,0,0,0,verified,0,55.299,48.413,2.019,4.744,completed,0,,none
+41.04,8,1,0,0,0,0,0,verified,0,49.577,50.38,1.227,3.981,completed,0,,none
+590.07,0,5,5,8,1,1,1,failed,0,1203.221,960.608,1.527,6.123,completed,1,Off-hour massive transfer; repeated auth failures,medium
+11.09,6,3,0,1,0,0,1,verified,0,23.918,17.33,2.357,3.266,completed,0,,none
+14.86,21,2,0,1,0,0,1,verified,0,19.444,25.304,1.819,2.063,completed,0,,none
+11.7,21,2,0,1,0,0,1,verified,0,17.478,17.551,1.131,1.993,completed,0,,none
+11.45,12,0,0,0,0,0,1,verified,0,16.166,15.785,0.69,2.629,completed,0,,none
+10.65,12,2,0,1,0,0,0,verified,0,24.068,16.209,2.225,2.869,completed,0,,none
+13.61,19,3,0,0,0,0,0,verified,0,24.956,24.395,1.6,2.098,completed,0,,none
+3.32,20,2,0,0,0,0,0,verified,0,12.923,10.205,2.538,4.532,completed,0,,none
+892.25,23,9,2,6,1,0,1,failed,0,845.417,1127.908,2.392,4.023,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+893.24,23,15,3,6,1,0,1,verified,0,1228.378,1178.65,2.705,8.365,blocked,1,Off-hour massive transfer; repeated auth failures,high
+13.67,11,0,0,0,0,0,1,verified,0,17.311,15.679,0.966,1.891,completed,0,,none
+28.46,19,3,0,0,0,0,0,verified,0,35.61,25.065,0.733,1.273,completed,0,,none
+32.0,8,3,0,0,0,0,0,verified,0,36.101,30.845,2.271,3.967,completed,0,,none
+14.51,12,0,0,0,0,0,0,verified,0,23.898,26.726,1.188,2.644,completed,0,,none
+22.45,15,0,0,1,0,0,1,verified,0,38.329,31.606,0.631,4.455,completed,0,,none
+10.38,13,0,0,0,0,0,1,verified,0,24.634,19.097,1.236,4.258,completed,0,,none
+4.53,6,1,0,0,0,0,1,verified,0,15.918,12.223,2.286,3.077,completed,0,,none
+570.34,22,13,3,5,0,0,1,verified,0,838.47,987.231,3.911,2.602,completed,1,Off-hour massive transfer; repeated auth failures,high
+639.0,23,8,3,9,1,1,1,failed,1,1282.367,1075.534,1.846,4.394,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+731.47,23,11,5,3,1,1,1,verified,1,1003.689,1453.937,4.666,6.981,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+0.83,9,2,0,0,0,0,0,verified,0,10.937,9.069,2.671,1.564,completed,0,,none
+0.43,8,1,0,0,0,0,0,verified,0,10.624,8.471,1.56,2.216,completed,0,,none
+11.8,9,0,0,0,0,0,1,verified,0,26.294,15.57,0.818,1.351,completed,0,,none
+29.77,17,3,0,1,0,0,0,verified,0,31.664,34.489,2.725,1.211,completed,0,,none
+40.01,7,2,0,0,0,0,1,verified,0,68.495,49.328,1.87,4.056,completed,0,,none
+48.92,19,0,0,0,0,0,1,verified,0,55.52,43.099,1.69,2.841,completed,0,,none
+2.55,10,2,0,0,0,0,0,verified,0,13.797,11.003,1.443,3.562,completed,0,,none
+37.86,7,3,0,0,0,0,1,verified,0,58.492,49.222,1.499,3.508,completed,0,,none
+24.2,13,0,0,0,0,0,1,verified,0,43.555,32.736,0.875,2.249,completed,0,,none
+32.13,18,0,0,0,0,0,1,verified,0,30.816,45.004,1.183,1.875,completed,0,,none
+29.62,10,0,0,1,0,0,0,verified,0,24.934,34.518,1.034,1.36,completed,0,,none
+44.56,21,1,0,1,0,0,1,verified,0,37.175,55.871,2.049,1.974,completed,0,,none
+17.07,13,1,0,0,0,0,0,verified,0,33.333,25.928,2.65,4.004,completed,0,,none
+24.83,21,3,0,0,0,0,0,verified,0,30.643,27.062,1.033,4.521,completed,0,,none
+9.11,21,3,0,0,0,0,0,verified,0,18.929,13.793,2.388,3.395,completed,0,,none
+11.61,21,2,0,1,0,0,0,verified,0,20.416,17.472,0.732,1.6,completed,0,,none
+35.51,16,1,0,0,0,0,1,verified,0,29.323,51.563,1.942,1.592,completed,0,,none
+15.82,14,2,0,1,0,0,1,verified,0,18.159,20.633,2.295,1.725,completed,0,,none
+934.43,1,9,3,10,1,1,1,verified,0,1872.74,866.023,4.196,2.788,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+32.05,12,3,0,0,0,0,0,verified,0,57.262,47.222,0.803,1.291,completed,0,,none
+4.33,20,0,0,0,0,0,1,verified,0,16.454,12.195,2.918,1.314,completed,0,,none
+41.67,19,3,0,0,0,0,0,verified,0,45.079,61.555,0.501,4.616,completed,0,,none
+45.22,19,1,0,0,0,0,0,verified,0,52.387,51.79,2.505,3.644,completed,0,,none
+46.32,7,0,0,1,0,0,0,verified,0,70.782,54.066,1.301,2.297,completed,0,,none
+37.2,6,0,0,1,0,0,1,verified,0,57.976,32.478,0.739,3.355,completed,0,,none
+14.41,19,3,0,0,0,0,0,verified,0,24.042,24.142,2.084,2.415,completed,0,,none
+16.7,8,1,0,0,0,0,1,verified,0,26.051,18.513,1.272,1.575,completed,0,,none
+36.3,21,1,0,0,0,0,1,verified,0,29.187,53.264,2.859,3.899,completed,0,,none
+25.87,15,2,0,1,0,0,0,verified,0,30.61,23.448,2.571,4.725,completed,0,,none
+49.77,20,0,0,1,0,0,1,verified,0,34.981,51.778,2.604,2.795,completed,0,,none
+21.14,20,3,0,0,0,0,1,verified,0,38.349,30.566,2.286,3.371,completed,0,,none
+814.69,3,9,2,3,1,1,1,verified,1,1227.401,1352.185,0.965,8.285,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+20.17,6,2,0,1,0,0,1,verified,0,21.002,21.734,1.2,1.818,completed,0,,none
+38.63,6,1,0,0,0,0,1,verified,0,44.294,51.038,2.046,4.576,completed,0,,none
+513.46,23,13,1,10,1,0,1,verified,1,1282.972,1031.941,1.365,7.01,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+21.81,7,3,0,0,0,0,0,verified,0,35.831,20.77,1.588,2.039,completed,0,,none
+27.84,19,0,0,0,0,0,0,verified,0,40.879,22.606,1.285,2.644,completed,0,,none
+9.49,17,0,0,0,0,0,0,verified,0,22.386,16.149,0.747,3.246,completed,0,,none
+735.28,4,10,1,6,1,0,1,verified,1,1174.48,1018.58,3.455,4.264,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+2.8,12,1,0,0,0,0,1,verified,0,13.442,10.66,2.998,1.77,completed,0,,none
+45.73,18,0,0,0,0,0,1,verified,0,40.627,50.609,1.47,3.471,completed,0,,none
+866.52,1,8,5,6,1,0,1,verified,0,1048.27,1931.202,3.993,3.779,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+737.42,22,8,1,8,0,1,1,failed,1,1663.09,1701.864,5.636,6.46,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+6.98,7,1,0,0,0,0,1,verified,0,17.376,14.741,2.787,4.796,completed,0,,none
+13.71,7,3,0,0,0,0,0,verified,0,18.683,17.645,2.359,4.721,completed,0,,none
+7.25,8,2,0,0,0,0,0,verified,0,17.732,13.397,1.049,4.428,completed,0,,none
+839.4,22,15,1,2,0,0,1,verified,1,1338.159,879.274,0.701,3.114,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+17.03,10,2,0,0,0,0,0,verified,0,29.451,28.966,1.212,4.232,completed,0,,none
+41.66,15,0,0,0,0,0,0,verified,0,66.695,58.47,2.348,4.733,completed,0,,none
+2.84,9,0,0,0,0,0,0,verified,0,11.788,10.069,1.579,2.354,completed,0,,none
+3.08,21,3,0,0,0,0,0,verified,0,11.798,10.412,0.837,1.549,completed,0,,none
+19.17,11,1,0,0,0,0,0,verified,0,38.239,20.387,1.813,4.959,completed,0,,none
+3.09,10,2,0,0,0,0,1,verified,0,14.213,11.132,2.222,2.356,completed,0,,none
+34.39,8,2,0,0,0,0,1,verified,0,35.14,30.156,1.272,1.592,completed,0,,none
+11.34,7,3,0,0,0,0,1,verified,0,25.932,13.816,1.103,1.542,completed,0,,none
+15.68,7,3,0,0,0,0,1,verified,0,26.568,26.302,1.079,3.626,completed,0,,none
+47.93,8,3,0,0,0,0,1,verified,0,40.514,68.27,2.366,1.37,completed,0,,none
+36.79,17,3,0,0,0,0,0,verified,0,44.323,38.283,2.57,2.841,completed,0,,none
+28.89,14,1,0,1,0,0,0,verified,0,43.333,32.474,1.639,1.216,completed,0,,none
+46.1,18,2,0,1,0,0,1,verified,0,52.592,47.168,2.792,3.411,completed,0,,none
+776.04,23,13,2,2,1,1,1,verified,1,1329.17,1312.451,2.516,6.725,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+508.11,3,6,2,2,1,0,1,failed,1,643.144,685.316,0.821,2.686,completed,1,Off-hour massive transfer; repeated auth failures,critical
+1.51,11,2,0,1,0,0,1,verified,0,11.972,9.21,0.861,3.828,completed,0,,none
+41.99,7,1,0,0,0,0,1,verified,0,68.051,61.241,2.407,2.153,completed,0,,none
+10.9,6,0,0,0,0,0,1,verified,0,19.798,15.131,2.697,4.229,completed,0,,none
+633.66,2,5,2,3,1,1,1,failed,1,696.161,785.748,5.518,6.041,completed,1,Off-hour massive transfer; repeated auth failures,critical
+16.78,21,1,0,0,0,0,1,verified,0,24.218,21.648,1.599,2.996,completed,0,,none
+764.26,5,7,5,6,1,1,1,failed,0,713.041,1098.766,5.646,3.776,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+691.18,23,15,4,6,1,0,1,failed,1,1526.874,1551.469,4.383,7.156,completed,1,Off-hour massive transfer; repeated auth failures,medium
+845.09,2,11,5,5,1,1,1,verified,1,2044.651,949.677,3.024,2.146,completed,1,Off-hour massive transfer; repeated auth failures,critical
+47.6,20,3,0,0,0,0,0,verified,0,68.816,52.286,1.56,3.076,completed,0,,none
+588.57,23,10,5,8,1,0,1,verified,1,1261.243,1152.221,2.803,8.822,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+18.09,16,2,0,1,0,0,0,verified,0,19.747,25.588,1.991,4.821,completed,0,,none
+28.04,19,3,0,0,0,0,0,verified,0,51.913,34.861,1.86,4.182,completed,0,,none
+40.76,7,1,0,1,0,0,0,verified,0,41.711,47.247,0.673,3.072,completed,0,,none
+14.84,13,0,0,0,0,0,1,verified,0,27.306,20.452,2.937,3.448,completed,0,,none
+31.48,10,3,0,0,0,0,1,verified,0,30.633,39.309,0.854,3.561,completed,0,,none
+969.15,3,8,3,9,1,0,1,failed,1,1375.187,1429.844,1.302,1.375,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+28.26,15,1,0,0,0,0,1,verified,0,48.707,41.49,2.451,2.509,completed,0,,none
+547.0,23,10,4,3,1,0,1,verified,0,1375.476,805.546,2.198,9.743,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+4.97,9,1,0,0,0,0,1,verified,0,16.438,12.052,2.401,1.972,completed,0,,none
+30.7,17,1,0,0,0,0,1,verified,0,40.853,45.212,2.136,3.543,completed,0,,none
+29.5,16,3,0,0,0,0,0,verified,0,31.362,27.962,0.93,2.126,completed,0,,none
+49.69,18,3,0,1,0,0,1,verified,0,55.751,40.528,1.933,2.12,completed,0,,none
+857.4,23,5,1,9,1,1,1,verified,1,983.019,1407.891,3.01,8.338,completed,1,Off-hour massive transfer; repeated auth failures,medium
+910.91,0,5,3,10,1,1,1,verified,1,1033.429,2102.578,5.309,7.098,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+713.17,23,13,1,3,1,1,1,verified,0,966.287,1224.506,2.509,2.548,blocked,1,Off-hour massive transfer; repeated auth failures,high
+21.1,15,3,0,0,0,0,0,verified,0,23.114,30.445,1.833,2.549,completed,0,,none
+771.43,5,9,4,8,1,0,1,failed,1,1592.619,1536.59,2.615,6.252,completed,1,Off-hour massive transfer; repeated auth failures,medium
+27.98,12,1,0,0,0,0,0,verified,0,31.141,23.751,0.525,2.474,completed,0,,none
+38.11,6,1,0,0,0,0,1,verified,0,35.222,32.611,0.677,2.46,completed,0,,none
+10.77,21,2,0,0,0,0,0,verified,0,24.181,20.306,1.113,4.51,completed,0,,none
+44.58,6,3,0,0,0,0,0,verified,0,47.404,56.719,1.885,1.458,completed,0,,none
+33.65,11,3,0,1,0,0,0,verified,0,53.523,28.548,1.774,3.059,completed,0,,none
+1.32,14,3,0,1,0,0,1,verified,0,10.707,9.42,2.376,2.091,completed,0,,none
+23.93,20,2,0,0,0,0,1,verified,0,23.896,26.398,1.68,1.582,completed,0,,none
+765.95,23,14,1,5,1,1,1,verified,1,1016.368,1738.934,2.513,9.562,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+42.41,17,3,0,1,0,0,0,verified,0,60.583,42.244,1.015,4.711,completed,0,,none
+31.54,9,0,0,0,0,0,0,verified,0,40.816,23.81,1.49,3.997,completed,0,,none
+741.71,23,9,3,6,1,0,1,failed,1,923.913,1423.703,2.716,9.394,completed,1,Off-hour massive transfer; repeated auth failures,medium
+26.83,10,1,0,0,0,0,0,verified,0,28.629,29.375,2.598,3.171,completed,0,,none
+30.35,12,1,0,0,0,0,0,verified,0,31.928,31.422,0.896,3.191,completed,0,,none
+42.93,15,0,0,0,0,0,0,verified,0,50.972,50.538,1.195,4.1,completed,0,,none
+40.77,15,3,0,0,0,0,1,verified,0,61.319,40.631,2.458,4.902,completed,0,,none
+44.7,12,1,0,1,0,0,1,verified,0,59.96,64.797,1.842,3.398,completed,0,,none
+865.45,0,8,2,2,1,1,1,verified,1,1519.097,1732.497,2.757,8.835,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+45.0,9,1,0,0,0,0,1,verified,0,37.897,62.383,2.167,2.083,completed,0,,none
+20.48,12,0,0,0,0,0,1,verified,0,23.174,26.381,1.861,1.769,completed,0,,none
+34.27,16,2,0,0,0,0,0,verified,0,38.6,44.754,1.911,3.302,completed,0,,none
+714.84,23,8,2,9,1,0,1,failed,1,828.283,831.677,2.663,8.831,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+583.26,22,9,3,6,0,0,1,verified,1,808.107,885.676,2.842,5.082,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+35.36,6,0,0,0,0,0,1,verified,0,52.634,37.35,1.604,4.759,completed,0,,none
+8.3,10,2,0,1,0,0,1,verified,0,21.783,13.218,1.431,4.626,completed,0,,none
+17.81,20,1,0,0,0,0,0,verified,0,24.428,20.682,1.652,3.276,completed,0,,none
+12.18,10,0,0,0,0,0,1,verified,0,25.621,17.211,2.709,3.869,completed,0,,none
+48.98,10,0,0,0,0,0,0,verified,0,72.732,55.362,2.653,2.155,completed,0,,none
+3.22,17,0,0,0,0,0,1,verified,0,14.648,11.753,1.754,1.453,completed,0,,none
+11.19,14,0,0,0,0,0,1,verified,0,20.071,21.955,2.984,2.788,completed,0,,none
+539.42,5,14,1,2,1,1,1,failed,1,1095.182,641.271,4.215,5.155,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+40.1,14,1,0,0,0,0,0,verified,0,54.398,34.957,1.411,2.992,completed,0,,none
+8.04,6,2,0,0,0,0,1,verified,0,15.984,12.179,2.762,1.949,completed,0,,none
+639.75,23,14,4,8,1,0,1,verified,1,1405.825,1375.29,0.562,1.858,completed,1,Off-hour massive transfer; repeated auth failures,medium
+593.91,0,8,2,2,1,1,1,verified,0,1483.427,563.667,1.315,7.561,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+914.9,1,11,2,6,1,1,1,failed,1,1128.875,997.887,1.339,6.191,completed,1,Off-hour massive transfer; repeated auth failures,medium
+42.29,9,3,0,0,0,0,1,verified,0,60.423,35.719,2.509,3.703,completed,0,,none
+19.74,19,0,0,0,0,0,1,verified,0,33.02,21.285,1.367,2.951,completed,0,,none
+5.23,7,1,0,0,0,0,1,verified,0,13.458,11.809,2.511,2.502,completed,0,,none
+26.09,7,2,0,0,0,0,1,verified,0,42.733,32.257,2.181,3.343,completed,0,,none
+561.77,23,12,1,8,1,1,1,verified,1,1336.755,1090.638,0.734,4.42,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+36.17,15,3,0,0,0,0,1,verified,0,50.656,49.898,2.868,2.809,completed,0,,none
+935.46,23,8,4,8,1,0,1,verified,0,1657.161,1987.926,3.756,6.091,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+48.72,10,2,0,0,0,0,1,verified,0,81.796,61.429,2.567,2.116,completed,0,,none
+7.4,17,1,0,1,0,0,1,verified,0,13.724,14.892,1.044,1.627,completed,0,,none
+30.6,19,0,0,0,0,0,0,verified,0,54.693,26.964,2.891,2.842,completed,0,,none
+27.62,6,2,0,0,0,0,1,verified,0,37.448,40.096,1.689,1.721,completed,0,,none
+47.79,13,1,0,0,0,0,0,verified,0,58.391,53.49,1.851,3.554,completed,0,,none
+11.01,10,0,0,0,0,0,1,verified,0,25.952,17.058,1.585,2.069,completed,0,,none
+34.85,6,1,0,0,0,0,0,verified,0,46.778,25.659,0.907,1.961,completed,0,,none
+29.77,18,3,0,0,0,0,1,verified,0,47.531,32.58,1.23,1.408,completed,0,,none
+796.51,1,10,1,9,1,0,1,failed,1,1702.724,956.535,4.747,4.649,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+18.94,12,1,0,1,0,0,0,verified,0,33.443,28.567,1.881,1.464,completed,0,,none
+8.55,13,2,0,0,0,0,1,verified,0,14.449,12.989,2.791,4.815,completed,0,,none
+18.39,20,3,0,0,0,0,0,verified,0,24.56,17.235,1.773,2.34,completed,0,,none
+39.73,8,1,0,0,0,0,0,verified,0,31.535,50.939,0.8,1.422,completed,0,,none
+965.8,22,9,3,8,0,1,1,verified,0,1593.087,1536.457,2.62,2.778,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+9.01,11,1,0,0,0,0,0,verified,0,22.645,18.028,2.329,4.997,completed,0,,none
+522.33,0,13,1,8,1,1,1,failed,1,505.298,732.102,3.1,6.494,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+39.75,9,2,0,1,0,0,0,verified,0,39.602,32.324,2.343,3.135,completed,0,,none
+44.21,9,2,0,0,0,0,1,verified,0,75.116,64.923,2.122,3.919,completed,0,,none
+7.87,9,3,0,0,0,0,0,verified,0,14.478,15.167,1.735,1.679,completed,0,,none
+27.19,14,0,0,0,0,0,1,verified,0,31.105,29.372,2.491,2.243,completed,0,,none
+6.33,15,1,0,0,0,0,1,verified,0,19.297,13.253,0.992,2.16,completed,0,,none
+46.39,14,0,0,0,0,0,1,verified,0,66.758,62.708,1.415,3.276,completed,0,,none
+1.02,11,2,0,0,0,0,0,verified,0,11.095,9.024,2.099,3.072,completed,0,,none
+39.86,14,0,0,0,0,0,0,verified,0,66.081,53.386,1.93,2.183,completed,0,,none
+23.65,14,2,0,0,0,0,1,verified,0,29.648,31.796,2.693,3.891,completed,0,,none
+2.37,13,0,0,0,0,0,1,verified,0,11.934,11.035,2.246,1.762,completed,0,,none
+25.87,11,0,0,1,0,0,0,verified,0,45.483,29.769,1.078,4.137,completed,0,,none
+501.93,3,8,5,5,1,1,1,failed,0,471.095,612.712,0.685,2.356,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+907.18,22,5,4,4,0,0,1,verified,0,883.28,1013.932,3.039,9.257,completed,1,Off-hour massive transfer; repeated auth failures,high
+10.4,17,0,0,0,0,0,1,verified,0,22.577,20.027,0.634,4.382,completed,0,,none
+991.19,22,12,5,9,0,1,1,verified,1,1648.841,950.711,4.704,2.153,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+500.89,1,7,5,7,1,1,1,verified,1,615.431,921.885,3.93,9.025,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+26.01,6,3,0,0,0,0,1,verified,0,37.033,26.56,1.333,4.008,completed,0,,none
+704.9,22,6,3,5,0,0,1,failed,1,825.598,1100.74,4.949,3.98,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+1.32,7,2,0,1,0,0,1,verified,0,10.91,9.392,2.062,4.512,completed,0,,none
+28.39,17,2,0,0,0,0,1,verified,0,42.682,42.559,1.624,4.814,completed,0,,none
+31.16,14,2,0,0,0,0,1,verified,0,48.149,45.285,1.661,1.743,completed,0,,none
+19.65,13,1,0,0,0,0,0,verified,0,35.856,31.925,0.881,3.236,completed,0,,none
+7.81,11,3,0,0,0,0,0,verified,0,15.244,11.981,1.072,3.746,completed,0,,none
+24.78,19,0,0,0,0,0,1,verified,0,36.626,27.584,2.332,2.067,completed,0,,none
+47.87,21,2,0,0,0,0,0,verified,0,51.32,62.3,1.81,2.819,completed,0,,none
+700.54,2,12,5,6,1,0,1,verified,1,900.447,1607.955,4.757,9.049,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+15.86,18,3,0,0,0,0,0,verified,0,28.537,18.374,1.821,2.045,completed,0,,none
+28.92,7,1,0,0,0,0,0,verified,0,43.019,26.055,2.924,4.45,completed,0,,none
+26.32,12,0,0,0,0,0,1,verified,0,36.489,25.488,0.743,4.86,completed,0,,none
+27.07,15,3,0,0,0,0,0,verified,0,41.793,32.437,1.522,4.774,completed,0,,none
+35.37,14,2,0,1,0,0,0,verified,0,35.674,53.541,0.521,3.352,completed,0,,none
+7.31,21,0,0,1,0,0,0,verified,0,15.045,16.516,2.373,2.747,completed,0,,none
+3.04,17,1,0,1,0,0,1,verified,0,14.482,11.751,2.521,1.357,completed,0,,none
+16.5,6,0,0,1,0,0,1,verified,0,24.976,24.76,1.716,1.561,completed,0,,none
+772.47,23,9,1,2,1,0,1,verified,0,1841.869,838.268,0.543,4.502,completed,1,Off-hour massive transfer; repeated auth failures,medium
+31.39,14,2,0,0,0,0,1,verified,0,43.919,40.11,0.892,1.259,completed,0,,none
+18.27,19,3,0,0,0,0,0,verified,0,23.562,29.65,1.598,2.041,completed,0,,none
+561.01,4,11,5,10,1,1,1,failed,0,1260.242,876.244,3.889,6.65,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+27.05,19,2,0,0,0,0,0,verified,0,36.713,39.074,1.491,2.015,completed,0,,none
+28.24,6,2,0,0,0,0,1,verified,0,27.887,29.769,0.533,4.591,completed,0,,none
+36.06,8,2,0,0,0,0,1,verified,0,55.842,28.736,2.609,2.32,completed,0,,none
+24.66,9,2,0,0,0,0,1,verified,0,39.593,38.747,2.642,2.272,completed,0,,none
+46.98,10,2,0,0,0,0,1,verified,0,53.32,38.531,1.182,1.928,completed,0,,none
+39.99,16,3,0,0,0,0,1,verified,0,53.871,36.305,0.684,3.128,completed,0,,none
+24.55,8,1,0,0,0,0,0,verified,0,31.993,38.963,1.368,1.84,completed,0,,none
+27.12,6,0,0,0,0,0,1,verified,0,33.424,32.851,0.766,1.557,completed,0,,none
+37.32,21,2,0,1,0,0,0,verified,0,65.699,56.02,0.677,3.228,completed,0,,none
+873.99,1,5,4,7,1,0,1,failed,1,1499.906,1687.584,5.914,8.96,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+12.19,7,2,0,0,0,0,1,verified,0,26.074,20.944,1.939,2.262,completed,0,,none
+5.95,7,1,0,0,0,0,0,verified,0,14.055,14.308,2.857,3.714,completed,0,,none
+525.79,0,8,5,5,1,0,1,failed,1,912.072,716.689,4.999,7.194,blocked,1,Off-hour massive transfer; repeated auth failures,high
+764.67,5,6,5,8,1,0,1,verified,0,1442.212,1229.171,2.991,1.44,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+30.67,9,3,0,0,0,0,1,verified,0,34.924,44.913,2.836,3.982,completed,0,,none
+16.02,10,2,0,0,0,0,0,verified,0,29.949,20.831,2.976,1.746,completed,0,,none
+807.28,5,12,3,9,1,0,1,verified,1,1519.421,763.567,1.32,4.726,blocked,1,Off-hour massive transfer; repeated auth failures,high
+47.14,16,2,0,1,0,0,1,verified,0,72.748,56.794,0.681,4.865,completed,0,,none
+2.66,12,0,0,1,0,0,0,verified,0,12.843,10.038,1.872,2.162,completed,0,,none
+16.45,19,3,0,0,0,0,0,verified,0,18.493,21.934,0.894,4.969,completed,0,,none
+45.34,15,0,0,0,0,0,1,verified,0,60.043,53.32,1.504,2.044,completed,0,,none
+19.98,15,0,0,0,0,0,0,verified,0,35.193,24.219,0.727,3.64,completed,0,,none
+8.06,20,2,0,0,0,0,0,verified,0,14.87,15.599,0.843,1.497,completed,0,,none
+613.66,5,7,4,6,1,1,1,verified,0,1374.215,1148.305,1.832,6.633,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+35.29,12,1,0,0,0,0,1,verified,0,34.136,41.587,2.18,4.485,completed,0,,none
+31.42,21,1,0,0,0,0,1,verified,0,55.265,29.676,0.937,4.992,completed,0,,none
+19.71,12,0,0,1,0,0,0,verified,0,24.142,22.338,0.646,4.544,completed,0,,none
+29.13,9,1,0,0,0,0,1,verified,0,36.451,38.828,2.163,2.32,completed,0,,none
+33.6,9,0,0,0,0,0,0,verified,0,31.834,47.413,1.498,2.774,completed,0,,none
+34.95,15,0,0,0,0,0,1,verified,0,39.512,41.348,0.842,1.869,completed,0,,none
+6.68,15,0,0,0,0,0,0,verified,0,19.179,14.194,2.822,1.507,completed,0,,none
+28.34,20,1,0,1,0,0,1,verified,0,48.393,22.479,0.799,1.895,completed,0,,none
+6.85,14,3,0,0,0,0,0,verified,0,14.653,13.398,2.414,2.695,completed,0,,none
+28.29,8,3,0,0,0,0,1,verified,0,26.232,22.24,1.554,3.707,completed,0,,none
+32.25,10,0,0,0,0,0,0,verified,0,33.932,40.838,1.607,3.272,completed,0,,none
+831.04,22,9,5,6,0,0,1,failed,1,1732.899,1368.701,1.139,3.688,completed,1,Off-hour massive transfer; repeated auth failures,medium
+0.16,18,0,0,0,0,0,1,verified,0,10.192,8.13,2.958,2.605,completed,0,,none
+47.59,7,2,0,0,0,0,0,verified,0,60.002,51.409,1.228,4.241,completed,0,,none
+39.33,17,0,0,0,0,0,0,verified,0,39.751,51.483,1.597,2.701,completed,0,,none
+7.6,6,1,0,0,0,0,0,verified,0,17.022,16.248,1.401,4.492,completed,0,,none
+849.23,23,10,1,3,1,1,1,verified,1,2110.414,1565.897,0.952,6.712,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+20.28,13,3,0,0,0,0,1,verified,0,26.15,29.011,0.921,3.102,completed,0,,none
+28.08,9,0,0,0,0,0,0,verified,0,35.701,34.505,1.794,1.658,completed,0,,none
+40.71,12,1,0,0,0,0,0,verified,0,64.885,38.191,2.849,1.341,completed,0,,none
+30.95,6,1,0,0,0,0,1,verified,0,49.34,27.85,0.871,1.419,completed,0,,none
+20.78,18,1,0,1,0,0,1,verified,0,27.083,33.905,2.399,4.732,completed,0,,none
+1.04,17,1,0,0,0,0,0,verified,0,10.594,8.855,2.954,2.332,completed,0,,none
+796.53,3,9,5,6,1,0,1,failed,0,1465.448,1587.405,5.953,7.995,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+30.09,6,3,0,0,0,0,1,verified,0,31.506,24.379,0.698,1.717,completed,0,,none
+31.39,9,2,0,0,0,0,0,verified,0,27.656,40.251,1.926,2.253,completed,0,,none
+3.73,8,2,0,1,0,0,1,verified,0,12.442,10.388,2.914,3.56,completed,0,,none
+3.49,20,2,0,1,0,0,0,verified,0,12.834,12.041,1.565,1.961,completed,0,,none
+25.45,21,1,0,0,0,0,0,verified,0,35.375,40.573,1.927,1.734,completed,0,,none
+4.3,19,3,0,1,0,0,0,verified,0,13.048,13.243,0.511,1.654,completed,0,,none
+7.75,12,2,0,0,0,0,1,verified,0,17.679,14.769,2.869,2.703,completed,0,,none
+19.2,13,2,0,0,0,0,1,verified,0,22.013,32.888,1.13,3.92,completed,0,,none
+48.22,17,0,0,0,0,0,1,verified,0,66.885,51.695,1.102,3.756,completed,0,,none
+27.12,20,2,0,0,0,0,1,verified,0,30.22,31.156,1.418,2.457,completed,0,,none
+37.22,18,0,0,1,0,0,1,verified,0,32.908,52.149,1.591,3.74,completed,0,,none
+45.75,20,2,0,1,0,0,1,verified,0,34.329,33.352,0.991,4.58,completed,0,,none
+40.29,11,2,0,0,0,0,0,verified,0,40.405,34.519,2.724,1.665,completed,0,,none
+997.36,23,11,4,4,1,1,1,failed,0,1295.771,1240.567,4.419,2.904,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+17.36,9,0,0,1,0,0,1,verified,0,20.617,29.775,2.974,4.284,completed,0,,none
+23.25,18,3,0,0,0,0,1,verified,0,43.699,20.376,2.741,3.807,completed,0,,none
+37.44,18,2,0,0,0,0,1,verified,0,57.702,37.803,0.636,1.861,completed,0,,none
+8.78,21,0,0,1,0,0,1,verified,0,19.14,18.631,2.049,4.944,completed,0,,none
+41.1,12,2,0,0,0,0,1,verified,0,62.469,48.339,1.331,1.785,completed,0,,none
+800.41,22,13,1,3,0,1,1,failed,1,1934.131,1815.587,2.029,2.04,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+30.36,18,3,0,0,0,0,1,verified,0,30.833,47.291,1.161,3.493,completed,0,,none
+541.99,4,9,3,2,1,1,1,failed,0,562.591,878.442,3.105,9.856,completed,1,Off-hour massive transfer; repeated auth failures,critical
+921.1,5,9,2,10,1,0,1,verified,0,1925.964,1968.492,5.265,4.532,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+11.48,11,1,0,0,0,0,1,verified,0,20.554,21.856,1.115,2.389,completed,0,,none
+45.31,13,2,0,0,0,0,0,verified,0,67.618,37.584,0.663,2.8,completed,0,,none
+30.99,21,0,0,0,0,0,0,verified,0,31.479,28.016,0.836,3.175,completed,0,,none
+22.46,21,0,0,0,0,0,1,verified,0,42.401,21.509,1.538,3.788,completed,0,,none
+0.98,6,1,0,0,0,0,0,verified,0,11.173,9.1,2.72,1.894,completed,0,,none
+21.66,17,0,0,0,0,0,0,verified,0,40.832,24.907,2.771,4.324,completed,0,,none
+39.41,13,1,0,1,0,0,0,verified,0,44.763,38.53,2.317,2.172,completed,0,,none
+31.22,21,3,0,0,0,0,0,verified,0,41.102,44.678,1.989,3.853,completed,0,,none
+10.37,9,2,0,0,0,0,1,verified,0,23.046,18.87,1.891,2.719,completed,0,,none
+29.15,12,0,0,0,0,0,0,verified,0,37.555,24.383,1.568,2.21,completed,0,,none
+612.53,0,15,5,6,1,1,1,verified,0,962.26,701.191,3.031,8.684,completed,1,Off-hour massive transfer; repeated auth failures,high
+31.47,17,2,0,1,0,0,1,verified,0,29.453,35.061,1.293,3.892,completed,0,,none
+7.94,15,1,0,0,0,0,0,verified,0,15.183,13.46,2.714,3.155,completed,0,,none
+11.25,16,1,0,1,0,0,0,verified,0,26.663,21.291,1.9,2.425,completed,0,,none
+39.47,6,3,0,0,0,0,0,verified,0,58.362,34.629,2.906,4.554,completed,0,,none
+36.46,19,0,0,0,0,0,0,verified,0,32.089,44.083,2.352,4.661,completed,0,,none
+30.24,13,2,0,0,0,0,1,verified,0,29.664,25.7,1.146,3.703,completed,0,,none
+30.58,16,1,0,0,0,0,1,verified,0,25.387,42.859,2.861,4.328,completed,0,,none
+19.6,7,2,0,1,0,0,0,verified,0,35.604,32.493,2.865,2.657,completed,0,,none
+16.59,19,3,0,0,0,0,0,verified,0,32.446,17.647,2.157,2.626,completed,0,,none
+31.6,6,3,0,0,0,0,1,verified,0,57.05,24.517,0.917,3.479,completed,0,,none
+39.96,12,1,0,0,0,0,0,verified,0,34.525,35.346,2.39,2.611,completed,0,,none
+35.63,13,1,0,0,0,0,0,verified,0,55.324,32.704,1.561,2.329,completed,0,,none
+732.24,3,6,3,9,1,0,1,failed,0,913.776,736.723,2.752,4.267,completed,1,Off-hour massive transfer; repeated auth failures,critical
+43.62,8,0,0,1,0,0,0,verified,0,32.824,52.335,2.51,3.783,completed,0,,none
+25.84,20,0,0,0,0,0,0,verified,0,34.218,37.8,1.519,3.703,completed,0,,none
+43.33,6,3,0,0,0,0,0,verified,0,58.904,57.993,1.967,4.737,completed,0,,none
+510.4,23,9,2,9,1,0,1,verified,1,762.186,532.322,0.747,3.39,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+632.16,22,9,4,7,0,0,1,verified,0,1127.196,1087.921,5.975,5.007,completed,1,Off-hour massive transfer; repeated auth failures,critical
+25.86,6,1,0,0,0,0,0,verified,0,34.1,31.509,2.789,3.495,completed,0,,none
+18.92,21,3,0,0,0,0,0,verified,0,23.057,25.743,1.457,3.871,completed,0,,none
+38.86,8,1,0,0,0,0,0,verified,0,65.006,40.284,1.989,4.149,completed,0,,none
+3.74,17,3,0,0,0,0,0,verified,0,15.082,10.544,1.004,3.952,completed,0,,none
+6.29,18,3,0,0,0,0,1,verified,0,18.482,15.958,1.46,4.633,completed,0,,none
+532.58,1,11,2,3,1,1,1,failed,1,669.653,648.368,0.753,9.001,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+29.25,12,0,0,1,0,0,1,verified,0,44.559,33.287,1.372,1.46,completed,0,,none
+13.77,17,2,0,0,0,0,0,verified,0,27.146,18.518,2.689,3.373,completed,0,,none
+16.85,12,3,0,0,0,0,1,verified,0,22.155,26.984,0.673,3.601,completed,0,,none
+526.3,23,14,1,2,1,0,1,failed,0,1213.578,641.89,4.893,4.468,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+28.26,6,1,0,1,0,0,0,verified,0,48.898,37.539,0.518,4.785,completed,0,,none
+713.94,1,15,5,10,1,0,1,failed,0,1718.377,1074.055,5.697,9.657,blocked,1,Off-hour massive transfer; repeated auth failures,high
+774.74,0,9,5,9,1,1,1,verified,0,779.804,748.256,4.582,1.573,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+30.83,12,1,0,0,0,0,1,verified,0,42.244,30.261,1.152,2.307,completed,0,,none
+970.02,23,14,4,3,1,0,1,verified,0,1089.24,1919.664,2.577,6.104,completed,1,Off-hour massive transfer; repeated auth failures,high
+37.5,11,2,0,0,0,0,1,verified,0,48.701,29.587,1.077,3.066,completed,0,,none
+14.56,21,3,0,0,0,0,1,verified,0,21.852,20.537,0.704,2.5,completed,0,,none
+541.62,5,9,4,6,1,0,1,verified,0,794.639,553.889,5.88,7.359,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+22.71,15,0,0,0,0,0,1,verified,0,42.35,31.084,1.853,4.441,completed,0,,none
+16.39,11,2,0,0,0,0,0,verified,0,32.452,16.465,0.912,1.294,completed,0,,none
+21.16,20,1,0,0,0,0,0,verified,0,29.553,19.131,1.533,4.914,completed,0,,none
+665.21,3,5,3,8,1,1,1,verified,1,1528.081,1519.675,2.742,9.279,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+34.42,6,3,0,1,0,0,0,verified,0,48.128,49.409,2.01,2.158,completed,0,,none
+40.48,12,1,0,0,0,0,0,verified,0,42.757,42.996,0.612,1.883,completed,0,,none
+682.04,23,5,3,7,1,1,1,verified,1,1332.48,956.491,4.482,7.311,blocked,1,Off-hour massive transfer; repeated auth failures,high
+739.54,5,10,1,7,1,0,1,failed,1,1561.075,1302.492,1.106,6.863,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+31.99,12,1,0,0,0,0,0,verified,0,47.454,36.354,2.84,4.706,completed,0,,none
+11.72,7,0,0,0,0,0,0,verified,0,22.792,15.93,1.467,4.171,completed,0,,none
+42.74,6,3,0,0,0,0,1,verified,0,32.963,33.483,1.315,3.659,completed,0,,none
+23.3,17,0,0,1,0,0,0,verified,0,40.422,34.355,0.647,2.904,completed,0,,none
+17.09,21,2,0,1,0,0,1,verified,0,19.089,16.757,1.836,3.156,completed,0,,none
+8.88,12,2,0,0,0,0,0,verified,0,14.658,15.69,0.777,1.26,completed,0,,none
+24.23,12,2,0,0,0,0,0,verified,0,24.192,26.92,2.039,2.437,completed,0,,none
+591.31,1,10,5,2,1,0,1,failed,0,1224.973,991.197,4.127,3.7,completed,1,Off-hour massive transfer; repeated auth failures,high
+25.69,10,2,0,0,0,0,1,verified,0,47.596,25.457,1.997,2.667,completed,0,,none
+19.54,14,2,0,0,0,0,1,verified,0,22.596,32.874,2.032,2.695,completed,0,,none
+42.65,17,2,0,0,0,0,0,verified,0,56.121,35.713,2.305,1.835,completed,0,,none
+4.43,17,0,0,1,0,0,1,verified,0,16.12,11.762,1.358,2.262,completed,0,,none
+31.55,13,2,0,1,0,0,1,verified,0,43.372,33.134,1.897,4.135,completed,0,,none
+28.26,9,1,0,1,0,0,0,verified,0,46.71,44.354,1.979,4.87,completed,0,,none
+20.38,17,0,0,1,0,0,1,verified,0,27.572,25.74,2.007,3.942,completed,0,,none
+37.81,14,2,0,0,0,0,1,verified,0,46.86,40.136,0.931,1.7,completed,0,,none
+0.25,11,1,0,0,0,0,1,verified,0,10.125,8.133,1.313,1.502,completed,0,,none
+825.91,22,8,5,4,0,1,1,failed,1,856.276,1165.578,5.003,6.434,completed,1,Off-hour massive transfer; repeated auth failures,critical
+798.34,22,15,3,4,0,0,1,verified,0,1803.338,1378.714,5.989,4.952,blocked,1,Off-hour massive transfer; repeated auth failures,high
+14.59,17,1,0,1,0,0,0,verified,0,20.961,18.155,2.479,2.842,completed,0,,none
+554.83,4,12,2,8,1,1,1,failed,1,1240.621,1190.836,3.656,3.611,completed,1,Off-hour massive transfer; repeated auth failures,critical
+34.3,9,3,0,0,0,0,1,verified,0,50.993,45.929,0.721,4.729,completed,0,,none
+36.9,20,1,0,0,0,0,0,verified,0,49.742,35.751,2.573,4.557,completed,0,,none
+2.51,12,2,0,0,0,0,1,verified,0,11.702,10.199,2.275,2.832,completed,0,,none
+44.87,16,1,0,0,0,0,1,verified,0,65.098,52.766,1.545,2.562,completed,0,,none
+23.07,11,1,0,0,0,0,0,verified,0,22.367,34.235,1.021,4.633,completed,0,,none
+22.58,14,3,0,0,0,0,0,verified,0,38.066,37.24,2.588,2.211,completed,0,,none
+20.15,16,3,0,1,0,0,0,verified,0,36.443,32.926,2.152,2.914,completed,0,,none
+44.67,17,1,0,0,0,0,1,verified,0,74.082,52.089,2.432,2.541,completed,0,,none
+619.14,22,5,3,7,0,1,1,verified,0,1104.789,825.391,4.24,7.598,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+6.95,21,0,0,0,0,0,0,verified,0,19.779,16.206,1.976,4.189,completed,0,,none
+31.61,17,2,0,0,0,0,0,verified,0,44.878,47.88,2.993,4.544,completed,0,,none
+15.83,20,0,0,0,0,0,0,verified,0,28.978,25.964,2.712,2.401,completed,0,,none
+13.11,14,1,0,0,0,0,0,verified,0,16.948,20.345,2.706,4.112,completed,0,,none
+26.53,16,0,0,1,0,0,1,verified,0,48.851,30.193,2.068,1.439,completed,0,,none
+26.4,12,0,0,0,0,0,1,verified,0,36.39,31.076,2.095,3.348,completed,0,,none
+42.14,16,0,0,0,0,0,0,verified,0,37.217,33.057,2.776,4.066,completed,0,,none
+47.46,7,1,0,0,0,0,0,verified,0,65.919,68.698,1.086,1.985,completed,0,,none
+906.81,1,10,1,9,1,0,1,verified,0,1958.08,2069.918,3.797,8.054,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+45.03,15,1,0,0,0,0,0,verified,0,61.01,33.315,1.396,4.394,completed,0,,none
+3.11,14,1,0,0,0,0,1,verified,0,13.914,11.293,0.91,4.941,completed,0,,none
+629.15,2,8,2,5,1,1,1,verified,1,1176.834,1381.58,4.773,3.266,completed,1,Off-hour massive transfer; repeated auth failures,critical
+937.24,1,15,4,9,1,1,1,failed,1,2184.248,2163.7,4.842,6.517,completed,1,Off-hour massive transfer; repeated auth failures,medium
+772.78,22,11,5,4,0,1,1,verified,0,1148.656,1600.38,1.665,6.364,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+10.64,13,2,0,0,0,0,0,verified,0,19.265,15.713,2.226,3.688,completed,0,,none
+35.08,15,3,0,0,0,0,0,verified,0,58.584,44.66,1.424,1.934,completed,0,,none
+25.86,10,0,0,0,0,0,0,verified,0,28.603,24.97,2.623,1.204,completed,0,,none
+30.32,15,3,0,0,0,0,1,verified,0,46.15,36.482,1.535,4.202,completed,0,,none
+45.74,11,3,0,0,0,0,0,verified,0,71.69,66.541,0.525,4.412,completed,0,,none
+641.96,4,9,3,10,1,1,1,verified,0,1260.338,694.019,1.809,4.038,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+9.27,17,3,0,0,0,0,0,verified,0,22.995,18.339,2.167,4.733,completed,0,,none
+29.14,6,2,0,0,0,0,0,verified,0,41.279,23.253,2.649,4.978,completed,0,,none
+22.68,6,2,0,0,0,0,0,verified,0,43.833,36.616,1.27,4.218,completed,0,,none
+9.28,11,1,0,0,0,0,0,verified,0,18.995,15.601,2.381,1.602,completed,0,,none
+11.39,7,2,0,0,0,0,0,verified,0,22.823,21.816,2.258,3.54,completed,0,,none
+48.55,15,0,0,0,0,0,0,verified,0,80.466,39.021,0.835,4.479,completed,0,,none
+10.12,20,0,0,1,0,0,1,verified,0,19.543,13.493,1.821,1.352,completed,0,,none
+28.01,17,2,0,0,0,0,0,verified,0,41.394,29.402,2.43,1.865,completed,0,,none
+22.8,8,3,0,0,0,0,0,verified,0,28.419,24.266,2.659,3.744,completed,0,,none
+4.55,19,0,0,0,0,0,0,verified,0,12.911,11.504,2.622,4.337,completed,0,,none
+667.99,4,7,2,6,1,1,1,verified,1,1198.837,1310.727,3.834,1.777,completed,1,Off-hour massive transfer; repeated auth failures,critical
+1.82,18,0,0,0,0,0,0,verified,0,12.169,9.582,2.04,3.234,completed,0,,none
+602.21,5,6,1,5,1,1,1,failed,0,1436.308,780.95,1.984,4.43,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+46.74,11,2,0,0,0,0,0,verified,0,41.933,39.105,1.43,1.514,completed,0,,none
+29.68,12,3,0,0,0,0,1,verified,0,51.065,44.612,1.099,2.844,completed,0,,none
+28.29,9,3,0,0,0,0,1,verified,0,24.182,41.562,2.301,2.797,completed,0,,none
+20.92,16,1,0,0,0,0,1,verified,0,20.848,27.02,2.048,3.573,completed,0,,none
+38.64,14,3,0,0,0,0,0,verified,0,62.82,44.28,1.983,4.029,completed,0,,none
+44.38,18,3,0,0,0,0,0,verified,0,36.468,58.632,0.872,2.893,completed,0,,none
+35.88,17,3,0,0,0,0,0,verified,0,61.115,35.307,2.941,4.426,completed,0,,none
+12.89,13,3,0,0,0,0,1,verified,0,24.149,19.532,0.996,1.973,completed,0,,none
+2.22,16,3,0,0,0,0,1,verified,0,13.163,9.651,2.576,4.856,completed,0,,none
+8.7,19,1,0,0,0,0,0,verified,0,17.359,14.409,0.675,2.661,completed,0,,none
+43.6,17,1,0,0,0,0,1,verified,0,63.629,38.761,2.359,4.458,completed,0,,none
+828.5,0,12,3,2,1,1,1,failed,1,1008.837,1521.796,1.268,7.335,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+46.26,18,2,0,1,0,0,0,verified,0,58.002,46.76,1.245,1.266,completed,0,,none
+16.31,7,1,0,0,0,0,0,verified,0,32.104,24.642,0.903,1.309,completed,0,,none
+674.79,1,5,3,4,1,1,1,failed,0,1097.102,1062.836,4.854,2.799,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+848.07,1,13,2,4,1,0,1,verified,0,1588.72,1852.667,5.84,5.054,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+36.84,9,0,0,0,0,0,0,verified,0,63.41,29.448,1.523,4.342,completed,0,,none
+35.41,16,0,0,1,0,0,1,verified,0,56.586,38.24,0.701,2.865,completed,0,,none
+37.75,20,3,0,0,0,0,1,verified,0,59.099,40.781,1.428,3.81,completed,0,,none
+662.93,4,10,5,10,1,1,1,verified,1,1556.594,1089.722,3.728,1.529,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+6.88,17,0,0,0,0,0,1,verified,0,17.524,15.874,1.218,3.237,completed,0,,none
+22.92,18,2,0,0,0,0,1,verified,0,31.75,23.892,0.889,1.967,completed,0,,none
+33.33,17,2,0,0,0,0,1,verified,0,59.429,32.545,0.796,2.481,completed,0,,none
+1.35,16,0,0,1,0,0,1,verified,0,11.004,8.919,1.847,3.209,completed,0,,none
+973.94,23,14,3,3,1,0,1,verified,0,1876.689,1452.12,1.515,3.877,completed,1,Off-hour massive transfer; repeated auth failures,high
+34.59,15,2,0,0,0,0,1,verified,0,56.261,51.704,2.749,2.839,completed,0,,none
+597.54,22,9,2,4,0,1,1,failed,0,1008.784,1303.082,5.475,9.507,completed,1,Off-hour massive transfer; repeated auth failures,medium
+29.17,15,2,0,1,0,0,0,verified,0,47.703,39.333,1.344,1.261,completed,0,,none
+32.21,12,3,0,1,0,0,1,verified,0,55.834,24.683,2.526,1.566,completed,0,,none
+39.24,14,3,0,0,0,0,1,verified,0,33.519,52.922,1.739,3.864,completed,0,,none
+20.61,18,0,0,0,0,0,0,verified,0,38.27,24.791,1.604,3.969,completed,0,,none
+3.01,10,0,0,0,0,0,0,verified,0,14.22,9.719,1.409,4.716,completed,0,,none
+22.63,7,0,0,0,0,0,0,verified,0,32.985,35.172,2.045,4.327,completed,0,,none
+6.69,8,0,0,0,0,0,0,verified,0,16.941,13.332,1.273,2.838,completed,0,,none
+34.63,16,3,0,0,0,0,0,verified,0,51.452,33.178,2.023,3.674,completed,0,,none
+45.35,9,3,0,1,0,0,1,verified,0,54.978,33.663,0.766,3.827,completed,0,,none
+998.2,2,6,1,2,1,1,1,failed,0,1793.852,1619.705,0.639,4.993,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+39.33,21,2,0,0,0,0,0,verified,0,52.367,48.786,2.187,1.235,completed,0,,none
+565.29,1,13,3,3,1,1,1,verified,0,871.909,538.588,4.097,8.321,completed,1,Off-hour massive transfer; repeated auth failures,high
+13.14,21,0,0,1,0,0,1,verified,0,19.932,16.517,2.593,2.195,completed,0,,none
+9.45,18,1,0,0,0,0,0,verified,0,21.16,18.818,2.211,2.585,completed,0,,none
+896.48,2,6,1,10,1,0,1,verified,0,1492.966,1398.451,4.028,1.263,blocked,1,Off-hour massive transfer; repeated auth failures,high
+506.08,22,11,3,2,0,1,1,failed,0,900.84,496.076,3.937,4.92,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+40.08,15,0,0,0,0,0,0,verified,0,50.583,42.703,1.523,3.089,completed,0,,none
+6.61,11,3,0,0,0,0,0,verified,0,18.357,12.001,1.965,3.272,completed,0,,none
+3.41,7,2,0,1,0,0,1,verified,0,14.394,12.072,1.223,1.29,completed,0,,none
+40.23,11,3,0,0,0,0,0,verified,0,54.788,49.325,2.44,2.415,completed,0,,none
+698.45,22,6,3,4,0,1,1,verified,1,1213.853,1462.788,5.614,6.121,completed,1,Off-hour massive transfer; repeated auth failures,medium
+26.13,9,0,0,0,0,0,1,verified,0,41.512,37.94,2.49,2.115,completed,0,,none
+7.42,14,1,0,1,0,0,1,verified,0,17.13,15.95,2.889,2.775,completed,0,,none
+29.12,8,2,0,0,0,0,1,verified,0,49.101,29.761,2.024,1.712,completed,0,,none
+887.19,23,14,4,5,1,1,1,verified,0,1111.409,1142.317,4.405,1.427,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+17.34,16,0,0,0,0,0,0,verified,0,27.059,27.37,2.522,3.041,completed,0,,none
+0.43,13,2,0,0,0,0,0,verified,0,10.311,8.325,1.735,1.566,completed,0,,none
+720.42,22,9,5,9,0,1,1,failed,0,1189.978,804.613,4.855,4.041,completed,1,Off-hour massive transfer; repeated auth failures,critical
+8.32,18,2,0,0,0,0,0,verified,0,21.288,18.316,0.979,1.671,completed,0,,none
+16.89,13,3,0,0,0,0,0,verified,0,25.665,22.664,2.363,4.58,completed,0,,none
+34.12,19,3,0,0,0,0,1,verified,0,38.956,49.974,1.08,1.447,completed,0,,none
+37.57,19,3,0,0,0,0,0,verified,0,47.944,54.778,0.781,2.498,completed,0,,none
+22.57,6,2,0,0,0,0,0,verified,0,24.691,36.464,0.681,4.787,completed,0,,none
+961.7,5,15,2,6,1,1,1,failed,1,1945.453,1922.695,4.516,6.497,completed,1,Off-hour massive transfer; repeated auth failures,medium
+22.12,8,0,0,0,0,0,1,verified,0,42.048,31.818,0.506,3.494,completed,0,,none
+711.77,22,11,1,5,0,0,1,failed,1,1563.512,819.356,2.644,7.356,completed,1,Off-hour massive transfer; repeated auth failures,high
+505.0,22,7,1,10,0,0,1,verified,0,503.357,797.184,5.022,1.757,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+25.28,11,0,0,1,0,0,0,verified,0,26.482,35.986,0.846,3.715,completed,0,,none
+31.39,10,2,0,1,0,0,0,verified,0,54.399,42.179,1.195,3.096,completed,0,,none
+901.62,2,9,1,3,1,1,1,verified,1,1218.82,1166.929,3.002,8.102,completed,1,Off-hour massive transfer; repeated auth failures,critical
+742.18,22,14,5,4,0,1,1,verified,0,1228.631,804.819,4.457,7.77,completed,1,Off-hour massive transfer; repeated auth failures,medium
+8.3,13,3,0,1,0,0,1,verified,0,18.898,13.068,1.569,4.931,completed,0,,none
+32.15,12,2,0,1,0,0,1,verified,0,34.647,47.573,1.025,4.024,completed,0,,none
+728.03,22,11,1,9,0,1,1,verified,0,1304.964,866.836,4.26,8.165,completed,1,Off-hour massive transfer; repeated auth failures,high
+29.11,15,1,0,1,0,0,1,verified,0,34.484,32.464,0.63,2.911,completed,0,,none
+27.55,20,0,0,0,0,0,0,verified,0,48.919,36.829,0.712,3.251,completed,0,,none
+12.87,11,2,0,1,0,0,1,verified,0,21.684,20.801,2.923,2.276,completed,0,,none
+743.41,22,15,4,10,0,0,1,failed,1,1125.582,1590.106,2.384,3.763,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+9.75,10,0,0,1,0,0,1,verified,0,24.08,16.952,2.625,1.236,completed,0,,none
+848.41,0,10,5,8,1,1,1,verified,1,1629.567,1115.347,3.247,6.129,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+21.51,16,3,0,0,0,0,0,verified,0,22.62,27.002,0.711,3.543,completed,0,,none
+1.76,12,0,0,0,0,0,1,verified,0,11.441,8.969,1.078,4.659,completed,0,,none
+49.62,11,0,0,0,0,0,1,verified,0,44.139,60.504,0.661,3.952,completed,0,,none
+14.06,16,1,0,0,0,0,1,verified,0,25.056,16.438,0.706,3.19,completed,0,,none
+23.45,20,1,0,0,0,0,0,verified,0,27.055,37.083,1.466,4.899,completed,0,,none
+5.91,8,3,0,0,0,0,0,verified,0,16.144,15.099,1.103,3.244,completed,0,,none
+0.74,20,2,0,0,0,0,1,verified,0,10.928,8.811,1.094,2.572,completed,0,,none
+514.44,23,6,1,8,1,1,1,failed,1,654.65,857.285,2.412,9.257,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+708.34,22,5,2,10,0,1,1,failed,1,853.494,733.287,1.706,7.162,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+45.25,18,0,0,0,0,0,1,verified,0,69.271,56.615,2.328,4.833,completed,0,,none
+24.29,11,0,0,1,0,0,1,verified,0,39.149,20.381,1.742,3.526,completed,0,,none
+27.13,17,2,0,0,0,0,1,verified,0,42.598,40.737,1.667,1.398,completed,0,,none
+42.86,10,1,0,1,0,0,1,verified,0,46.214,56.989,1.32,2.442,completed,0,,none
+39.57,9,3,0,1,0,0,0,verified,0,60.774,59.201,2.189,4.506,completed,0,,none
+9.58,9,0,0,1,0,0,1,verified,0,18.039,18.028,2.576,4.08,completed,0,,none
+672.71,3,13,3,5,1,0,1,verified,0,1371.936,683.467,2.67,3.318,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+10.49,7,3,0,1,0,0,1,verified,0,16.919,13.493,2.512,3.615,completed,0,,none
+504.96,22,15,3,3,0,0,1,verified,0,491.477,530.727,5.252,9.624,completed,1,Off-hour massive transfer; repeated auth failures,medium
+41.64,10,0,0,0,0,0,1,verified,0,43.362,30.264,2.565,3.851,completed,0,,none
+14.8,13,3,0,0,0,0,0,verified,0,28.685,20.678,0.525,4.694,completed,0,,none
+890.34,4,14,1,8,1,1,1,verified,1,1643.225,1263.728,3.67,4.395,blocked,1,Off-hour massive transfer; repeated auth failures,high
+46.89,8,0,0,0,0,0,1,verified,0,75.66,54.554,2.704,3.951,completed,0,,none
+23.99,7,3,0,0,0,0,1,verified,0,27.002,38.937,2.273,1.515,completed,0,,none
+947.04,1,8,4,8,1,0,1,failed,1,2340.187,957.391,1.583,6.03,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+16.15,21,3,0,1,0,0,0,verified,0,23.354,18.535,2.927,1.909,completed,0,,none
+19.07,16,3,0,0,0,0,1,verified,0,21.601,19.79,1.364,1.295,completed,0,,none
+8.12,10,3,0,0,0,0,0,verified,0,21.248,13.793,2.262,3.285,completed,0,,none
+616.39,22,11,3,9,0,0,1,verified,1,1016.207,733.397,1.531,6.642,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+32.82,7,1,0,0,0,0,1,verified,0,33.98,28.899,2.478,2.2,completed,0,,none
+862.51,22,6,5,8,0,1,1,failed,1,815.764,1199.329,3.148,1.783,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+41.75,14,0,0,0,0,0,0,verified,0,68.75,55.228,1.11,3.59,completed,0,,none
+689.13,4,10,1,2,1,0,1,verified,1,1391.443,1303.011,3.857,9.541,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+902.99,22,14,5,5,0,0,1,failed,0,1162.96,1679.708,3.969,4.111,completed,1,Off-hour massive transfer; repeated auth failures,critical
+6.39,12,2,0,0,0,0,1,verified,0,14.333,11.82,1.646,3.66,completed,0,,none
+46.08,19,1,0,0,0,0,1,verified,0,38.326,45.724,1.909,2.93,completed,0,,none
+42.42,11,1,0,0,0,0,1,verified,0,69.663,43.086,1.051,3.494,completed,0,,none
+38.75,6,2,0,0,0,0,1,verified,0,55.088,42.581,2.729,3.544,completed,0,,none
+23.89,14,2,0,0,0,0,1,verified,0,26.564,19.986,1.166,1.447,completed,0,,none
+41.18,8,2,0,0,0,0,0,verified,0,55.15,40.465,1.684,2.812,completed,0,,none
+40.63,13,1,0,1,0,0,1,verified,0,41.395,56.462,0.558,2.856,completed,0,,none
+11.07,15,0,0,0,0,0,1,verified,0,20.309,16.779,0.653,2.925,completed,0,,none
+35.34,17,3,0,0,0,0,0,verified,0,53.033,28.45,0.587,1.623,completed,0,,none
+38.74,9,0,0,0,0,0,1,verified,0,31.417,42.226,2.598,3.205,completed,0,,none
+30.29,13,3,0,0,0,0,1,verified,0,46.56,36.49,2.307,4.111,completed,0,,none
+28.09,17,0,0,0,0,0,1,verified,0,39.08,34.812,1.262,2.057,completed,0,,none
+8.92,9,0,0,0,0,0,0,verified,0,14.713,15.044,1.454,1.78,completed,0,,none
+846.13,22,7,1,10,0,0,1,verified,0,1441.005,1436.117,5.696,7.899,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+1.72,17,3,0,0,0,0,1,verified,0,11.36,9.299,2.777,4.678,completed,0,,none
+24.89,10,3,0,0,0,0,0,verified,0,46.434,35.509,2.31,3.914,completed,0,,none
+47.42,6,0,0,0,0,0,0,verified,0,51.68,44.159,1.971,1.975,completed,0,,none
+9.37,11,2,0,0,0,0,1,verified,0,18.693,17.875,2.412,4.845,completed,0,,none
+6.92,20,3,0,0,0,0,1,verified,0,20.267,15.492,1.476,3.963,completed,0,,none
+27.68,13,1,0,1,0,0,1,verified,0,49.732,26.821,1.373,4.093,completed,0,,none
+14.23,16,3,0,0,0,0,1,verified,0,19.221,23.418,1.614,4.849,completed,0,,none
+16.65,18,0,0,0,0,0,0,verified,0,21.444,28.22,2.601,3.912,completed,0,,none
+47.56,12,3,0,0,0,0,1,verified,0,66.969,54.384,2.932,2.986,completed,0,,none
+39.45,7,3,0,1,0,0,1,verified,0,33.626,36.067,0.73,4.951,completed,0,,none
+37.45,6,0,0,0,0,0,1,verified,0,47.805,55.962,1.349,4.247,completed,0,,none
+37.04,18,0,0,0,0,0,0,verified,0,54.231,48.699,0.916,2.553,completed,0,,none
+39.62,11,3,0,1,0,0,0,verified,0,65.75,32.268,0.947,2.451,completed,0,,none
+25.5,21,3,0,0,0,0,0,verified,0,24.114,34.573,2.365,4.738,completed,0,,none
+15.83,15,3,0,0,0,0,1,verified,0,19.659,25.59,1.323,1.402,completed,0,,none
+36.65,10,0,0,1,0,0,1,verified,0,61.713,49.829,1.106,3.799,completed,0,,none
+0.15,12,3,0,0,0,0,0,verified,0,10.088,8.188,1.39,1.564,completed,0,,none
+41.21,21,0,0,0,0,0,1,verified,0,58.394,54.773,1.563,4.27,completed,0,,none
+22.17,17,2,0,1,0,0,1,verified,0,30.182,34.777,2.488,3.651,completed,0,,none
+23.54,15,2,0,0,0,0,0,verified,0,43.743,22.024,2.88,2.72,completed,0,,none
+16.15,19,2,0,1,0,0,0,verified,0,30.246,26.842,1.647,2.794,completed,0,,none
+13.56,13,1,0,0,0,0,0,verified,0,26.268,22.18,1.76,2.593,completed,0,,none
+38.45,11,1,0,1,0,0,0,verified,0,36.243,38.544,1.229,4.71,completed,0,,none
+705.56,0,15,4,4,1,1,1,failed,1,1045.145,1319.612,4.348,8.228,blocked,1,Off-hour massive transfer; repeated auth failures,high
+9.56,19,0,0,0,0,0,0,verified,0,21.205,17.963,1.68,3.095,completed,0,,none
+46.5,19,3,0,0,0,0,0,verified,0,55.624,57.853,0.855,3.015,completed,0,,none
+12.64,7,0,0,0,0,0,1,verified,0,25.954,21.589,1.771,2.153,completed,0,,none
+571.37,23,12,1,9,1,0,1,verified,0,1242.295,651.576,4.516,7.242,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+42.8,14,0,0,1,0,0,1,verified,0,40.453,30.754,0.948,3.878,completed,0,,none
+11.19,16,2,0,0,0,0,0,verified,0,24.502,19.597,2.316,2.313,completed,0,,none
+17.89,11,0,0,0,0,0,0,verified,0,19.194,17.616,0.75,3.939,completed,0,,none
+5.57,14,0,0,1,0,0,0,verified,0,18.088,11.011,2.423,1.644,completed,0,,none
+720.73,23,14,5,8,1,0,1,verified,0,866.15,675.018,0.752,9.271,blocked,1,Off-hour massive transfer; repeated auth failures,high
+523.19,0,9,2,10,1,1,1,failed,1,989.969,1184.252,5.144,6.163,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+6.71,8,3,0,0,0,0,0,verified,0,18.254,14.023,1.331,2.928,completed,0,,none
+20.99,6,2,0,1,0,0,1,verified,0,25.068,33.842,2.705,1.411,completed,0,,none
+648.46,22,8,2,6,0,0,1,verified,0,1492.607,636.488,2.233,1.989,completed,1,Off-hour massive transfer; repeated auth failures,medium
+14.65,11,2,0,0,0,0,1,verified,0,23.378,19.849,2.829,2.689,completed,0,,none
+12.17,8,0,0,1,0,0,0,verified,0,26.082,19.315,1.73,3.421,completed,0,,none
+24.37,16,2,0,1,0,0,0,verified,0,32.564,39.403,0.841,3.462,completed,0,,none
+6.51,12,0,0,0,0,0,0,verified,0,16.431,15.079,2.311,4.861,completed,0,,none
+15.33,12,1,0,0,0,0,1,verified,0,30.608,24.219,0.514,1.461,completed,0,,none
+6.4,14,3,0,1,0,0,0,verified,0,18.954,14.924,1.061,1.272,completed,0,,none
+0.5,9,3,0,0,0,0,1,verified,0,10.365,8.546,1.641,3.719,completed,0,,none
+45.46,19,1,0,0,0,0,0,verified,0,50.628,60.653,2.191,4.476,completed,0,,none
+25.02,16,3,0,0,0,0,0,verified,0,27.332,33.927,2.672,4.825,completed,0,,none
+915.61,4,11,1,7,1,1,1,verified,1,1634.459,1288.109,3.128,1.808,blocked,1,Off-hour massive transfer; repeated auth failures,high
+33.41,12,1,0,0,0,0,1,verified,0,52.839,34.638,2.764,3.695,completed,0,,none
+44.04,17,1,0,0,0,0,1,verified,0,35.916,46.266,1.233,3.206,completed,0,,none
+11.34,12,3,0,0,0,0,0,verified,0,22.86,17.155,1.5,1.37,completed,0,,none
+18.05,16,1,0,1,0,0,1,verified,0,21.246,23.827,1.734,2.082,completed,0,,none
+668.88,3,6,5,4,1,0,1,failed,1,988.832,709.485,2.762,2.694,completed,1,Off-hour massive transfer; repeated auth failures,critical
+620.31,22,15,1,3,0,0,1,failed,1,883.528,671.833,4.997,8.522,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+16.42,21,1,0,1,0,0,0,verified,0,19.086,20.517,0.988,4.467,completed,0,,none
+40.37,12,0,0,1,0,0,1,verified,0,55.839,56.378,1.452,4.576,completed,0,,none
+43.27,15,2,0,0,0,0,1,verified,0,65.659,60.662,2.674,4.513,completed,0,,none
+0.24,6,2,0,0,0,0,0,verified,0,10.142,8.279,1.667,4.925,completed,0,,none
+14.23,13,3,0,0,0,0,1,verified,0,20.14,20.084,1.64,4.869,completed,0,,none
+819.84,2,6,2,5,1,0,1,failed,1,1726.124,933.344,0.634,8.698,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+49.26,16,3,0,0,0,0,0,verified,0,48.636,52.808,1.289,3.741,completed,0,,none
+38.11,20,0,0,0,0,0,0,verified,0,44.008,55.234,1.248,1.262,completed,0,,none
+12.79,7,3,0,0,0,0,1,verified,0,26.403,17.6,2.147,1.541,completed,0,,none
+585.3,22,10,3,3,0,1,1,verified,0,1205.936,1330.473,1.668,9.299,integrity_failed,1,Off-hour massive transfer; repeated auth failures,critical
+11.72,8,1,0,0,0,0,1,verified,0,16.147,22.908,1.429,1.508,completed,0,,none
+768.05,23,10,5,3,1,1,1,failed,1,1568.087,1289.646,3.852,1.8,completed,1,Off-hour massive transfer; repeated auth failures,critical
+528.07,23,11,4,10,1,0,1,verified,1,773.491,830.112,4.665,6.322,completed,1,Off-hour massive transfer; repeated auth failures,medium
+6.18,7,0,0,0,0,0,1,verified,0,14.8,11.777,2.891,3.58,completed,0,,none
+805.22,22,15,2,2,0,1,1,verified,0,1399.222,751.546,1.005,8.422,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+44.86,20,1,0,0,0,0,0,verified,0,65.844,59.525,2.389,2.694,completed,0,,none
+4.04,12,3,0,0,0,0,1,verified,0,16.033,11.06,0.76,1.702,completed,0,,none
+26.9,11,2,0,0,0,0,0,verified,0,37.254,40.121,1.197,4.023,completed,0,,none
+44.37,10,2,0,1,0,0,1,verified,0,41.539,58.679,1.106,2.929,completed,0,,none
+47.86,13,1,0,0,0,0,0,verified,0,62.98,52.67,0.524,1.658,completed,0,,none
+993.78,3,6,2,8,1,0,1,failed,0,1282.406,2168.798,4.281,1.963,blocked,1,Off-hour massive transfer; repeated auth failures,high
+38.1,16,3,0,0,0,0,1,verified,0,43.673,29.365,1.857,2.974,completed,0,,none
+532.85,5,13,5,5,1,1,1,verified,1,1246.131,818.602,5.088,2.198,integrity_failed,1,Off-hour massive transfer; repeated auth failures,medium
+11.52,9,0,0,0,0,0,1,verified,0,22.734,17.179,1.682,4.946,completed,0,,none
+15.61,10,0,0,0,0,0,1,verified,0,25.827,22.136,2.393,2.219,completed,0,,none
+812.7,22,5,5,10,0,0,1,failed,0,1173.955,911.364,2.315,1.441,blocked,1,Off-hour massive transfer; repeated auth failures,medium
+6.45,12,2,0,0,0,0,1,verified,0,17.672,12.927,1.044,4.364,completed,0,,none
+44.95,17,2,0,0,0,0,1,verified,0,72.683,31.359,1.716,4.869,completed,0,,none
+29.55,21,3,0,0,0,0,0,verified,0,41.737,34.635,2.812,1.892,completed,0,,none
+45.75,15,1,0,0,0,0,1,verified,0,56.541,36.172,2.435,1.454,completed,0,,none
+555.79,1,8,3,7,1,0,1,verified,0,823.827,915.499,0.935,8.912,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+541.36,22,12,1,5,0,1,1,failed,0,704.967,1223.617,4.096,9.702,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+871.4,5,6,3,6,1,1,1,verified,1,1647.759,1010.537,4.389,7.161,blocked,1,Off-hour massive transfer; repeated auth failures,critical
+10.59,9,0,0,1,0,0,1,verified,0,16.495,16.98,1.282,1.953,completed,0,,none
+685.68,23,8,3,10,1,1,1,verified,1,1241.221,889.611,3.042,3.13,completed,1,Off-hour massive transfer; repeated auth failures,critical
+4.4,20,2,0,0,0,0,1,verified,0,13.285,12.427,1.295,2.935,completed,0,,none
+36.38,8,0,0,0,0,0,1,verified,0,58.494,51.457,0.576,2.473,completed,0,,none
+23.48,20,3,0,1,0,0,0,verified,0,42.347,36.867,1.247,3.14,completed,0,,none
+18.19,15,0,0,0,0,0,1,verified,0,32.885,17.229,2.74,3.819,completed,0,,none
+8.02,19,0,0,0,0,0,0,verified,0,21.109,15.14,2.58,4.309,completed,0,,none
+957.53,22,13,4,7,0,0,1,verified,1,1241.422,1036.595,5.496,6.58,completed,1,Off-hour massive transfer; repeated auth failures,high
+34.36,11,0,0,0,0,0,0,verified,0,54.585,45.083,1.131,2.76,completed,0,,none
+47.29,9,1,0,0,0,0,1,verified,0,79.34,42.317,1.182,3.66,completed,0,,none
+42.13,21,1,0,0,0,0,1,verified,0,62.251,51.211,2.467,1.413,completed,0,,none
+47.65,17,2,0,0,0,0,0,verified,0,59.122,48.841,2.568,1.484,completed,0,,none
+900.36,22,7,1,3,0,0,1,verified,0,1086.783,1201.189,5.209,3.13,completed,1,Off-hour massive transfer; repeated auth failures,high
+42.21,13,1,0,0,0,0,0,verified,0,55.474,58.89,1.234,4.555,completed,0,,none
+614.37,23,12,1,3,1,1,1,failed,1,884.618,1225.792,0.538,7.478,integrity_failed,1,Off-hour massive transfer; repeated auth failures,high
+35.14,21,1,0,0,0,0,1,verified,0,51.066,39.952,1.461,3.351,completed,0,,none
+15.27,19,3,0,1,0,0,0,verified,0,19.981,25.831,1.586,2.947,completed,0,,none
+25.65,6,0,0,1,0,0,0,verified,0,28.279,39.161,2.673,3.798,completed,0,,none
+4.64,11,0,0,0,0,0,0,verified,0,12.639,10.999,1.088,4.414,completed,0,,none
+31.88,6,2,0,0,0,0,0,verified,0,30.474,43.914,1.614,4.407,completed,0,,none
+16.36,14,1,0,0,0,0,1,verified,0,21.148,23.133,1.381,4.786,completed,0,,none
+31.85,17,3,0,0,0,0,1,verified,0,28.329,35.209,2.839,2.825,completed,0,,none

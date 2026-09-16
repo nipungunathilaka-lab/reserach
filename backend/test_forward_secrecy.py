@@ -3,7 +3,7 @@ import os
 import uuid
 from sqlalchemy import create_engine
 from app.database.db import SessionLocal, Base
-from app.database.models import ECDHPrekey, User
+from app.database.models import ECDHPrekey
 from app.services.crypto_service import CryptoService
 from app.services.pfce_engine import PFCEEngine
 import tempfile
@@ -19,13 +19,6 @@ def setup_db():
     Base.metadata.create_all(bind=engine)
     SessionLocal.configure(bind=engine)
     
-    with SessionLocal() as db:
-        user1 = User(id=1, full_name="Alice", email="alice@test.com", password_hash="hash")
-        user2 = User(id=2, full_name="Bob", email="bob@test.com", password_hash="hash")
-        db.add(user1)
-        db.add(user2)
-        db.commit()
-    
     yield
     
     Base.metadata.drop_all(bind=engine)
@@ -36,20 +29,32 @@ def setup_db():
     except:
         pass
 
+@pytest.fixture
+def db_session():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@pytest.fixture
+def test_user(db_session):
+    return "fs_test_user_id"
+
 def create_dummy_file(path, content):
     with open(path, "w") as f:
         f.write(content)
 
 create_dummy_file("dummy_test.txt", "secret file contents")
 
-def test_fresh_sender_key_and_prekey_consumption(setup_db):
-    CryptoService.generate_prekeys_for_user(2, 5)
+def test_fresh_sender_key_and_prekey_consumption(setup_db, db_session, test_user):
+    CryptoService.generate_prekeys_for_user(test_user, 5)
     
     transfer_id1 = str(uuid.uuid4())
-    prekey_pub1 = CryptoService.claim_prekey(2, transfer_id1)
+    prekey_pub1 = CryptoService.claim_prekey(test_user, transfer_id1)
     
     transfer_id2 = str(uuid.uuid4())
-    prekey_pub2 = CryptoService.claim_prekey(2, transfer_id2)
+    prekey_pub2 = CryptoService.claim_prekey(test_user, transfer_id2)
     
     assert prekey_pub1 != prekey_pub2
     

@@ -12,6 +12,7 @@ from app.services.classification_service import DataClassificationScanner
 from app.services.pfce_engine import PFCEEngine
 from app.services.crypto_service import CryptoService
 from app.services.upce_quantum_service import UniversalPolymorphicCryptoEngine
+from app.services.telemetry_service import TelemetryService
 from app.database.db import ENCRYPTED_DIR
 from fastapi import Request
 from app.services.network_monitor import NetworkMonitorService
@@ -161,12 +162,20 @@ async def internal_encrypt(
             "anomaly_score": e.anomaly_score
         })
 
+    # Record production telemetry for future retraining (stripped of PII)
+    if ai_result and "features" in ai_result:
+        try:
+            import threading
+            threading.Thread(target=TelemetryService.record_transfer, args=(ai_result["features"],), daemon=True).start()
+        except Exception:
+            pass
+
     from app.security.quarantine import QuarantineService
     from app.security.mitm import MITMDetector
     
     if temp_path is None:
         scan_result = {
-            "verdict": "SKIPPED_NO_TEMP_FILE",
+            "verdict": "SCAN_FAILED",
             "engine": "ClamAV (Skipped)",
             "confidence": 0.0,
             "scan_mode": "bypassed_due_to_no_file",
@@ -178,12 +187,12 @@ async def internal_encrypt(
             scan_result = MalwareDetectionService.scan_full_file(str(temp_path), safe_name)
         except PermissionError:
             scan_result = {
-                "verdict": "CLEAN",
+                "verdict": "SCAN_FAILED",
                 "engine": "Hybrid (ClamAV + ML + Heuristic)",
                 "confidence": 0.0,
                 "scan_mode": "bypassed_os_lock",
                 "bytes_scanned": 0,
-                "malware_scan_status": "COMPLETED"
+                "malware_scan_status": "FAILED"
             }
     threat_score = scan_result.get("confidence", 0.0)
     

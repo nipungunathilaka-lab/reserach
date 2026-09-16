@@ -14,7 +14,7 @@ os.environ["DATABASE_URL"] = f"sqlite:///{temp_db_path}"
 
 from app.core.config import settings
 from app.database.db import Base, engine, SessionLocal
-from app.database.models import User, PQCKey
+from app.database.models import PQCKey
 from app.services.mlkem_service import MLKEMService
 from app.services.pfce_engine import PFCEEngine
 from app.services.upce_quantum_service import UniversalPolymorphicCryptoEngine
@@ -35,27 +35,11 @@ def db_session():
 
 @pytest.fixture
 def test_user(db_session):
-    user = User(
-        full_name="Test User",
-        email=f"test_{os.urandom(4).hex()}@example.com",
-        password_hash="fakehash"
-    )
-    db_session.add(user)
-    db_session.commit()
-    db_session.refresh(user)
-    return user
+    return "test_user_id_1"
 
 @pytest.fixture
 def test_receiver(db_session):
-    user = User(
-        full_name="Test Receiver",
-        email=f"receiver_{os.urandom(4).hex()}@example.com",
-        password_hash="fakehash"
-    )
-    db_session.add(user)
-    db_session.commit()
-    db_session.refresh(user)
-    return user
+    return "test_receiver_id"
 
 def test_oqs_availability():
     """Test 1 - ML-KEM library availability"""
@@ -64,8 +48,8 @@ def test_oqs_availability():
 
 def test_real_key_generation(test_user, db_session):
     """Test 2 - Real key generation"""
-    MLKEMService.generate_keypair(test_user.id)
-    pqc_key = db_session.query(PQCKey).filter_by(user_id=test_user.id, is_active=True).first()
+    MLKEMService.generate_keypair(test_user)
+    pqc_key = db_session.query(PQCKey).filter_by(user_id=test_user, is_active=True).first()
     assert pqc_key is not None
     assert pqc_key.algorithm == "ML-KEM-768"
     assert pqc_key.key_version == 1
@@ -73,22 +57,22 @@ def test_real_key_generation(test_user, db_session):
     assert len(pqc_key.encrypted_private_key) > 0
     
     # Generate again to test rotation and different keys
-    MLKEMService.generate_keypair(test_user.id)
-    pqc_key_v2 = db_session.query(PQCKey).filter_by(user_id=test_user.id, is_active=True).first()
+    MLKEMService.generate_keypair(test_user)
+    pqc_key_v2 = db_session.query(PQCKey).filter_by(user_id=test_user, is_active=True).first()
     assert pqc_key_v2.key_version == 2
     assert pqc_key_v2.public_key != pqc_key.public_key
 
 def test_encapsulation_roundtrip(test_receiver):
     """Test 3 - Encapsulation/decapsulation round trip"""
-    MLKEMService.generate_keypair(test_receiver.id)
-    receiver_pqc_info = MLKEMService.get_active_public_key(test_receiver.id)
+    MLKEMService.generate_keypair(test_receiver)
+    receiver_pqc_info = MLKEMService.get_active_public_key(test_receiver)
     receiver_pub_key = receiver_pqc_info["public_key"]
     receiver_key_version = receiver_pqc_info["key_version"]
 
     kem_ciphertext, sender_shared_secret = MLKEMService.encapsulate(receiver_pub_key)
     
     # Decapsulate
-    receiver_shared_secret = MLKEMService.decapsulate(kem_ciphertext, test_receiver.id, receiver_key_version)
+    receiver_shared_secret = MLKEMService.decapsulate(kem_ciphertext, test_receiver, receiver_key_version)
     
     assert sender_shared_secret.bytes == receiver_shared_secret.bytes
     assert len(sender_shared_secret.bytes) == 32
@@ -98,29 +82,29 @@ def test_encapsulation_roundtrip(test_receiver):
 
 def test_receiver_isolation(test_user, test_receiver):
     """Test 4 - Receiver isolation"""
-    MLKEMService.generate_keypair(test_user.id)
-    MLKEMService.generate_keypair(test_receiver.id)
+    MLKEMService.generate_keypair(test_user)
+    MLKEMService.generate_keypair(test_receiver)
     
-    receiver_pqc_info = MLKEMService.get_active_public_key(test_receiver.id)
+    receiver_pqc_info = MLKEMService.get_active_public_key(test_receiver)
     
     # Encapsulate for Receiver
     kem_ciphertext, shared_secret = MLKEMService.encapsulate(receiver_pqc_info["public_key"])
     
     # Attempt to decapsulate with User A's key (wrong receiver)
-    user_pqc_info = MLKEMService.get_active_public_key(test_user.id)
+    user_pqc_info = MLKEMService.get_active_public_key(test_user)
     
-    wrong_shared_secret = MLKEMService.decapsulate(kem_ciphertext, test_user.id, user_pqc_info["key_version"])
+    wrong_shared_secret = MLKEMService.decapsulate(kem_ciphertext, test_user, user_pqc_info["key_version"])
     
     # ML-KEM returns a pseudo-random string on failure instead of exception
     assert wrong_shared_secret.bytes != shared_secret.bytes
 
 def test_database_persistence(test_user, db_session):
     """Test 5 - Database persistence"""
-    MLKEMService.generate_keypair(test_user.id)
-    info = MLKEMService.get_active_public_key(test_user.id)
+    MLKEMService.generate_keypair(test_user)
+    info = MLKEMService.get_active_public_key(test_user)
     
     # Simulate a new process decrypting
-    secret_key_buf = MLKEMService._get_secret_key(test_user.id, info["key_version"])
+    secret_key_buf = MLKEMService._get_secret_key(test_user, info["key_version"])
     assert len(secret_key_buf.bytes) > 0
     secret_key_buf.wipe()
     

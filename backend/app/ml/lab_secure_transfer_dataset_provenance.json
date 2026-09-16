@@ -1,0 +1,12 @@
+{
+  "dataset_generation_version": "1.0",
+  "schema_version": "1.0",
+  "generation_timestamp": "2026-09-16T03:10:20.954016",
+  "sha256_hash": "e4e17da986c09271d55de63f3509c34404297b72ad5b1e6b947afaf2348b18b3",
+  "record_counts": {
+    "total": 900,
+    "normal": 702,
+    "anomalous": 198
+  },
+  "source_type": "synthetic_laboratory"
+}

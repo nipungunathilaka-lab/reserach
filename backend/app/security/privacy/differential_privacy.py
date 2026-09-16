@@ -14,10 +14,17 @@ class DPFeaturePolicy:
     sensitivity: float
 
 # The feature policy registry
+# In Local Differential Privacy, where the privacy unit is a single transfer event, 
+# the sensitivity of a feature is exactly its domain range (upper_bound - lower_bound).
 DP_FEATURE_POLICY = {
-    "transfers_last_hour": DPFeaturePolicy(lower_bound=0.0, upper_bound=500.0, sensitivity=1.0),
-    "mfa_failed_attempts": DPFeaturePolicy(lower_bound=0.0, upper_bound=20.0, sensitivity=1.0),
-    "failed_login_attempts": DPFeaturePolicy(lower_bound=0.0, upper_bound=20.0, sensitivity=1.0),
+    "file_size_mb": DPFeaturePolicy(lower_bound=0.0, upper_bound=1000.0, sensitivity=1000.0),
+    "hour_of_day": DPFeaturePolicy(lower_bound=0.0, upper_bound=23.0, sensitivity=23.0),
+    "transfers_last_hour": DPFeaturePolicy(lower_bound=0.0, upper_bound=500.0, sensitivity=500.0),
+    "mfa_failed_attempts": DPFeaturePolicy(lower_bound=0.0, upper_bound=20.0, sensitivity=20.0),
+    "failed_login_attempts": DPFeaturePolicy(lower_bound=0.0, upper_bound=20.0, sensitivity=20.0),
+    "is_unusual_hour": DPFeaturePolicy(lower_bound=0.0, upper_bound=1.0, sensitivity=1.0),
+    "high_risk_file_type": DPFeaturePolicy(lower_bound=0.0, upper_bound=1.0, sensitivity=1.0),
+    "archive_file_type": DPFeaturePolicy(lower_bound=0.0, upper_bound=1.0, sensitivity=1.0),
 }
 
 class PrivacyBudgetExhausted(Exception):

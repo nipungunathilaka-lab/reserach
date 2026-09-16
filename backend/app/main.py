@@ -43,35 +43,6 @@ def startup() -> None:
 def health_check():
     return {"status": "ok", "app": "Internal AI/Crypto Service"}
 
-from app.routes import (
-    auth_routes,
-    user_routes,
-    shared_routes,
-    log_routes,
-    internal_engine_routes,
-    email_otp_routes,
-    dashboard_routes,
-    crypto_routes,
-    blockchain_routes,
-    audit_routes,
-    security_routes,
-    network_routes
-)
-from fastapi import APIRouter
+from app.routes import internal_engine_routes
 
-api_router = APIRouter(prefix="/api")
-api_router.include_router(auth_routes.router)
-api_router.include_router(user_routes.router)
-api_router.include_router(shared_routes.router)
-api_router.include_router(log_routes.router)
-    # internal_engine_routes is mounted directly on app below
-api_router.include_router(email_otp_routes.router)
-api_router.include_router(dashboard_routes.router)
-api_router.include_router(crypto_routes.router)
-api_router.include_router(blockchain_routes.router)
-api_router.include_router(audit_routes.router)
-api_router.include_router(security_routes.router)
-api_router.include_router(network_routes.router)
-
-app.include_router(api_router)
 app.include_router(internal_engine_routes.router)

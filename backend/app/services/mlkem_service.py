@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives import hashes
 from app.core.config import settings
 from app.database.db import SessionLocal
-from app.database.models import PQCKey, User
+from app.database.models import PQCKey
 from app.security.secure_memory import SecureBuffer
 
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ class MLKEMService:
                 logger.warning(f"PQC startup check failed, continuing because PQC_REQUIRED is false: {e}")
 
     @classmethod
-    def generate_keypair(cls, user_id: int):
+    def generate_keypair(cls, user_id: str):
         with SessionLocal() as db:
             active_key = db.query(PQCKey).filter(PQCKey.user_id == user_id, PQCKey.is_active == True).first()
             new_version = 1
@@ -105,21 +105,14 @@ class MLKEMService:
 
     @classmethod
     def backfill_keys(cls):
-        """Idempotent backfill script to generate ML-KEM keys for any registered user who does not have one."""
-        with SessionLocal() as db:
-            users = db.query(User).all()
-            for user in users:
-                active_key = db.query(PQCKey).filter(PQCKey.user_id == user.id, PQCKey.is_active == True).first()
-                if not active_key:
-                    logger.info(f"Generating ML-KEM-768 key for user {user.id}")
-                    cls.generate_keypair(user.id)
+        pass # User table no longer stored in SQLite; Node backend triggers keypair generation dynamically
 
     @classmethod
-    def rotate_keypair(cls, user_id: int):
+    def rotate_keypair(cls, user_id: str):
         cls.generate_keypair(user_id)
 
     @classmethod
-    def get_active_public_key(cls, user_id: int) -> dict:
+    def get_active_public_key(cls, user_id: str) -> dict:
         with SessionLocal() as db:
             active_key = db.query(PQCKey).filter(PQCKey.user_id == user_id, PQCKey.is_active == True).first()
             if not active_key:
@@ -130,7 +123,7 @@ class MLKEMService:
             }
 
     @classmethod
-    def _get_secret_key(cls, user_id: int, key_version: int) -> SecureBuffer:
+    def _get_secret_key(cls, user_id: str, key_version: int) -> SecureBuffer:
         with SessionLocal() as db:
             pqc_key = db.query(PQCKey).filter(PQCKey.user_id == user_id, PQCKey.key_version == key_version).first()
             if not pqc_key:
@@ -154,7 +147,7 @@ class MLKEMService:
             return ciphertext, SecureBuffer(shared_secret_raw)
 
     @classmethod
-    def decapsulate(cls, ciphertext: bytes, receiver_id: int, key_version: int) -> SecureBuffer:
+    def decapsulate(cls, ciphertext: bytes, receiver_id: str, key_version: int) -> SecureBuffer:
         secret_key_buf = cls._get_secret_key(receiver_id, key_version)
         try:
             with oqs.KeyEncapsulation("ML-KEM-768", secret_key_buf.bytes) as kem:

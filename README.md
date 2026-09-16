@@ -9,7 +9,10 @@ The UPCE project is a cutting-edge, dual-engine microservices architecture desig
 
 The application stack seamlessly blends the **MERN Stack** (MongoDB, Express, React, Node.js) with a **Python FastAPI Engine**, allowing for real-time dashboard analytics, bounded-memory large-file streaming, and quantum-resistant encryption.
 
----
+> [!WARNING]
+> The prototype evaluates a defined set of security controls and does not claim complete protection against all cyberattacks. The security evaluation was limited to the controls implemented within the research prototype.
+
+**Architecture Note:** MongoDB is the primary persistent datastore of the current web application. The React frontend communicates with the Node.js/Express application layer, which manages application data in MongoDB and invokes the Python/FastAPI security engine for specialized security processing. PostgreSQL and SQLite belonged to earlier prototype architectures. Currently, PostgreSQL is entirely unused, and SQLite is retained exclusively for isolated security-engine state (the local off-chain ledger anchored to Besu, and crypto keys). Redis is used only for ephemeral caching/rate-limiting within the Python engine and is not the primary datastore.
 
 ## ✨ Core Features
 
@@ -19,7 +22,9 @@ The application stack seamlessly blends the **MERN Stack** (MongoDB, Express, Re
 - **Zero-Knowledge Architecture**: Files are encrypted with keys that only the intended recipient can unwrap. The server never holds plain-text AES keys.
 
 ### 2. AI-Powered Anomaly & Threat Detection
-- **Real-Time Behavioral Analysis**: Uses an **Isolation Forest** machine learning model to analyze file sizes, transfer frequencies, login failures, and time-of-day access to detect malicious insider threats.
+- **Real-Time Behavioral Analysis**: Uses an **Isolation Forest** machine learning model to analyze file sizes, transfer frequencies, login failures, and time-of-day access to detect malicious insider threats. 
+  - *Note: The anomaly-detection model provides probabilistic behavioural risk detection and may produce both false positives and false negatives. Differential Privacy is integrated into the active behavioural-AI feature-processing pipeline using bounded feature values and a configurable Laplace mechanism with explicit privacy parameters and budget tracking.*
+  - *Data Provenance: The Isolation Forest was evaluated on a synthetic laboratory secure-transfer dataset. A provenance-aware telemetry collection pipeline is available for future evaluation and retraining using authorized real application data.*
 - **Malware Scanning**: Automatically intercepts and quarantines files exhibiting malicious byte-patterns before they can be decrypted by the receiver.
 
 ### 3. Permissioned Decentralized Blockchain Audit Ledger
@@ -55,10 +60,10 @@ The application stack seamlessly blends the **MERN Stack** (MongoDB, Express, Re
 | Domain | Technology | Purpose |
 |---|---|---|
 | **Frontend** | React, Vite, Tailwind CSS, Lucide | Glassmorphic UI, responsive dashboards, secure JWT storage. |
-| **Backend API** | Node.js, Express, Mongoose | Orchestrates JWT auth, user management, and MongoDB interactions. |
-| **Internal Engine**| Python, FastAPI, Scikit-Learn | Stateless microservice executing AI models, PFCE streaming, and Kyber crypto. |
-| **Database** | MongoDB Atlas | Stores users, MFA tokens, transfer metadata, and blockchain ledger entries. |
-| **Storage** | Local Server Disk (`/storage`) | Directly stores raw `.pfce` encrypted chunks via streaming streams. |
+| **Backend API** | Node.js, Express, Mongoose | Orchestrates JWT auth, user management, and primary MongoDB interactions. |
+| **Internal Engine**| Python, FastAPI, Scikit-Learn | Microservice executing AI models, PFCE streaming, Kyber crypto, and managing an isolated SQLite ledger. |
+| **Primary Database** | MongoDB Atlas | Stores users, MFA tokens, transfer metadata, and UI-facing audit alerts. |
+| **Security State DB** | SQLite | Local database strictly isolated for the Python engine to anchor the Hyperledger Besu audit chain and store PQC keys. |
 
 ---
 
