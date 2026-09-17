@@ -1,4 +1,6 @@
 import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.pqc]
+import pytest
 import os
 import ctypes
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM

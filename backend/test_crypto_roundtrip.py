@@ -1,3 +1,5 @@
+import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.pqc]
 from types import SimpleNamespace
 
 from app.services.crypto_service import CryptoService

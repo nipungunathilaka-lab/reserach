@@ -76,6 +76,14 @@ class QuarantineItem(Base):
     released_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     scan_metadata: Mapped[str | None] = mapped_column(Text, nullable=True)
+class TrustedClientKey(Base):
+    __tablename__ = "trusted_client_keys"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    fingerprint: Mapped[str] = mapped_column(String(255), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default="TRUSTED", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
 # ---------------------------------------------------------
 # APPEND-ONLY PROTECTIONS FOR AUDIT LEDGER

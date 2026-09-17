@@ -1,0 +1,4 @@
+{
+    "test_mitm_01_signature_substitution": "PASS",
+    "test_failure_transfer_id_modification": "PASS"
+}

@@ -4,7 +4,7 @@ import uuid
 import time
 import psutil
 from pathlib import Path
-from fastapi import APIRouter, File, Form, UploadFile, HTTPException
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 from app.services.ai_service import AIService
 from app.services.malware_service import MalwareDetectionService
@@ -20,8 +20,9 @@ from app.services.network_anomaly import NetworkAnomalyEngine
 from app.services.continuous_monitor import ContinuousTransferMonitor, TransferBlockedError
 from app.services.blockchain_service import BlockchainService
 from app.database.db import SessionLocal
+from app.security.internal_auth import verify_internal_token
 
-router = APIRouter(prefix="/internal", tags=["Internal Engine"])
+router = APIRouter(prefix="/internal", tags=["Internal Engine"], dependencies=[Depends(verify_internal_token)])
 
 @router.post("/crypto/ensure_keys")
 def ensure_keys(user_id: str = Form(...)):
@@ -92,6 +93,24 @@ async def internal_encrypt(
                 )
             raise HTTPException(status_code=403, detail="File hash mismatch. Tampering detected.")
             
+        from app.security.mitm.key_integrity_monitor import key_integrity_monitor
+        fingerprint = CryptoService.get_spki_fingerprint(sender_public_key_spki)
+        
+        is_trusted, expected_fp = key_integrity_monitor.verify_public_key(sender_id, fingerprint)
+        if not is_trusted:
+            with SessionLocal() as db:
+                BlockchainService.append_block(
+                    db=db,
+                    event_type="PUBLIC_KEY_SUBSTITUTION_ATTEMPT",
+                    details={
+                        "transfer_id": transfer_id,
+                        "sender_id": sender_id,
+                        "expected_fingerprint": expected_fp,
+                        "observed_fingerprint": fingerprint
+                    }
+                )
+            raise HTTPException(status_code=403, detail=f"Public key substitution attempt detected. Expected {expected_fp}, got {fingerprint}")
+            
         canonical_payload = (
             f"UPCE-TRANSFER-SIGNATURE-V1\n"
             f"transfer_id={transfer_id}\n"
@@ -116,7 +135,7 @@ async def internal_encrypt(
                     details={
                         "transfer_id": transfer_id,
                         "sender_id": sender_id,
-                        "key_fingerprint": CryptoService.get_spki_fingerprint(sender_public_key_spki)
+                        "key_fingerprint": fingerprint
                     }
                 )
             raise HTTPException(status_code=403, detail="Invalid digital signature. Transfer rejected.")
@@ -171,7 +190,7 @@ async def internal_encrypt(
             pass
 
     from app.security.quarantine import QuarantineService
-    from app.security.mitm import MITMDetector
+    from app.security.mitm.mitm_detector import NetworkAnomalyMonitor
     
     if temp_path is None:
         scan_result = {
@@ -256,31 +275,30 @@ async def internal_encrypt(
                 "anomaly_score": final_threat_score
             }
         )
-        
-    # --- MITM Detection Subsystem ---
-    mitm_result = MITMDetector.evaluate_transfer(
+    # --- Network Anomaly Indicators Subsystem ---
+    anomaly_eval_result = NetworkAnomalyMonitor.evaluate_transfer(
         client_ip=request.client.host if request.client else "127.0.0.1",
         client_port=request.client.port if request.client else 0,
         sender_id=int(sender_id) if sender_id.isdigit() else None,
         sender_spki_fingerprint=CryptoService.get_spki_fingerprint(sender_public_key_spki) if sender_public_key_spki else None
     )
     
-    if mitm_result.detected:
-        if mitm_result.severity in ["HIGH", "CRITICAL"]:
+    if anomaly_eval_result.detected:
+        if anomaly_eval_result.severity in ["HIGH", "CRITICAL"]:
             with SessionLocal() as db:
                 BlockchainService.append_block(
                     db=db,
-                    event_type="MITM_DETECTED",
+                    event_type="POSSIBLE_INTERCEPTION",
                     details={
                         "transfer_id": transfer_id,
                         "sender_id": sender_id,
                         "client_ip": request.client.host if request.client else "127.0.0.1",
-                        "indicators": mitm_result.indicators,
-                        "severity": mitm_result.severity
+                        "indicators": anomaly_eval_result.indicators,
+                        "severity": anomaly_eval_result.severity
                     }
                 )
-            # Log MITM blocked
-            raise HTTPException(status_code=403, detail={"message": f"Transfer blocked: Suspected MITM attack ({', '.join(mitm_result.indicators)})"})
+            # Log Anomaly blocked
+            raise HTTPException(status_code=403, detail={"message": f"Transfer blocked: Network anomaly indicating possible interception or tampering ({', '.join(anomaly_eval_result.indicators)})"})
 
     classification_result = DataClassificationScanner.scan(sample_bytes, safe_name)
     
@@ -482,3 +500,7 @@ def verify_ledger():
     with SessionLocal() as db:
         verification = BlockchainService.verify_chain(db)
         return verification
+
+@router.get("/network/status")
+def get_network_status():
+    return NetworkMonitorService.get_status()

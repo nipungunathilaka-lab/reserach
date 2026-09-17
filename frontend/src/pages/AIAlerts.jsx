@@ -54,7 +54,7 @@ export default function AIAlerts() {
                   </td>
                   <td className="px-5 py-4">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-2.5 py-1 text-xs font-black text-red-400 border border-red-500/20">
-                      {a.score.toFixed(2)}
+                      {typeof a.score === 'number' ? a.score.toFixed(2) : 'N/A'}
                     </span>
                   </td>
                   <td className="px-5 py-4 text-xs text-slate-400">

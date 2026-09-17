@@ -79,12 +79,43 @@ class ContinuousTransferMonitor:
         time_since_last = now - self.telemetry.last_evaluation_at
         chunks_since_last = self.telemetry.chunks_processed - self.telemetry.last_evaluation_chunks
 
+        # Check soft limit to reduce frequency if approaching budget exhaustion
+        from app.security.privacy.differential_privacy import PrivacyBudgetAccountant
+        from app.security.privacy.config import dp_settings
+        
+        # Enforce max analyses per transfer
+        if self.telemetry.samples_count >= dp_settings.dp_max_analyses_per_transfer:
+            return False
+            
+        status = PrivacyBudgetAccountant.get_budget_status(self.telemetry.sender_id)
+        
+        is_soft_limit = False
+        if status.get("status") == "available":
+            consumed = status.get("consumed", 0)
+            max_budget = dp_settings.dp_total_epsilon
+            
+            # Reserved Budget Hard Stop for Continuous Monitoring
+            if (max_budget - consumed) <= dp_settings.dp_reserved_epsilon:
+                return False
+                
+            # Soft Limit Check (Consumed Percentage)
+            if (consumed / max_budget) * 100 >= dp_settings.dp_soft_limit_consumed_percent:
+                is_soft_limit = True
+
+        monitor_interval = settings.ai_monitor_interval_seconds
+        monitor_chunks = settings.ai_monitor_every_n_chunks
+        
+        if is_soft_limit:
+            # Privacy conservation mode: reduce discretionary reassessments
+            monitor_interval *= 3
+            monitor_chunks *= 3
+
         # Evaluate if interval passed or enough chunks processed
         if self.telemetry.last_evaluation_at == 0.0:
             return True # Always evaluate at least once
             
-        return (time_since_last >= settings.ai_monitor_interval_seconds) or \
-               (chunks_since_last >= settings.ai_monitor_every_n_chunks)
+        return (time_since_last >= monitor_interval) or \
+               (chunks_since_last >= monitor_chunks)
 
     def _calculate_rolling_heuristics(self, ai_result: Dict[str, Any]) -> None:
         """
@@ -130,6 +161,9 @@ class ContinuousTransferMonitor:
         """
         file_size_mb = self.telemetry.file_size / (1024 * 1024)
         
+        import uuid
+        analysis_id = f"{self.telemetry.transfer_id}:{self.telemetry.chunks_processed}:{uuid.uuid4().hex[:6]}"
+        
         ai_result = AIService.analyze_transfer(
             file_size_mb=file_size_mb,
             hour_of_day=self.telemetry.hour_of_day,
@@ -137,6 +171,8 @@ class ContinuousTransferMonitor:
             mfa_failed_attempts=self.telemetry.mfa_failed_attempts,
             failed_login_attempts=self.telemetry.failed_login_attempts,
             file_name=self.telemetry.file_name,
+            user_id=self.telemetry.sender_id,
+            analysis_id=analysis_id
         )
         
         # Overlay rolling heuristics

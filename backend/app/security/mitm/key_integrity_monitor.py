@@ -9,31 +9,36 @@ class KeyIntegrityMonitor:
     def __init__(self):
         pass
         
-    def verify_public_key(self, user_id: int, current_spki_fingerprint: str) -> Tuple[bool, Optional[str]]:
-        """
-        Verify if the provided public key fingerprint matches the active key for the user.
-        Returns (is_valid, expected_fingerprint).
-        If no active key is found, we might accept the first one or require enrollment.
-        For this prototype, if it doesn't match the known active key, we return False.
-        """
+    def verify_public_key(self, user_id: str, current_spki_fingerprint: str) -> Tuple[bool, Optional[str]]:
+        from app.database.models import TrustedClientKey
+        
         db = SessionLocal()
         try:
-            active_key = db.query(PQCKey).filter(
-                PQCKey.user_id == user_id, 
-                PQCKey.is_active == True
-            ).first()
+            trusted_key = db.query(TrustedClientKey).filter(TrustedClientKey.user_id == str(user_id)).first()
             
-            if not active_key:
-                return True, None # No baseline yet
+            # TOFU-based key continuity detects unexpected public-key changes after initial trust establishment; it does not independently authenticate the first contact.
+            if not trusted_key:
+                trusted_key = TrustedClientKey(user_id=str(user_id), fingerprint=current_spki_fingerprint, status="TRUSTED")
+                db.add(trusted_key)
+                db.commit()
+                return True, current_spki_fingerprint
                 
-            from app.services.crypto_service import CryptoService
-            expected_fingerprint = CryptoService.get_spki_fingerprint(active_key.public_key)
-            
-            if expected_fingerprint != current_spki_fingerprint:
-                logger.warning(f"Public key substitution attempt detected for user {user_id}. Expected {expected_fingerprint}, got {current_spki_fingerprint}")
-                return False, expected_fingerprint
+            if trusted_key.status == "REVOKED":
+                return False, trusted_key.fingerprint
                 
-            return True, expected_fingerprint
+            if trusted_key.status == "ROTATION_PENDING" and trusted_key.fingerprint != current_spki_fingerprint:
+                # Approved rotation workflow
+                trusted_key.fingerprint = current_spki_fingerprint
+                trusted_key.status = "ROTATED"
+                db.commit()
+                return True, current_spki_fingerprint
+
+            if trusted_key.fingerprint != current_spki_fingerprint:
+                # Fail closed. The old fingerprint is preserved in the database for audit evidence.
+                logger.warning(f"Public key substitution attempt detected for user {user_id}. Expected {trusted_key.fingerprint}, got {current_spki_fingerprint}")
+                return False, trusted_key.fingerprint
+                
+            return True, trusted_key.fingerprint
         finally:
             db.close()
 

@@ -65,8 +65,8 @@ export default function ReceivedFiles() {
           <div className="mt-3 flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-emerald-400">
             <ShieldCheck size={16} className="shrink-0" />
             <div>
-              <p className="text-xs font-bold leading-tight">AI Assessment: No Anomaly Detected</p>
-              <p className="text-[10px] text-emerald-500/80 leading-tight">Risk Score: {(t.anomaly_score || 0).toFixed(2)}</p>
+              <p className="text-xs font-bold leading-tight">AI Assessment: {t.anomaly_score === null ? 'Unavailable' : 'No Anomaly Detected'}</p>
+              <p className="text-[10px] text-emerald-500/80 leading-tight">Risk Score: {t.anomaly_score === null ? 'N/A (DP Exhausted)' : t.anomaly_score.toFixed(2)}</p>
             </div>
           </div>
           
@@ -101,8 +101,8 @@ export default function ReceivedFiles() {
                   <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-emerald-400">
                     <ShieldCheck size={14} className="shrink-0" />
                     <div>
-                      <p className="text-xs font-bold leading-tight">AI Assessment: No Anomaly Detected</p>
-                      <p className="text-[10px] text-emerald-500/80 leading-tight">Risk Score: {(t.anomaly_score || 0).toFixed(2)}</p>
+                      <p className="text-xs font-bold leading-tight">AI Assessment: {t.anomaly_score === null ? 'Unavailable' : 'No Anomaly Detected'}</p>
+                      <p className="text-[10px] text-emerald-500/80 leading-tight">Risk Score: {t.anomaly_score === null ? 'N/A (DP Exhausted)' : t.anomaly_score.toFixed(2)}</p>
                     </div>
                   </div>
                   {t.signature_verified && (

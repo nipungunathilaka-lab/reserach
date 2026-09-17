@@ -12,6 +12,7 @@
     "start:node": "cd backend-node && node server.js",
     "start:python": "cd backend && .\\venv\\Scripts\\uvicorn app.main:app --reload --port 8000",
     "start:frontend": "cd frontend && npm run dev",
+    "check:ports": "powershell -ExecutionPolicy Bypass -File ./scripts/check-dev-ports.ps1",
     "zip-source": "powershell -ExecutionPolicy Bypass -File ./package-source.ps1"
   },
   "devDependencies": {

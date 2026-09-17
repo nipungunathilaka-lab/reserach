@@ -12,6 +12,7 @@ const os = require('os');
 const BlockchainLog = require('../models/BlockchainLog');
 const SigningKey = require('../models/SigningKey');
 const SigningChallenge = require('../models/SigningChallenge');
+const { getInternalServiceToken } = require('../utils/internalAuth');
 
 const UPLOAD_STATUSES = {};
 
@@ -83,7 +84,8 @@ exports.sendFile = async (req, res) => {
     try {
       response = await axios.post(`${pythonUrl}/internal/crypto/encrypt`, formData, {
         headers: {
-          ...formData.getHeaders()
+          ...formData.getHeaders(),
+          'Authorization': `Bearer ${getInternalServiceToken('POST', '/internal/crypto/encrypt')}`
         }
       });
     } catch (pythonErr) {
@@ -192,7 +194,8 @@ exports.downloadFile = async (req, res) => {
         receiver_id: req.user._id.toString(),
         sender_public_key_spki
       }, {
-        responseType: 'stream'
+        responseType: 'stream',
+        headers: { 'Authorization': `Bearer ${getInternalServiceToken('POST', '/internal/crypto/decrypt')}` }
       });
     } catch (pythonErr) {
       console.error('Python Decrypt Error:', pythonErr.response?.data || pythonErr.message);
@@ -297,7 +300,10 @@ exports.uploadChunk = async (req, res) => {
 
         const pythonUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
         const pythonResponse = await axios.post(`${pythonUrl}/internal/crypto/encrypt`, formData, {
-          headers: formData.getHeaders()
+          headers: {
+            ...formData.getHeaders(),
+            'Authorization': `Bearer ${getInternalServiceToken('POST', '/internal/crypto/encrypt')}`
+          }
         });
 
         const pythonData = pythonResponse.data;

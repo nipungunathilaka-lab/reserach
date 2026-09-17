@@ -64,42 +64,37 @@ class PFCEEngine:
         
         temp_dir = tempfile.mkdtemp(prefix="pfce_upload_")
         
-        # PQC Transfer-Level Setup using UPCE
-        pqc_kek = None
-        if crypto_engine and security_policy:
-            upce_result = crypto_engine.initialize_transfer_security(
-                sender_id="system", receiver_id=receiver_id, policy=security_policy
-            )
-            pqc_kek = upce_result.get("pqc_kek")
-            metadata["pqc"] = upce_result.get("metadata", {"enabled": False})
-        else:
-            metadata["pqc"] = {"enabled": False}
-        
-        total_aes_time_ms = 0.0
-        total_rsa_wrap_time_ms = 0.0
-        total_ecdh_time_ms = 0.0
-        
-        # Master Hash for Zero-Trust verification
-        master_hash = hashlib.sha256()
-        
-        file_stream.seek(0, 2)
-        total_size = file_stream.tell()
-        file_stream.seek(0)
-        total_mb = round(total_size / (1024 * 1024), 2)
-        
-        total_bytes_processed = 0
-        last_logged_bytes = 0
-        
-        # --- BLOCK 4.1: Calculate adaptive bounds based on Context Policy ---
-        min_bytes = security_policy.get("min_chunk_bytes", 5 * 1024 * 1024) if security_policy else 5 * 1024 * 1024
-        max_bytes = security_policy.get("max_chunk_bytes", 15 * 1024 * 1024) if security_policy else 15 * 1024 * 1024
-        
         # Forward Secrecy: Claim a One-Time Receiver Prekey for this transfer
         transfer_id_basename = os.path.basename(pfce_package_path)
         prekey_public_pem = CryptoService.claim_prekey(receiver_id, transfer_id_basename)
         
+        # Hybrid (ECDH + ML-KEM) Transfer-Level Setup using UPCE
+        hybrid_kek = None
+        if crypto_engine and security_policy:
+            upce_result = crypto_engine.initialize_transfer_security(
+                sender_id=sender_id, receiver_id=receiver_id, policy=security_policy, prekey_public_pem=prekey_public_pem, transfer_id=transfer_id_basename
+            )
+            hybrid_kek = upce_result.get("hybrid_kek")
+            metadata["hybrid"] = upce_result.get("metadata", {"enabled": False})
+        else:
+            metadata["hybrid"] = {"enabled": False}
+        
         try:
             fragment_id = 0
+            min_bytes = security_policy.get("min_chunk_bytes", 1024 * 1024) if security_policy else 1024 * 1024
+            max_bytes = security_policy.get("max_chunk_bytes", 5 * 1024 * 1024) if security_policy else 5 * 1024 * 1024
+            
+            master_hash = hashlib.sha256()
+            total_aes_time_ms = 0.0
+            total_rsa_wrap_time_ms = 0.0
+            total_ecdh_time_ms = 0.0
+            total_bytes_processed = 0
+            last_logged_bytes = 0
+            
+            # Since stream might not be seekable, total_size is unknown in advance.
+            # We will use 0 for unknown.
+            total_size = 0
+            total_mb = 0
             
             while True:
                 # DYNAMIC FRAGMENTATION: True random polymorphic sizing per chunk
@@ -126,26 +121,15 @@ class PFCEEngine:
                     
                 chunk_hash = chunk_hash_obj.hexdigest()
                 
-                # Generate Deterministic AAD
-                pqc_aad = None
-                if pqc_kek:
-                    pqc_aad = CryptoService.construct_pqc_aad(
-                        transfer_id=os.path.basename(pfce_package_path),
-                        receiver_id=receiver_id,
-                        fragment_id=fragment_id,
-                        key_version=metadata["pqc"].get("receiver_key_version")
-                    )
-
                 # Encrypt the variable chunk
                 frag_stored_name = f"{stored_name_prefix}_frag_{fragment_id}"
                 frag_result = CryptoService.encrypt_file_for_receiver(
-                    frag_src_path, 
-                    receiver_id, 
-                    frag_stored_name, 
-                    classification, 
-                    pqc_kek=pqc_kek, 
-                    pqc_aad=pqc_aad,
-                    prekey_public_pem=prekey_public_pem,
+                    src_path=frag_src_path, 
+                    receiver_id=receiver_id, 
+                    stored_name=frag_stored_name, 
+                    classification=classification, 
+                    hybrid_kek=hybrid_kek, 
+                    hybrid_aad=None,
                     transfer_id=transfer_id_basename,
                     sender_id=sender_id
                 )
@@ -169,12 +153,9 @@ class PFCEEngine:
                     "filename": fragment_filename,
                     "encrypted_key": frag_result.encrypted_key,
                     "nonce": frag_result.nonce,
-                    "ecdh_public_key": frag_result.ecdh_public_key,
-                    "ecdh_wrapped_key": frag_result.ecdh_wrapped_key,
-                    "ecdh_key_nonce": frag_result.ecdh_key_nonce,
                     "cipher_algorithm": frag_result.cipher_algorithm,
-                    "pqc_wrapped_key": frag_result.pqc_wrapped_key,
-                    "pqc_wrap_nonce": frag_result.pqc_wrap_nonce,
+                    "hybrid_wrapped_key": frag_result.hybrid_wrapped_key,
+                    "hybrid_wrap_nonce": frag_result.hybrid_wrap_nonce,
                     "hash": chunk_hash,
                     "ciphertext_sha256": ciphertext_sha256,
                     "size": bytes_read
@@ -242,8 +223,8 @@ class PFCEEngine:
                         pass
                         
         finally:
-            if pqc_kek and hasattr(pqc_kek, "wipe"):
-                pqc_kek.wipe()
+            if hybrid_kek and hasattr(hybrid_kek, "wipe"):
+                hybrid_kek.wipe()
             shutil.rmtree(temp_dir, ignore_errors=True)
             
         execution_time = time.time() - start_time
@@ -387,13 +368,30 @@ class PFCEEngine:
             transfer_id_basename = os.path.basename(pfce_package_path)
             prekey_private_pem = CryptoService.get_and_delete_prekey(receiver_id, transfer_id_basename)
             
-            # Extract PQC Transfer-Level KEK using UPCE
-            pqc_kek = None
-            pqc_meta = metadata.get("pqc", {})
-            if pqc_meta.get("enabled") and crypto_engine:
-                pqc_kek = crypto_engine.recover_transfer_security(receiver_id, pqc_meta)
-            elif pqc_meta.get("enabled"):
-                logger.warning("PQC is enabled in metadata, but no crypto_engine was provided for decapsulation.")
+            # Extract Hybrid Transfer-Level KEK using UPCE
+            hybrid_kek = None
+            hybrid_meta = metadata.get("hybrid", {})
+            if hybrid_meta.get("enabled") and crypto_engine:
+                prekey_public_pem = hybrid_meta.get("ecdh_ephemeral_public", "")  # We actually need the receiver's prekey pub, but it's bound. Wait, the receiver's prekey pub was used.
+                # The DB only gives us private key, we don't have the pub key string saved unless we recalculate it.
+                # Actually, in recover_transfer_security we can recalculate pub key from priv key.
+                from cryptography.hazmat.primitives.asymmetric import ec
+                from cryptography.hazmat.primitives import serialization
+                if prekey_private_pem:
+                    priv_key = serialization.load_pem_private_key(prekey_private_pem.encode("utf-8"), password=None)
+                    prekey_pub_pem_str = priv_key.public_key().public_bytes(serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo).decode("utf-8")
+                else:
+                    prekey_pub_pem_str = None
+                hybrid_kek = crypto_engine.recover_transfer_security(
+                    sender_id=metadata.get("sender_id"),
+                    receiver_id=receiver_id,
+                    transfer_id=transfer_id_basename,
+                    metadata=hybrid_meta,
+                    prekey_private_pem=prekey_private_pem,
+                    prekey_public_pem=prekey_pub_pem_str
+                )
+            elif hybrid_meta.get("enabled"):
+                logger.warning("Hybrid is enabled in metadata, but no crypto_engine was provided for decapsulation.")
             
             try:
                 with zipfile.ZipFile(pfce_package_path, 'r', allowZip64=True) as zipf:
@@ -405,95 +403,68 @@ class PFCEEngine:
                         except KeyError:
                             raise ValueError(f"Missing fragment file: {fragment['filename']}")
                         
-                    actual_ciphertext_hash = hashlib.sha256(encrypted_chunk).hexdigest()
-                    if "ciphertext_sha256" in fragment and actual_ciphertext_hash != fragment["ciphertext_sha256"]:
-                        _log_failure("CIPHERTEXT_HASH_MISMATCH")
-                        raise ValueError(f"Ciphertext digest mismatch for fragment {fragment['fragment_id']}")
+                        actual_ciphertext_hash = hashlib.sha256(encrypted_chunk).hexdigest()
+                        if "ciphertext_sha256" in fragment and actual_ciphertext_hash != fragment["ciphertext_sha256"]:
+                            _log_failure("CIPHERTEXT_HASH_MISMATCH")
+                            raise ValueError(f"Ciphertext digest mismatch for fragment {fragment['fragment_id']}")
+                            
+                        expected_hash = fragment["hash"]
+                        stored_name_approx = fragment["filename"].replace(".enc", "")
                         
-                    expected_hash = fragment["hash"]
-                    stored_name_approx = fragment["filename"].replace(".enc", "")
-                    
-                    aes_key = None
-                    
-                    try:
-                        # 1. Attempt Post-Quantum Decapsulation (ML-KEM-768) using Transfer KEK
-                        if pqc_kek and fragment.get("pqc_wrapped_key") and fragment.get("pqc_wrap_nonce"):
-                            try:
-                                pqc_aad = None
-                                if "pqc" in metadata and "receiver_key_version" in metadata["pqc"]:
-                                    pqc_aad = CryptoService.construct_pqc_aad(
-                                        transfer_id=os.path.basename(pfce_package_path),
-                                        receiver_id=receiver_id,
-                                        fragment_id=fragment["fragment_id"],
-                                        key_version=metadata["pqc"]["receiver_key_version"]
+                        aes_key = None
+                        
+                        try:
+                            # 1. Attempt Hybrid Decapsulation using Transfer KEK
+                            if hybrid_kek and fragment.get("hybrid_wrapped_key") and fragment.get("hybrid_wrap_nonce"):
+                                try:
+                                    aes_key = CryptoService.unwrap_hybrid_key(
+                                        hybrid_kek=hybrid_kek,
+                                        hybrid_wrapped_key_b64=fragment["hybrid_wrapped_key"],
+                                        hybrid_wrap_nonce_b64=fragment["hybrid_wrap_nonce"],
+                                        hybrid_aad=None
                                     )
-                                    
-                                aes_key = CryptoService.unwrap_pqc_key(
-                                    pqc_kek=pqc_kek,
-                                    pqc_wrapped_key_b64=fragment["pqc_wrapped_key"],
-                                    pqc_wrap_nonce_b64=fragment["pqc_wrap_nonce"],
-                                    pqc_aad=pqc_aad
+                                except Exception as e:
+                                    logger.error(f"Hybrid unwrap failed: {e}")
+                                    _log_failure("HYBRID_UNWRAP_FAILED")
+                                    raise ValueError(f"Hybrid unwrap failed for fragment {fragment['fragment_id']}") from e
+                            
+                            # 2. Legacy Fallback: RSA
+                            if aes_key is None and fragment.get("encrypted_key"):
+                                aes_key = CryptoService.unwrap_key_with_rsa(
+                                    receiver_id=receiver_id, 
+                                    encrypted_key=fragment["encrypted_key"]
                                 )
-                            except Exception as e:
-                                logger.error(f"PQC unwrap failed: {e}")
-                                _log_failure("PQC_UNWRAP_FAILED")
-                                raise ValueError(f"PQC unwrap failed for fragment {fragment['fragment_id']}") from e
-                        
-                        # 2. Modern: ECDH with Prekey
-                        if aes_key is None and fragment.get("ecdh_public_key") and fragment.get("ecdh_wrapped_key") and fragment.get("ecdh_key_nonce"):
-                            try:
-                                aes_key = CryptoService.unwrap_key_with_ecdh(
-                                    receiver_id=receiver_id,
-                                    ecdh_public_key_pem=fragment["ecdh_public_key"],
-                                    ecdh_wrapped_key=fragment["ecdh_wrapped_key"],
-                                    ecdh_key_nonce=fragment["ecdh_key_nonce"],
-                                    stored_name=stored_name_approx,
-                                    prekey_private_pem=prekey_private_pem,
-                                    transfer_id=transfer_id_basename,
-                                    sender_id=metadata.get("sender_id")
-                                )
-                            except Exception as e:
-                                logger.error(f"ECDH unwrap failed for Modern transfer: {e}")
-                                _log_failure("ECDH_UNWRAP_FAILED")
-                                raise ValueError("ECDH unwrap failed. Forward secrecy prekey missing or invalid. Failing closed.") from e
                             
                             if aes_key is None:
-                                _log_failure("ECDH_UNWRAP_RETURNED_NONE")
-                                raise ValueError("ECDH unwrap returned None. Failing closed.")
-                        
-                        # 3. Legacy Fallback: RSA (Only if not a modern transfer)
-                        if aes_key is None and not fragment.get("ecdh_public_key"):
-                            aes_key = CryptoService.unwrap_key_with_rsa(
-                                receiver_id=receiver_id, 
-                                encrypted_key=fragment["encrypted_key"]
-                            )
-                        
-                        cipher_algorithm = fragment.get("cipher_algorithm", "AES-256-GCM")
-                        if cipher_algorithm == "ChaCha20-Poly1305":
-                            decrypted_chunk = ChaCha20Poly1305(aes_key.memory).decrypt(
-                                CryptoService._unb64(fragment["nonce"]), 
-                                encrypted_chunk, 
-                                None
-                            )
-                        else:
-                            decrypted_chunk = AESGCM(aes_key.memory).decrypt(
-                                CryptoService._unb64(fragment["nonce"]), 
-                                encrypted_chunk, 
-                                None
-                            )
-                        
-                        actual_hash = hashlib.sha256(decrypted_chunk).hexdigest()
-                        if actual_hash != expected_hash:
-                            _log_failure("INTEGRITY_CHECK_FAILED")
-                            raise ValueError(f"Integrity check failed for fragment {fragment['fragment_id']}. Hash mismatch.")
+                                _log_failure("DECRYPTION_FAILED")
+                                raise ValueError("No valid key wrap found for fragment.")
                             
-                        yield decrypted_chunk
-                        
-                    finally:
-                        if aes_key and hasattr(aes_key, "wipe"):
-                            aes_key.wipe()
+                            cipher_algorithm = fragment.get("cipher_algorithm", "AES-256-GCM")
+                            if cipher_algorithm == "ChaCha20-Poly1305":
+                                decrypted_chunk = ChaCha20Poly1305(aes_key.memory).decrypt(
+                                    CryptoService._unb64(fragment["nonce"]), 
+                                    encrypted_chunk, 
+                                    None
+                                )
+                            else:
+                                decrypted_chunk = AESGCM(aes_key.memory).decrypt(
+                                    CryptoService._unb64(fragment["nonce"]), 
+                                    encrypted_chunk, 
+                                    None
+                                )
+                            
+                            actual_hash = hashlib.sha256(decrypted_chunk).hexdigest()
+                            if actual_hash != expected_hash:
+                                _log_failure("INTEGRITY_CHECK_FAILED")
+                                raise ValueError(f"Integrity check failed for fragment {fragment['fragment_id']}. Hash mismatch.")
+                                
+                            yield decrypted_chunk
+                            
+                        finally:
+                            if aes_key and hasattr(aes_key, "wipe"):
+                                aes_key.wipe()
             finally:
-                if pqc_kek and hasattr(pqc_kek, "wipe"):
-                    pqc_kek.wipe()
+                if hybrid_kek and hasattr(hybrid_kek, "wipe"):
+                    hybrid_kek.wipe()
         finally:
             pass

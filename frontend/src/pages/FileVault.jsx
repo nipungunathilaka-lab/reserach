@@ -121,7 +121,7 @@ export default function FileVault() {
           <h1 className="text-2xl font-black text-white">File Vault Dashboard</h1>
           <p className="text-sm text-slate-400 mt-1">Manage file versions and generate secure share links.</p>
         </div>
-        {secureSession && <span className="flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-bold text-green-400"><ShieldCheck size={16} /> E2EE Session Active</span>}
+        {secureSession && <span className="flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-bold text-green-400"><ShieldCheck size={16} /> Secure Cryptographic Session</span>}
       </div>
 
       <ErrorBanner message={error} />

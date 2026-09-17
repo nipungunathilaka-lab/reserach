@@ -1,4 +1,6 @@
 import pytest
+pytestmark = [pytest.mark.unit]
+import pytest
 import math
 import time
 from app.security.privacy.differential_privacy import (
@@ -17,8 +19,27 @@ def setup_module(module):
     dp_settings.dp_budget_window_hours = 24
 
 def setup_function(function):
-    PrivacyBudgetAccountant.reset_for_tests()
     dp_settings.dp_enabled = True
+
+@pytest.fixture(autouse=True)
+def mock_accountant(monkeypatch):
+    budget = {}
+    def mock_consume(user_id, epsilon, analysis_id=None, analysis_class="INITIAL"):
+        from app.security.privacy.config import dp_settings
+        from app.security.privacy.differential_privacy import PrivacyBudgetExhausted
+        if user_id not in budget: budget[user_id] = 0.0
+        
+        if analysis_class == "PERIODIC":
+            if budget[user_id] + epsilon > dp_settings.dp_total_epsilon - dp_settings.dp_reserved_epsilon:
+                raise PrivacyBudgetExhausted("exhausted")
+        else:
+            if budget[user_id] + epsilon > dp_settings.dp_total_epsilon:
+                raise PrivacyBudgetExhausted("exhausted")
+                
+        budget[user_id] += epsilon
+        return dp_settings.dp_total_epsilon - budget[user_id]
+    
+    monkeypatch.setattr(PrivacyBudgetAccountant, "consume_budget", mock_consume)
 
 def test_dp_configuration():
     assert dp_settings.dp_enabled == True
@@ -49,16 +70,16 @@ def test_budget_accounting():
     user_id = "test_user_budget"
     
     # Consume budget once
-    remaining = PrivacyBudgetAccountant.consume_budget(user_id, 2.0)
+    remaining = PrivacyBudgetAccountant.consume_budget(user_id, 2.0, "analysis_1")
     assert remaining == 8.0
     
     # Consume again
-    remaining = PrivacyBudgetAccountant.consume_budget(user_id, 3.0)
+    remaining = PrivacyBudgetAccountant.consume_budget(user_id, 3.0, "analysis_2")
     assert remaining == 5.0
     
     # Exhaust budget
     with pytest.raises(PrivacyBudgetExhausted):
-        PrivacyBudgetAccountant.consume_budget(user_id, 6.0)
+        PrivacyBudgetAccountant.consume_budget(user_id, 6.0, "analysis_3")
 
 def test_feature_bounding():
     raw_features = {

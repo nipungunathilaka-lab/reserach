@@ -1,4 +1,6 @@
 import pytest
+pytestmark = [pytest.mark.unit]
+import pytest
 from app.database.models import AuditBlock, PQCKey, ECDHPrekey, QuarantineItem
 
 def test_no_legacy_tables_exist():

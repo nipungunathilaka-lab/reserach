@@ -1,0 +1,10 @@
+{
+    "test_mlkem_01_generation": "PASS",
+    "test_mlkem_02_roundtrip": "PASS",
+    "test_mlkem_03_wrong_key": "PASS",
+    "test_mlkem_04_tampered_ciphertext": "PASS",
+    "test_mlkem_05_malformed_input": "PASS",
+    "test_hybrid_t06_remove_mlkem": "PASS",
+    "test_hybrid_comp_02_mlkem_exposed": "PASS",
+    "test_failure_remove_mlkem_component": "PASS"
+}

@@ -17,6 +17,6 @@ The following table documents the actual security controls implemented and teste
 | XSS                           | Partially   | No     | React DOM escaping | React provides baseline protection, but not exhaustively tested. |
 | CSRF                          | Partially   | No     | Bearer tokens | Token storage vulnerabilities not fully evaluated. |
 | Zero-days                     | No          | No     | -        | Cannot protect against unknown vulnerabilities. |
-| Insider admin compromise      | Yes         | Partially | Zero-knowledge architecture | An admin with kernel access could dump memory before zeroization. |
+| Insider admin compromise      | Yes         | Partially | Trusted processing boundary | An admin with kernel access could dump memory before zeroization or intercept plaintext in FastAPI. |
 | Side-channel attacks          | No          | No     | -        | Out of scope for this prototype. |
 | Crypto implementation attacks | No          | No     | -        | Dependent on third-party cryptographic libraries. |

@@ -1,0 +1,32 @@
+[
+  {
+    "test_id": "MLKEM-01",
+    "result": "PASS",
+    "property": "Real ML-KEM-768 key generation",
+    "timestamp": "2026-09-16T09:47:51.388713"
+  },
+  {
+    "test_id": "MLKEM-02",
+    "result": "PASS",
+    "property": "Encapsulation + matching decapsulation",
+    "timestamp": "2026-09-16T09:47:51.388713"
+  },
+  {
+    "test_id": "MLKEM-03",
+    "result": "PASS",
+    "property": "Different receiver decapsulation key rejected",
+    "timestamp": "2026-09-16T09:47:51.388713"
+  },
+  {
+    "test_id": "MLKEM-04",
+    "result": "PASS",
+    "property": "Tampered ML-KEM ciphertext rejected",
+    "timestamp": "2026-09-16T09:47:51.388713"
+  },
+  {
+    "test_id": "MLKEM-05",
+    "result": "PASS",
+    "property": "Malformed ciphertext/key input rejected",
+    "timestamp": "2026-09-16T09:47:51.388713"
+  }
+]

@@ -3,6 +3,8 @@ from app.services.continuous_monitor import ContinuousTransferMonitor, TransferB
 from app.security.privacy.differential_privacy import PrivacyBudgetAccountant
 from app.security.privacy.config import dp_settings
 
+pytestmark = [pytest.mark.integration, pytest.mark.redis]
+
 def setup_function(function):
     PrivacyBudgetAccountant.reset_for_tests()
     dp_settings.dp_enabled = True

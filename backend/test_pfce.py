@@ -1,3 +1,5 @@
+import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.pqc]
 import os
 import io
 from app.services.pfce_engine import PFCEEngine

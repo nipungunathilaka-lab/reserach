@@ -16,6 +16,8 @@ qrcode>=7.4.2
 joblib>=1.3.2
 psutil>=5.9.0
 liboqs-python
-scapy>=2.5.0
+scapy
+cachetools>=2.5.0
+redis
 pyclamd>=0.4.0
 web3==6.20.1

@@ -1,0 +1,24 @@
+[
+  {
+    "test_id": "HYBRID-01",
+    "algorithm": "HKDF-SHA256",
+    "result": "PASS",
+    "kek_length": 32,
+    "deterministic": true,
+    "timestamp": "2026-09-16T09:47:51.388713"
+  },
+  {
+    "test_id": "HYBRID-02",
+    "binding": "canonical_transcript",
+    "result": "PASS",
+    "tampered_context_rejected": true,
+    "timestamp": "2026-09-16T09:47:51.388713"
+  },
+  {
+    "test_id": "HYBRID-03",
+    "property": "post_quantum_secrecy",
+    "result": "PASS",
+    "classical_break_simulation_failed": true,
+    "timestamp": "2026-09-16T09:47:51.388713"
+  }
+]

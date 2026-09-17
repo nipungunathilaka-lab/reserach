@@ -1,3 +1,5 @@
+import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.clamav]
 import unittest
 import os
 import tempfile

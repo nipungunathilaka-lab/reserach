@@ -1,4 +1,33 @@
 services:
+  crypto-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.crypto-test
+    volumes:
+      - .:/app
+    networks:
+      - app_internal
+
+  cert-init:
+    image: alpine
+    command: >
+      /bin/sh -c "apk add --no-cache openssl &&
+      mkdir -p /certs &&
+      openssl genrsa -out /certs/ca.key 2048 &&
+      openssl req -x509 -new -nodes -key /certs/ca.key -sha256 -days 3650 -out /certs/ca.crt -subj '/CN=Development-CA' &&
+      openssl genrsa -out /certs/nginx.key 2048 &&
+      openssl req -new -key /certs/nginx.key -out /certs/nginx.csr -subj '/CN=besu-gateway' &&
+      openssl x509 -req -in /certs/nginx.csr -CA /certs/ca.crt -CAkey /certs/ca.key -CAcreateserial -out /certs/nginx.crt -days 365 -sha256 &&
+      echo 'Certificates generated.'"
+    volumes:
+      - certs_data:/certs
+
+  redis:
+    image: redis:alpine
+    networks:
+      - app_internal
+    restart: unless-stopped
+
   backend:
     build: 
       context: ./backend
@@ -6,27 +35,29 @@ services:
     volumes:
       - ./backend:/app
       - sqlite_data:/app/data
-    ports:
-      - "8000:8000"
+      - certs_data:/app/certs:ro
     environment:
       - DEV_SHOW_OTP=false
       - BLOCKCHAIN_ENABLED=true
       - BLOCKCHAIN_REQUIRED=true
-      - BLOCKCHAIN_RPC_URL=http://besu-validator-1:8545
+      - BLOCKCHAIN_RPC_URL=https://besu-gateway:8443
       - BLOCKCHAIN_CHAIN_ID=1337
       - BLOCKCHAIN_SIGNER_ADDRESS=0x906818496d579Ee37bb743e8f060aA16C2Cc943C
       - BLOCKCHAIN_SIGNER_PRIVATE_KEY=0xdecfc029e90f96395a231e3d444bd070b7a858fcffe3db0fcbf5051fd556813d
+      - REDIS_URL=redis://redis:6379/0
     cap_add:
       - NET_RAW
       - NET_ADMIN
     depends_on:
-      - besu-validator-1
-      - besu-validator-2
-      - besu-validator-3
-      - besu-validator-4
+      cert-init:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
+      besu-gateway:
+        condition: service_started
     networks:
-      besu_net:
-        ipv4_address: 172.16.239.10
+      - app_internal
+      - rpc_client_net
 
   clamav:
     image: clamav/clamav:latest_base
@@ -36,19 +67,61 @@ services:
       - sqlite_data:/app/data
     restart: unless-stopped
     networks:
-      - besu_net
+      - app_internal
+
+  besu-gateway:
+    image: nginx:alpine
+    command: >
+      /bin/sh -c "apk add --no-cache apache2-utils &&
+      htpasswd -bc /etc/nginx/.htpasswd rpcuser rpcpassword123! &&
+      echo 'server {
+        listen 8443 ssl;
+        ssl_certificate /certs/nginx.crt;
+        ssl_certificate_key /certs/nginx.key;
+        location / {
+          auth_basic \"Restricted RPC\";
+          auth_basic_user_file /etc/nginx/.htpasswd;
+          proxy_pass http://besu-validator-1:8545;
+        }
+      }' > /etc/nginx/conf.d/default.conf &&
+      nginx -g 'daemon off;'"
+    depends_on:
+      cert-init:
+        condition: service_completed_successfully
+      besu-validator-1:
+        condition: service_started
+    volumes:
+      - certs_data:/certs:ro
+    networks:
+      - rpc_client_net
+      - besu_private_net
+
+  node-api:
+    build:
+      context: ./backend-node
+    environment:
+      - PYTHON_SERVICE_URL=http://backend:8000
+      - MONGO_URI=${MONGO_URI}
+      - INTERNAL_API_SECRET=${INTERNAL_API_SECRET:-default-insecure-internal-secret}
+      - JWT_SECRET=${JWT_SECRET:-default-jwt-secret}
+      - JWT_EXPIRE=30d
+    ports:
+      - "5000:5000"
+    depends_on:
+      - backend
+    networks:
+      - app_edge
+      - app_internal
 
   besu-validator-1:
     image: hyperledger/besu:latest
-    command: ["--network-id=1337", "--genesis-file=/opt/besu/network/genesis.json", "--data-path=/opt/besu/data", "--host-allowlist=*", "--rpc-http-enabled", "--rpc-http-host=0.0.0.0", "--rpc-http-port=8545", "--rpc-http-cors-origins=*", "--rpc-http-api=ETH,NET,QBFT,WEB3,ADMIN,DEBUG", "--sync-min-peers=1", "--p2p-port=30303", "--p2p-host=172.16.239.11", "--bootnodes=", "--node-private-key-file=/opt/besu/network/key"]
+    command: ["--network-id=1337", "--genesis-file=/opt/besu/network/genesis.json", "--data-path=/opt/besu/data", "--host-allowlist=*", "--rpc-http-enabled", "--rpc-http-host=0.0.0.0", "--rpc-http-port=8545", "--rpc-http-cors-origins=*", "--rpc-http-api=ETH,NET,WEB3", "--sync-min-peers=1", "--p2p-port=30303", "--p2p-host=172.16.239.11", "--bootnodes=", "--node-private-key-file=/opt/besu/network/key"]
     volumes:
       - ./backend/besu_network/nodes/genesis.json:/opt/besu/network/genesis.json
       - ./backend/besu_network/nodes/keys/0x413ca19b723ecf42a4cfbb8b737e2ea06a70a793/key:/opt/besu/network/key
       - besu_data_1:/opt/besu/data
-    ports:
-      - "8545:8545"
     networks:
-      besu_net:
+      besu_private_net:
         ipv4_address: 172.16.239.11
 
   besu-validator-2:
@@ -61,7 +134,7 @@ services:
     depends_on:
       - besu-validator-1
     networks:
-      besu_net:
+      besu_private_net:
         ipv4_address: 172.16.239.12
 
   besu-validator-3:
@@ -74,7 +147,7 @@ services:
     depends_on:
       - besu-validator-1
     networks:
-      besu_net:
+      besu_private_net:
         ipv4_address: 172.16.239.13
 
   besu-validator-4:
@@ -87,7 +160,7 @@ services:
     depends_on:
       - besu-validator-1
     networks:
-      besu_net:
+      besu_private_net:
         ipv4_address: 172.16.239.14
 
 volumes:
@@ -96,11 +169,22 @@ volumes:
   besu_data_2:
   besu_data_3:
   besu_data_4:
+  certs_data:
 
 networks:
-  besu_net:
+  app_edge:
     driver: bridge
+  app_internal:
+    driver: bridge
+    internal: true
+  rpc_client_net:
+    driver: bridge
+    internal: true
+  besu_private_net:
+    driver: bridge
+    internal: true
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
+

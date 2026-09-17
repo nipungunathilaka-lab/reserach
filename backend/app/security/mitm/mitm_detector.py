@@ -2,7 +2,7 @@ import os
 import logging
 import socket
 from typing import Optional, List, Tuple
-from .models import MITMDetectionResult, MITMIndicators
+from .models import NetworkAnomalyResult, AnomalyIndicators
 from .arp_monitor import arp_monitor
 from .gateway_monitor import gateway_monitor
 from .tls_monitor import tls_monitor
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 NETWORK_SENSOR_AVAILABLE = os.getenv("NETWORK_MONITORING_ENABLED", "true").lower() == "true"
 
-class MITMDetector:
+class NetworkAnomalyMonitor:
     def __init__(self):
         pass
 
@@ -49,7 +49,7 @@ class MITMDetector:
         sender_spki_fingerprint: str,
         simulate_arp_mac: Optional[str] = None, # For testing
         simulate_gateway_ip: Optional[str] = None # For testing
-    ) -> MITMDetectionResult:
+    ) -> NetworkAnomalyResult:
         
         indicators = []
         risk_score = 0.0
@@ -67,7 +67,7 @@ class MITMDetector:
             if mac:
                 conflict, expected_mac = arp_monitor.check_arp_mapping(client_ip, mac)
                 if conflict:
-                    indicators.append(MITMIndicators.ARP_MAC_CONFLICT)
+                    indicators.append(AnomalyIndicators.ARP_MAC_CONFLICT)
                     detector_results["expected_mac"] = expected_mac
                     detector_results["observed_mac"] = mac
                     risk_score = max(risk_score, 0.9)
@@ -80,30 +80,23 @@ class MITMDetector:
         if NETWORK_SENSOR_AVAILABLE and gw_ip and gw_iface:
             is_changed = gateway_monitor.check_gateway(gw_ip, gw_iface)
             if is_changed:
-                indicators.append(MITMIndicators.DEFAULT_GATEWAY_CHANGED)
+                indicators.append(AnomalyIndicators.DEFAULT_GATEWAY_CHANGED)
                 risk_score = max(risk_score, 0.7)
                 detected = True
                 
-        # 3. Public Key Substitution Check
-        if sender_id and sender_spki_fingerprint:
-            is_valid, expected_fp = key_integrity_monitor.verify_public_key(sender_id, sender_spki_fingerprint)
-            if not is_valid:
-                indicators.append(MITMIndicators.PUBLIC_KEY_SUBSTITUTION_ATTEMPT)
-                detector_results["expected_fingerprint"] = expected_fp
-                detector_results["observed_fingerprint"] = sender_spki_fingerprint
-                risk_score = max(risk_score, 1.0)
-                detected = True
+        # 3. Public Key Substitution Check removed from passive monitor 
+        # (It is now enforced cryptographically in the main transfer route)
 
         # 4. Network Flow Anomaly (TCP Resets, Sequence Issues)
         # Combine from NetworkAnomalyEngine
         flow_stats, _ = NetworkMonitorService.get_flow_stats_by_client(client_ip, client_port)
         if flow_stats:
             if flow_stats.get("rst_count", 0) > 5:
-                indicators.append(MITMIndicators.TCP_RESET_ANOMALY)
+                indicators.append(AnomalyIndicators.TCP_RESET_ANOMALY)
                 risk_score = max(risk_score, 0.6)
                 detected = True
             if flow_stats.get("out_of_order", 0) > 10:
-                indicators.append(MITMIndicators.TCP_SEQUENCE_ANOMALY)
+                indicators.append(AnomalyIndicators.TCP_SEQUENCE_ANOMALY)
                 risk_score = max(risk_score, 0.5)
                 detected = True
                 
@@ -114,7 +107,7 @@ class MITMDetector:
         elif risk_score >= 0.4:
             severity = "MEDIUM"
 
-        return MITMDetectionResult(
+        return NetworkAnomalyResult(
             detected=detected,
             risk_score=risk_score,
             severity=severity,

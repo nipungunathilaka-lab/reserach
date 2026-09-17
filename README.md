@@ -12,14 +12,19 @@ The application stack seamlessly blends the **MERN Stack** (MongoDB, Express, Re
 > [!WARNING]
 > The prototype evaluates a defined set of security controls and does not claim complete protection against all cyberattacks. The security evaluation was limited to the controls implemented within the research prototype.
 
-**Architecture Note:** MongoDB is the primary persistent datastore of the current web application. The React frontend communicates with the Node.js/Express application layer, which manages application data in MongoDB and invokes the Python/FastAPI security engine for specialized security processing. PostgreSQL and SQLite belonged to earlier prototype architectures. Currently, PostgreSQL is entirely unused, and SQLite is retained exclusively for isolated security-engine state (the local off-chain ledger anchored to Besu, and crypto keys). Redis is used only for ephemeral caching/rate-limiting within the Python engine and is not the primary datastore.
+**Architecture Note:** FastAPI is an **isolated security-processing service with dedicated persistent security state, including only the security metadata, telemetry, audit references, policy state, and cryptographic artifacts required by the implemented trust model.** Application API responsibilities and persistent security-engine state are isolated from each other. Persisted entities managed by FastAPI in SQLite include:
+- `AuditBlock`: Blockchain audit references
+- `PQCKey` & `TrustedClientKey`: Cryptographic artifacts
+- `QuarantineItem` & `AIAlert`: Telemetry and policy state
+
+MongoDB is the primary persistent datastore of the web application layer. The React frontend communicates with the Node.js/Express application layer, which manages application data in MongoDB and invokes the Python/FastAPI security engine for specialized security processing.
 
 ## ✨ Core Features
 
 ### 1. Hybrid Post-Quantum Cryptography (PQC)
 - **Quantum-Safe Key Encapsulation (KEM)**: Protects against "Store Now, Decrypt Later" quantum attacks using the **Kyber** algorithm.
 - **Polymorphic Encryption**: Dynamically alternates between **AES-256-GCM** and **ChaCha20-Poly1305** based on file characteristics, making cryptanalysis significantly harder.
-- **Zero-Knowledge Architecture**: Files are encrypted with keys that only the intended recipient can unwrap. The server never holds plain-text AES keys.
+- **Server-Mediated Cryptography**: Files are encrypted at rest using PFCE. The server evaluates plaintext for malware and AI policies within a trusted boundary prior to encryption.
 
 ### 2. AI-Powered Anomaly & Threat Detection
 - **Real-Time Behavioral Analysis**: Uses an **Isolation Forest** machine learning model to analyze file sizes, transfer frequencies, login failures, and time-of-day access to detect malicious insider threats. 
@@ -117,7 +122,7 @@ Thanks to a unified `package.json` utilizing `concurrently`, running the entire 
 
 ## 📈 Performance Testing & Validation
 
-The current implementation uses bounded-memory chunked/streaming processing and has been experimentally validated using a 10GB end-to-end transfer with matching source and reconstructed SHA-256 digests. Known whole-file memory bottlenecks have been removed.
+The current implementation uses bounded-memory chunked/streaming processing and has been experimentally validated using a 10GB server-mediated transfer with matching source and reconstructed SHA-256 digests. Known whole-file memory bottlenecks have been removed.
 
 * **Bounded Memory Constraints (Gained):** A true file streaming architecture is implemented natively across all bounds. File chunks flow via `hash-wasm` (browser UI), Node.js `Readable/Writable` streams, and FastAPI `StreamingResponse`. Complete file data is never fully loaded into memory.
 * **100GB+ Validation Status:** Transfers exceeding 100GB remain an architectural design target and have not yet been experimentally validated due to the storage capacity of the present test environment.

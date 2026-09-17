@@ -2,8 +2,12 @@ import hashlib
 import json
 import logging
 import os
+import requests
+import urllib3
 from datetime import datetime
 from typing import Tuple, List, Dict, Any, Optional
+
+# TLS Verification is now strictly enforced using the mounted Development CA
 
 from sqlalchemy.orm import Session
 from web3 import Web3
@@ -40,7 +44,11 @@ class BlockchainService:
         if not BLOCKCHAIN_ENABLED:
             return None
         if cls._web3 is None:
-            cls._web3 = Web3(Web3.HTTPProvider(BLOCKCHAIN_RPC_URL))
+            session = requests.Session()
+            session.verify = "/app/certs/ca.crt" # Strict verification against Development CA
+            session.auth = ('rpcuser', 'rpcpassword123!') # Basic auth to Nginx gateway
+            
+            cls._web3 = Web3(Web3.HTTPProvider(BLOCKCHAIN_RPC_URL, session=session))
             cls._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
             if not cls._web3.is_connected():
                 logger.error("Failed to connect to blockchain node at %s", BLOCKCHAIN_RPC_URL)

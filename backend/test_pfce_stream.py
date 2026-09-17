@@ -1,3 +1,5 @@
+import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.pqc]
 import os
 import io
 import shutil

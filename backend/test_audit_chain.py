@@ -1,3 +1,5 @@
+import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.besu]
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 

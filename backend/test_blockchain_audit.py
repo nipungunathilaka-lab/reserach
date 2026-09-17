@@ -1,4 +1,6 @@
 import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.besu]
+import pytest
 import os
 import json
 import time

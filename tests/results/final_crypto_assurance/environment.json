@@ -1,0 +1,6 @@
+{
+    "os": "Linux 6.6.87.2-microsoft-standard-WSL2",
+    "python_version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "architecture": "64bit",
+    "in_docker": false
+}

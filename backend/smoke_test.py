@@ -1,3 +1,5 @@
+import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.docker]
 """Backend smoke/regression test.
 
 Run from backend folder after installing requirements:
@@ -24,7 +26,6 @@ os.environ["RATE_LIMIT_ENABLED"] = "false"
 
 from fastapi.testclient import TestClient  # noqa: E402
 from app.database.db import SessionLocal  # noqa: E402
-from app.database.models import Transfer  # noqa: E402
 from app.main import app  # noqa: E402
 
 
@@ -91,8 +92,8 @@ def main() -> None:
         # Tamper detection: change protected transfer data and verify chain fails.
         db = SessionLocal()
         try:
-            transfer = db.query(Transfer).filter(Transfer.id == transfer_id).first()
-            transfer.original_hash = "0" * 64
+            from sqlalchemy import text
+            db.execute(text("UPDATE transfers SET original_hash = :hash WHERE id = :tid"), {"hash": "0"*64, "tid": transfer_id})
             db.commit()
         finally:
             db.close()

@@ -1,0 +1,9 @@
+{
+    "collected": 100,
+    "passed": 12,
+    "failed": 6,
+    "skipped": 4,
+    "deselected": 82,
+    "errors": 0,
+    "exitcode": 1
+}

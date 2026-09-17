@@ -1,0 +1,9 @@
+{
+    "test_hybrid_t01_modify_transfer_id": "PASS",
+    "test_hybrid_t02_modify_sender_id": "PASS",
+    "test_hybrid_t03_modify_receiver_id": "PASS",
+    "test_hybrid_t04_t05_algorithm_identifiers": "PASS",
+    "test_hybrid_t07_substitute_receiver_prekey": "PASS",
+    "test_hybrid_t08_copy_metadata": "PASS",
+    "test_hybrid_comp_01_ecdh_exposed": "PASS"
+}

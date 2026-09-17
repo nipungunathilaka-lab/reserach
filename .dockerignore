@@ -1,0 +1,17 @@
+**/.git
+**/.github
+**/.pytest_cache
+**/node_modules
+**/venv
+**/.env
+**/*.bin
+**/*.db
+**/*.log
+**/__pycache__
+**/npm-debug.log
+**/.DS_Store
+**/*.pyc
+**/.vscode
+**/.idea
+**/Chapter6_Evidence
+**/large_test_*.bin

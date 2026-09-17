@@ -1,8 +1,18 @@
+import pytest
+import sys
+try:
+    import boto3
+except ImportError:
+    pytest.skip("boto3 is not installed; KMS tests require it for aws_kms_provider", allow_module_level=True)
+
 import os
 import pytest
 import base64
 from app.security.kms.local_dev_provider import LocalDevProvider
-from app.security.kms.aws_kms_provider import AWSKMSProvider
+try:
+    from app.security.kms.aws_kms_provider import AWSKMSProvider
+except ImportError:
+    AWSKMSProvider = None
 from app.security.kms import kms_provider
 from app.core.config import settings
 
@@ -30,7 +40,7 @@ def test_kms_module_initialization():
     assert kms_provider is not None
     assert isinstance(kms_provider, LocalDevProvider)
 
-@pytest.mark.skipif(not os.environ.get("AWS_ACCESS_KEY_ID"), reason="Live AWS credentials required")
+@pytest.mark.skipif("boto3" not in sys.modules or not os.environ.get("AWS_ACCESS_KEY_ID"), reason="Live AWS credentials and boto3 required")
 def test_live_aws_kms_provider():
     """
     Live test against AWS KMS.

@@ -382,7 +382,19 @@ export default function SendFile() {
               <div className="rounded-xl border border-white/5 bg-slate-950/50 p-4"><b>Transfer #{result.transfer?.id}</b><p className="break-words text-slate-300">{result.transfer?.file_name} → {result.transfer?.receiver?.full_name}</p></div>
               <div className="rounded-xl border border-white/5 bg-slate-950/50 p-4"><b>Encryption</b><p className="mt-1 text-slate-300">{result.encryption?.algorithm}; {result.encryption?.rsa_key_protection}; {result.encryption?.ecdh_forward_secrecy}</p><p className="mt-2 text-slate-400">AES {result.encryption?.aes_time_ms}ms · RSA wrap {result.encryption?.rsa_key_wrap_time_ms}ms · ECDH {result.encryption?.ecdh_time_ms}ms</p></div>
               <div className="rounded-xl border border-white/5 bg-slate-950/50 p-4"><b>SHA-256 Integrity</b><p className="mt-1 break-all text-slate-300">{result.integrity?.sha256_original_hash}</p><p className="mt-2 text-slate-400">{result.integrity?.status}</p></div>
-              <div className={`rounded-xl p-4 ${result.ai?.is_anomaly ? 'bg-red-500/10 border border-red-400/20' : 'bg-emerald-500/10 border border-emerald-400/20'}`}><b>AI Detection: {result.ai?.level}</b><p className="mt-1 text-slate-200">Score {result.ai?.anomaly_score} — {result.ai?.reason}</p><p className="mt-2 text-xs text-slate-400">ML: {result.ai?.ml_prediction} · decision score {result.ai?.ml_decision_score}</p>{result.ai?.triggered_rules?.length ? <p className="mt-2 text-xs text-red-100/80">Rules: {result.ai?.triggered_rules.join('; ')}</p> : null}</div>
+              <div className={`rounded-xl p-4 ${result.ai?.is_anomaly ? 'bg-red-500/10 border border-red-400/20' : 'bg-emerald-500/10 border border-emerald-400/20'}`}>
+                <b>Security Engine: {result.ai?.level}</b>
+                <p className="mt-1 text-slate-200">Overall Score: {result.ai?.anomaly_score} — {result.ai?.reason}</p>
+                {result.ai?.behavioural_ai?.performed === false ? (
+                  <p className="mt-2 text-xs text-amber-400/90 font-semibold flex items-center gap-1">
+                    <AlertTriangle size={12} />
+                    Behavioural AI skipped: Privacy budget exhausted. Deterministic rules applied.
+                  </p>
+                ) : (
+                  <p className="mt-2 text-xs text-slate-400">ML: {result.ai?.ml_prediction} · decision score {result.ai?.ml_decision_score}</p>
+                )}
+                {result.ai?.triggered_rules?.length ? <p className="mt-2 text-xs text-red-100/80">Rules: {result.ai?.triggered_rules.join('; ')}</p> : null}
+              </div>
               <div className="rounded-xl border border-white/5 bg-slate-950/50 p-4"><b>Blockchain Block #{result.blockchain?.block_index}</b><p className="mt-1 break-all text-slate-300">Current hash: {result.blockchain?.current_hash}</p></div>
             </div>
 

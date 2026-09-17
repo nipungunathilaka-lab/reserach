@@ -1,4 +1,6 @@
 import pytest
+pytestmark = [pytest.mark.integration, pytest.mark.besu]
+import pytest
 import os
 import json
 from sqlalchemy import create_engine, text

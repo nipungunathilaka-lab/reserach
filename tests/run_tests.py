@@ -38,12 +38,12 @@ def test_claim_prekey():
     assert response.status_code == 404
     print("test_claim_prekey passed")
 
-def test_strict_e2ee_encrypt():
+def test_simulated_bypass_encrypt():
     files = {'file': ('dummy.txt', b'dummy_ciphertext_data')}
     data = {
         "sender_id": "1",
         "receiver_id": "2",
-        "is_strict_e2ee": "true",
+        "is_simulated_bypass": "true",
         "wrapped_key": "dummy_wrapped",
         "wrap_nonce": "dummy_nonce",
         "ephemeral_public": "dummy_ephemeral"
@@ -52,12 +52,12 @@ def test_strict_e2ee_encrypt():
     response = client.post("/internal/crypto/encrypt", files=files, data=data)
     assert response.status_code == 200
     res_data = response.json()
-    assert res_data["malware_scan_status"] == "SKIPPED_E2EE"
-    assert res_data["cipher_algorithm"] == "Strict E2EE (AES-256-GCM + ECDH-P256)"
+    assert res_data["malware_scan_status"] == "SKIPPED_BYPASS"
+    assert res_data["cipher_algorithm"] == "Simulated Server-Bypass (AES-256-GCM + ECDH-P256)"
     assert res_data["ecdh_wrapped_key"] == "dummy_wrapped"
-    print("test_strict_e2ee_encrypt passed")
+    print("test_simulated_bypass_encrypt passed")
 
-def test_strict_e2ee_decrypt():
+def test_simulated_bypass_decrypt():
     with tempfile.NamedTemporaryFile(delete=False) as tmp:
         tmp.write(b"dummy_ciphertext_data")
         tmp_path = tmp.name
@@ -66,18 +66,18 @@ def test_strict_e2ee_decrypt():
         payload = {
             "encrypted_path": tmp_path,
             "receiver_id": "2",
-            "is_strict_e2ee": True
+            "is_simulated_bypass": True
         }
         response = client.post("/internal/crypto/decrypt", json=payload)
         assert response.status_code == 200
         assert response.content == b"dummy_ciphertext_data"
-        print("test_strict_e2ee_decrypt passed")
+        print("test_simulated_bypass_decrypt passed")
     finally:
         os.remove(tmp_path)
 
 if __name__ == "__main__":
     test_prekey_upload()
     test_claim_prekey()
-    test_strict_e2ee_encrypt()
-    test_strict_e2ee_decrypt()
+    test_simulated_bypass_encrypt()
+    test_simulated_bypass_decrypt()
     print("All tests passed.")

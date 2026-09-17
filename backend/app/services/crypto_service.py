@@ -22,12 +22,9 @@ class EncryptionResult:
     encrypted_path: str
     encrypted_key: str
     nonce: str
-    ecdh_public_key: str | None
-    ecdh_wrapped_key: str | None
-    ecdh_key_nonce: str | None
     cipher_algorithm: str
-    pqc_wrapped_key: str | None
-    pqc_wrap_nonce: str | None
+    hybrid_wrapped_key: str | None
+    hybrid_wrap_nonce: str | None
     aes_time_ms: float
     rsa_key_wrap_time_ms: float
     ecdh_time_ms: float
@@ -278,8 +275,9 @@ class CryptoService:
         return json.dumps(aad_dict, sort_keys=True).encode("utf-8")
 
     @classmethod
-    def encrypt_file_for_receiver(cls, src_path: str, receiver_id: str | int, stored_name: str, classification: str = "Sensitive", pqc_kek: bytes | None = None, pqc_aad: bytes | None = None, prekey_public_pem: str | None = None, transfer_id: str | None = None, sender_id: str | int | None = None) -> EncryptionResult:
+    def encrypt_file_for_receiver(cls, src_path: str, receiver_id: str | int, stored_name: str, classification: str = "Sensitive", hybrid_kek: bytes | None = None, hybrid_aad: bytes | None = None, transfer_id: str | None = None, sender_id: str | int | None = None) -> EncryptionResult:
         ensure_storage_dirs()
+        ecdh_time_ms = 0.0
         
         # Always use 32-byte keys (256-bit) because ChaCha20Poly1305 strictly requires 32 bytes,
         # and polymorphic encryption may select it randomly regardless of classification.
@@ -328,103 +326,32 @@ class CryptoService:
             )
             rsa_time_ms = (time.perf_counter() - t0) * 1000
 
-            ephemeral_public_pem_str = None
-            ecdh_wrapped_key_b64 = None
-            wrap_nonce_b64 = None
-            ecdh_time_ms = 0.0
+            hybrid_wrapped_key_b64 = None
+            hybrid_wrap_nonce_b64 = None
 
-            if classification == "Sensitive":
-                t0 = time.perf_counter()
-                
-                if prekey_public_pem:
-                    receiver_ecdh_public = serialization.load_pem_public_key(prekey_public_pem.encode("utf-8"))
-                else:
-                    receiver_ecdh_public = cls._load_ecdh_public(receiver_id)
-                    
-                ephemeral_private = ec.generate_private_key(ec.SECP256R1())
-                
-                shared_secret_raw = ephemeral_private.exchange(ec.ECDH(), receiver_ecdh_public)
-                with SecureBuffer(shared_secret_raw) as shared_secret_buf:
-                    ephemeral_public_pem = ephemeral_private.public_key().public_bytes(
-                        encoding=serialization.Encoding.PEM,
-                        format=serialization.PublicFormat.SubjectPublicKeyInfo,
-                    )
-                    wrap_nonce = os.urandom(12)
-                    
-                    # Context binding
-                    if transfer_id and sender_id:
-                        salt_input = f"UPCE-V1|{transfer_id}|{sender_id}|{receiver_id}|{hashlib.sha256(ephemeral_public_pem).hexdigest()}"
-                        salt = hashlib.sha256(salt_input.encode("utf-8")).digest()
-                        info = b"PFCE-FILE-KEK-v1"
-                    else:
-                        salt = stored_name.encode("utf-8")
-                        info = b"secure-file-transfer-ecdh-aes-key-wrap"
-                        
-                    wrap_key_raw = cls._derive_ecdh_wrap_key(shared_secret_buf.bytes, salt, info=info)
-                    with SecureBuffer(wrap_key_raw) as wrap_key_buf:
-                        ecdh_wrapped_key = AESGCM(wrap_key_buf.memory).encrypt(wrap_nonce, aes_key_buf.bytes, None)
-                
-                # Deterministic wipe of ephemeral private scalar is done by Python's garbage collection / OpenSSL. 
-                # We do not have direct access to `ephemeral_private` internal bytes, but we wiped our intermediate secrets.
-                
-                ecdh_time_ms = (time.perf_counter() - t0) * 1000
-                
-                ephemeral_public_pem_str = ephemeral_public_pem.decode("utf-8")
-                ecdh_wrapped_key_b64 = cls._b64(ecdh_wrapped_key)
-                wrap_nonce_b64 = cls._b64(wrap_nonce)
-
-            pqc_wrapped_key_b64 = None
-            pqc_wrap_nonce_b64 = None
-
-            if pqc_kek:
-                # Wrap the AES key using the PQC KEK generated at the transfer level
-                pqc_wrap_nonce = os.urandom(12)
-                pqc_wrapped_key = AESGCM(pqc_kek.memory if hasattr(pqc_kek, "memory") else pqc_kek).encrypt(pqc_wrap_nonce, aes_key_buf.bytes, pqc_aad)
-                pqc_wrapped_key_b64 = cls._b64(pqc_wrapped_key)
-                pqc_wrap_nonce_b64 = cls._b64(pqc_wrap_nonce)
+            if hybrid_kek:
+                # Wrap the AES DEK using the unified Hybrid KEK
+                hybrid_wrap_nonce = os.urandom(12)
+                hybrid_wrapped_key = AESGCM(hybrid_kek.memory if hasattr(hybrid_kek, "memory") else hybrid_kek).encrypt(hybrid_wrap_nonce, aes_key_buf.bytes, hybrid_aad)
+                hybrid_wrapped_key_b64 = cls._b64(hybrid_wrapped_key)
+                hybrid_wrap_nonce_b64 = cls._b64(hybrid_wrap_nonce)
 
             return EncryptionResult(
                 encrypted_path=str(encrypted_path),
                 encrypted_key=cls._b64(rsa_wrapped_key),
                 nonce=cls._b64(file_nonce),
-                ecdh_public_key=ephemeral_public_pem_str,
-                ecdh_wrapped_key=ecdh_wrapped_key_b64,
-                ecdh_key_nonce=wrap_nonce_b64,
-            cipher_algorithm=cipher_algorithm,
-            pqc_wrapped_key=pqc_wrapped_key_b64,
-            pqc_wrap_nonce=pqc_wrap_nonce_b64,
-            aes_time_ms=round(aes_time_ms, 3),
-            rsa_key_wrap_time_ms=round(rsa_time_ms, 3),
-            ecdh_time_ms=round(ecdh_time_ms, 3),
-        )
+                cipher_algorithm=cipher_algorithm,
+                hybrid_wrapped_key=hybrid_wrapped_key_b64,
+                hybrid_wrap_nonce=hybrid_wrap_nonce_b64,
+                aes_time_ms=round(aes_time_ms, 3),
+                rsa_key_wrap_time_ms=round(rsa_time_ms, 3),
+                ecdh_time_ms=round(ecdh_time_ms, 3),
+            )
     @classmethod
-    def unwrap_key_with_ecdh(cls, receiver_id: str | int, ecdh_public_key_pem: str, ecdh_wrapped_key: str, ecdh_key_nonce: str, stored_name: str, prekey_private_pem: str | None = None, transfer_id: str | None = None, sender_id: str | int | None = None) -> SecureBuffer:
-        if prekey_private_pem:
-            receiver_private = serialization.load_pem_private_key(prekey_private_pem.encode("utf-8"), password=None)
-        else:
-            receiver_private = cls._load_ecdh_private(receiver_id)
-            
-        sender_ephemeral_public = serialization.load_pem_public_key(ecdh_public_key_pem.encode("utf-8"))
-        shared_secret_raw = receiver_private.exchange(ec.ECDH(), sender_ephemeral_public)
-        with SecureBuffer(shared_secret_raw) as shared_secret_buf:
-            if transfer_id and sender_id:
-                salt_input = f"UPCE-V1|{transfer_id}|{sender_id}|{receiver_id}|{hashlib.sha256(ecdh_public_key_pem.encode('utf-8')).hexdigest()}"
-                salt = hashlib.sha256(salt_input.encode("utf-8")).digest()
-                info = b"PFCE-FILE-KEK-v1"
-            else:
-                salt = stored_name.encode("utf-8")
-                info = b"secure-file-transfer-ecdh-aes-key-wrap"
-                
-            wrap_key_raw = cls._derive_ecdh_wrap_key(shared_secret_buf.bytes, salt, info=info)
-            with SecureBuffer(wrap_key_raw) as wrap_key_buf:
-                aes_key_raw = AESGCM(wrap_key_buf.memory).decrypt(cls._unb64(ecdh_key_nonce), cls._unb64(ecdh_wrapped_key), None)
-                return SecureBuffer(aes_key_raw)
-
-    @classmethod
-    def unwrap_pqc_key(cls, pqc_kek: SecureBuffer, pqc_wrapped_key_b64: str, pqc_wrap_nonce_b64: str, pqc_aad: bytes | None = None) -> SecureBuffer:
-        pqc_wrapped_key = cls._unb64(pqc_wrapped_key_b64)
-        pqc_wrap_nonce = cls._unb64(pqc_wrap_nonce_b64)
-        aes_key_raw = AESGCM(pqc_kek.memory if hasattr(pqc_kek, 'memory') else pqc_kek).decrypt(pqc_wrap_nonce, pqc_wrapped_key, pqc_aad)
+    def unwrap_hybrid_key(cls, hybrid_kek: SecureBuffer, hybrid_wrapped_key_b64: str, hybrid_wrap_nonce_b64: str, hybrid_aad: bytes | None = None) -> SecureBuffer:
+        hybrid_wrapped_key = cls._unb64(hybrid_wrapped_key_b64)
+        hybrid_wrap_nonce = cls._unb64(hybrid_wrap_nonce_b64)
+        aes_key_raw = AESGCM(hybrid_kek.memory if hasattr(hybrid_kek, 'memory') else hybrid_kek).decrypt(hybrid_wrap_nonce, hybrid_wrapped_key, hybrid_aad)
         return SecureBuffer(aes_key_raw)
 
     @classmethod
@@ -441,19 +368,17 @@ class CryptoService:
         return SecureBuffer(aes_key_raw)
 
     @classmethod
-    def decrypt_transfer_bytes(cls, transfer, receiver_id: str | int) -> bytes:
+    def decrypt_transfer_bytes(cls, transfer, receiver_id: str | int, hybrid_kek: SecureBuffer = None) -> bytes:
         aes_key_buf = None
         try:
-            if transfer.ecdh_public_key and transfer.ecdh_wrapped_key and transfer.ecdh_key_nonce:
-                aes_key_buf = cls.unwrap_key_with_ecdh(
-                    receiver_id=receiver_id,
-                    ecdh_public_key_pem=transfer.ecdh_public_key,
-                    ecdh_wrapped_key=transfer.ecdh_wrapped_key,
-                    ecdh_key_nonce=transfer.ecdh_key_nonce,
-                    stored_name=transfer.stored_name,
+            if hybrid_kek and transfer.hybrid_wrapped_key and transfer.hybrid_wrap_nonce:
+                aes_key_buf = cls.unwrap_hybrid_key(
+                    hybrid_kek=hybrid_kek,
+                    hybrid_wrapped_key_b64=transfer.hybrid_wrapped_key,
+                    hybrid_wrap_nonce_b64=transfer.hybrid_wrap_nonce,
                 )
                 if not aes_key_buf:
-                    raise ValueError("ECDH unwrap returned None. Failing closed.")
+                    raise ValueError("Hybrid unwrap returned None. Failing closed.")
             else:
                 aes_key_buf = cls.unwrap_key_with_rsa(receiver_id=receiver_id, encrypted_key=transfer.encrypted_key)
 

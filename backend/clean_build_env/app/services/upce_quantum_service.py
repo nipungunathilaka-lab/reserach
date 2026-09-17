@@ -50,7 +50,7 @@ class AIContextAnalysisEngine:
         print("[AI ENGINE] Isolation Forest Model trained successfully. DP Layer Active.")
 
     def apply_differential_privacy(self, value: float, sensitivity: float) -> float:
-        """Injects Laplace noise to obfuscate inputs and prevent Model Extraction Attacks."""
+        """Injects Laplace noise to reduce information leakage from privacy-sensitive behavioural telemetry."""
         scale = sensitivity / self.epsilon
         noise = np.random.laplace(0, scale)
         return value + noise

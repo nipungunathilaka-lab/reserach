@@ -2,6 +2,7 @@ const Transfer = require('../models/Transfer');
 const User = require('../models/User');
 const AIAlert = require('../models/AIAlert');
 const axios = require('axios');
+const { getInternalServiceToken } = require('../utils/internalAuth');
 
 exports.getDashboardStats = async (req, res) => {
   try {
@@ -37,7 +38,9 @@ exports.getDashboardStats = async (req, res) => {
 
     const pythonUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
     try {
-      const verifyRes = await axios.get(`${pythonUrl}/internal/audit/verify-ledger`);
+      const verifyRes = await axios.get(`${pythonUrl}/internal/audit/verify-ledger`, {
+        headers: { Authorization: `Bearer ${getInternalServiceToken('GET', '/internal/audit/verify-ledger')}` }
+      });
       if (verifyRes.data) {
         blockchain_valid = verifyRes.data.valid;
         blockchain_status = verifyRes.data.status;
