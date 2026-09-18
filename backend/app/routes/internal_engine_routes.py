@@ -4,7 +4,7 @@ import uuid
 import time
 import psutil
 from pathlib import Path
-from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Depends
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Depends, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from app.services.ai_service import AIService
 from app.services.malware_service import MalwareDetectionService
@@ -32,6 +32,7 @@ def ensure_keys(user_id: str = Form(...)):
 @router.post("/crypto/encrypt")
 async def internal_encrypt(
     request: Request,
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     sender_id: str = Form(...),
     receiver_id: str = Form(...),
@@ -72,73 +73,91 @@ async def internal_encrypt(
     file_size_mb = round(file_size / (1024 * 1024), 4) if file_size else 0
     
     await file.seek(0)
-    # temp_path is no longer used for duplication. If malware scan needs a path, we'll try to use the spooled file path if it's on disk.
-    try:
-        temp_path = file.file._file.name
-    except AttributeError:
-        temp_path = None
     
-    if client_signature:
-        if actual_file_sha256 != original_file_sha256:
-            with SessionLocal() as db:
-                BlockchainService.append_block(
-                    db=db,
-                    event_type="INTEGRITY_FAILURE",
-                    details={
-                        "transfer_id": transfer_id,
-                        "sender_id": sender_id,
-                        "expected_hash": original_file_sha256,
-                        "actual_hash": actual_file_sha256
-                    }
-                )
-            raise HTTPException(status_code=403, detail="File hash mismatch. Tampering detected.")
-            
-        from app.security.mitm.key_integrity_monitor import key_integrity_monitor
-        fingerprint = CryptoService.get_spki_fingerprint(sender_public_key_spki)
+    import tempfile
+    import os
+    
+    # Create a real temporary file for malware scanning
+    fd, real_temp_path = tempfile.mkstemp()
+    with os.fdopen(fd, 'wb') as tmp:
+        while chunk := await file.read(65536):
+            tmp.write(chunk)
+    await file.seek(0)
+    
+    temp_path = real_temp_path
+    
+    def cleanup_temp_file(path: str):
+        if path and os.path.exists(path):
+            try:
+                os.remove(path)
+            except Exception:
+                pass
+                
+    background_tasks.add_task(cleanup_temp_file, temp_path)
+    
+    if not client_signature or not sender_public_key_spki:
+        raise HTTPException(status_code=403, detail="Digital signature is required for all file transfers.")
+
+    if actual_file_sha256 != original_file_sha256:
+        with SessionLocal() as db:
+            BlockchainService.append_block(
+                db=db,
+                event_type="INTEGRITY_FAILURE",
+                details={
+                    "transfer_id": transfer_id,
+                    "sender_id": sender_id,
+                    "expected_hash": original_file_sha256,
+                    "actual_hash": actual_file_sha256
+                }
+            )
+        raise HTTPException(status_code=403, detail="File hash mismatch. Tampering detected.")
         
-        is_trusted, expected_fp = key_integrity_monitor.verify_public_key(sender_id, fingerprint)
-        if not is_trusted:
-            with SessionLocal() as db:
-                BlockchainService.append_block(
-                    db=db,
-                    event_type="PUBLIC_KEY_SUBSTITUTION_ATTEMPT",
-                    details={
-                        "transfer_id": transfer_id,
-                        "sender_id": sender_id,
-                        "expected_fingerprint": expected_fp,
-                        "observed_fingerprint": fingerprint
-                    }
-                )
-            raise HTTPException(status_code=403, detail=f"Public key substitution attempt detected. Expected {expected_fp}, got {fingerprint}")
-            
-        canonical_payload = (
-            f"UPCE-TRANSFER-SIGNATURE-V1\n"
-            f"transfer_id={transfer_id}\n"
-            f"sender_id={sender_id}\n"
-            f"receiver_id={receiver_id}\n"
-            f"file_sha256={original_file_sha256}\n"
-            f"file_size={file_size}\n"
-            f"issued_at={issued_at}\n"
-            f"nonce={client_nonce}"
-        ).encode("utf-8")
+    from app.security.mitm.key_integrity_monitor import key_integrity_monitor
+    fingerprint = CryptoService.get_spki_fingerprint(sender_public_key_spki)
+    
+    is_trusted, expected_fp = key_integrity_monitor.verify_public_key(sender_id, fingerprint)
+    if not is_trusted:
+        with SessionLocal() as db:
+            BlockchainService.append_block(
+                db=db,
+                event_type="PUBLIC_KEY_SUBSTITUTION_ATTEMPT",
+                details={
+                    "transfer_id": transfer_id,
+                    "sender_id": sender_id,
+                    "expected_fingerprint": expected_fp,
+                    "observed_fingerprint": fingerprint
+                }
+            )
+        raise HTTPException(status_code=403, detail=f"Public key substitution attempt detected. Expected {expected_fp}, got {fingerprint}")
         
-        is_valid = CryptoService.verify_client_signature(
-            canonical_payload=canonical_payload,
-            signature_b64=client_signature,
-            spki_base64=sender_public_key_spki
-        )
-        if not is_valid:
-            with SessionLocal() as db:
-                BlockchainService.append_block(
-                    db=db,
-                    event_type="SIGNATURE_VERIFICATION_FAILED",
-                    details={
-                        "transfer_id": transfer_id,
-                        "sender_id": sender_id,
-                        "key_fingerprint": fingerprint
-                    }
-                )
-            raise HTTPException(status_code=403, detail="Invalid digital signature. Transfer rejected.")
+    canonical_payload = (
+        f"UPCE-TRANSFER-SIGNATURE-V1\n"
+        f"transfer_id={transfer_id}\n"
+        f"sender_id={sender_id}\n"
+        f"receiver_id={receiver_id}\n"
+        f"file_sha256={original_file_sha256}\n"
+        f"file_size={file_size}\n"
+        f"issued_at={issued_at}\n"
+        f"nonce={client_nonce}"
+    ).encode("utf-8")
+    
+    is_valid = CryptoService.verify_client_signature(
+        canonical_payload=canonical_payload,
+        signature_b64=client_signature,
+        spki_base64=sender_public_key_spki
+    )
+    if not is_valid:
+        with SessionLocal() as db:
+            BlockchainService.append_block(
+                db=db,
+                event_type="SIGNATURE_VERIFICATION_FAILED",
+                details={
+                    "transfer_id": transfer_id,
+                    "sender_id": sender_id,
+                    "key_fingerprint": fingerprint
+                }
+            )
+        raise HTTPException(status_code=403, detail="Invalid digital signature. Transfer rejected.")
 
     await file.seek(0)
     sample_bytes = await file.read(4096)

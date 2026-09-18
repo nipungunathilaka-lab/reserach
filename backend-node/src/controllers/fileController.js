@@ -281,9 +281,17 @@ exports.uploadChunk = async (req, res) => {
         formData.append('failed_login_attempts', req.user.failed_login_attempts?.toString() || '0');
 
         // Append Digital Signature Metadata
-        if (req.body.client_signature) {
-          formData.append('transfer_id', upload_id);
-          formData.append('client_signature', req.body.client_signature);
+        if (!req.body.client_signature) {
+          safeUnlink(assembledFilePath);
+          UPLOAD_STATUSES[upload_id] = { 
+            status: 'error', 
+            message: 'Digital signature is required for all file transfers.' 
+          };
+          return;
+        }
+
+        formData.append('transfer_id', upload_id);
+        formData.append('client_signature', req.body.client_signature);
           formData.append('signed_payload_version', req.body.signed_payload_version || 'UPCE-TRANSFER-SIGNATURE-V1');
           formData.append('client_nonce', req.body.client_nonce || '');
           formData.append('original_file_sha256', req.body.original_file_sha256 || '');
@@ -296,7 +304,7 @@ exports.uploadChunk = async (req, res) => {
           } else {
             formData.append('sender_public_key_spki', '');
           }
-        }
+
 
         const pythonUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
         const pythonResponse = await axios.post(`${pythonUrl}/internal/crypto/encrypt`, formData, {

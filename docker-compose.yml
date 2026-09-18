@@ -72,8 +72,7 @@ services:
   besu-gateway:
     image: nginx:alpine
     command: >
-      /bin/sh -c "apk add --no-cache apache2-utils &&
-      htpasswd -bc /etc/nginx/.htpasswd rpcuser rpcpassword123! &&
+      /bin/sh -c "echo 'rpcuser:{SHA}689Av7zje5YVNqSBY4rGuNSswyI=' > /etc/nginx/.htpasswd &&
       echo 'server {
         listen 8443 ssl;
         ssl_certificate /certs/nginx.crt;

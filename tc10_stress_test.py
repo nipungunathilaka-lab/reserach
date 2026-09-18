@@ -3,7 +3,7 @@ import time
 import statistics
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-URL = "http://localhost:5000/api/files/received"
+URL = "http://localhost:5001/api/files/received"
 
 # JWT token is entered at runtime and is not saved in the file
 TOKEN = input("Paste Bearer JWT token: ").strip()

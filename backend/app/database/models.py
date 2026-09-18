@@ -88,10 +88,23 @@ class TrustedClientKey(Base):
 # ---------------------------------------------------------
 # APPEND-ONLY PROTECTIONS FOR AUDIT LEDGER
 # ---------------------------------------------------------
+from sqlalchemy import inspect
+
 @event.listens_for(AuditBlock, 'before_update')
 def receive_before_update(mapper, connection, target):
-    raise Exception("SECURITY VIOLATION: AuditBlock records are append-only and cannot be updated.")
+    state = inspect(target)
+    allowed_fields = {
+        'blockchain_network_id', 'blockchain_contract_address',
+        'blockchain_transaction_hash', 'blockchain_block_number',
+        'blockchain_block_hash', 'blockchain_status', 'anchor_timestamp'
+    }
+    
+    for attr in state.attrs:
+        if attr.history.has_changes():
+            if attr.key not in allowed_fields:
+                raise Exception(f"SECURITY VIOLATION: AuditBlock records are append-only and cannot be updated. Attempted to modify: {attr.key}")
 
 @event.listens_for(AuditBlock, 'before_delete')
 def receive_before_delete(mapper, connection, target):
     raise Exception("SECURITY VIOLATION: AuditBlock records are append-only and cannot be deleted.")
+

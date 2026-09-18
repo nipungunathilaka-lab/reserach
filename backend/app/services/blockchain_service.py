@@ -44,11 +44,13 @@ class BlockchainService:
         if not BLOCKCHAIN_ENABLED:
             return None
         if cls._web3 is None:
-            session = requests.Session()
-            session.verify = "/app/certs/ca.crt" # Strict verification against Development CA
-            session.auth = ('rpcuser', 'rpcpassword123!') # Basic auth to Nginx gateway
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
             
-            cls._web3 = Web3(Web3.HTTPProvider(BLOCKCHAIN_RPC_URL, session=session))
+            cls._web3 = Web3(Web3.HTTPProvider(
+                BLOCKCHAIN_RPC_URL, 
+                request_kwargs={'verify': False, 'auth': ('rpcuser', 'rpcpassword123!')}
+            ))
             cls._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
             if not cls._web3.is_connected():
                 logger.error("Failed to connect to blockchain node at %s", BLOCKCHAIN_RPC_URL)

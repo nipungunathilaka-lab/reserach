@@ -214,3 +214,10 @@ export async function hasSigningKey(userId) {
   const privateKey = await loadKey(`signing_private_${userId}`);
   return !!privateKey;
 }
+
+export async function getLocalSigningKeyFingerprint(userId) {
+  const publicKey = await loadKey(`signing_public_${userId}`);
+  if (!publicKey) return null;
+  const exportedPublic = await window.crypto.subtle.exportKey("spki", publicKey);
+  return calculateFingerprint(exportedPublic);
+}

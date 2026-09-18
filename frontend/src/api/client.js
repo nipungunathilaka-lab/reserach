@@ -1,9 +1,14 @@
 import axios from 'axios'
 
 export const API_BASE_URL = (() => {
-  let baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  let baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
   if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
   if (!baseUrl.endsWith('/api')) baseUrl += '/api';
+  
+  if (import.meta.env.DEV) {
+    console.log(`[Diagnostic] API Base URL: ${baseUrl}`);
+  }
+  
   return baseUrl;
 })();
 const api = axios.create({

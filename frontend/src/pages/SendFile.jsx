@@ -5,6 +5,7 @@ import api, { apiError } from '../api/client'
 import ErrorBanner from '../components/ErrorBanner'
 import { useAuth } from '../auth/AuthContext'
 import { calculateFileHash, createCanonicalTransferPayload, signTransferPayload } from '../utils/cryptoSigning'
+import SigningSetup from '../components/SigningSetup'
 
 const fmtSize = bytes => `${(bytes / 1024 / 1024).toFixed(3)} MB`
 
@@ -21,6 +22,8 @@ export default function SendFile() {
   const [telemetryData, setTelemetryData] = useState(null)
   const [isBlocked, setIsBlocked] = useState(false)
   const [blockedScore, setBlockedScore] = useState(null)
+  const [signingReady, setSigningReady] = useState(false)
+  const [signingCheckDone, setSigningCheckDone] = useState(false)
 
   useEffect(() => {
     api.get('/users/receivers')
@@ -32,7 +35,13 @@ export default function SendFile() {
         }
       })
       .catch(err => setError(apiError(err)))
-  }, [])
+  }, [user])
+
+  const handleSigningStateChange = (status, fingerprint) => {
+    setSigningReady(status === 'BOUND');
+    setSigningCheckDone(status !== 'checking' && status !== 'generating');
+  };
+
 
   const submit = async (e) => {
     e.preventDefault()
@@ -56,7 +65,7 @@ export default function SendFile() {
       const fileHash = await calculateFileHash(file)
       
       const challengeRes = await api.post('/crypto/transfer-challenge')
-      const nonce = challengeRes.nonce
+      const nonce = challengeRes.data.nonce
       const issuedAt = new Date().toISOString()
       
       const canonicalPayload = createCanonicalTransferPayload(
@@ -184,7 +193,10 @@ export default function SendFile() {
       <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-xl backdrop-blur-md">
         <h3 className="text-2xl font-bold tracking-tight text-white">Send Encrypted File</h3>
         <p className="mt-2 text-sm text-slate-400">The backend encrypts the file with AES-256-GCM, wraps the AES key with RSA-2048 and ECDH-derived wrapping, stores metadata, runs AI detection, and adds a blockchain audit block.</p>
-        <form onSubmit={submit} className="mt-6 grid gap-4">
+        <div className="mt-6">
+          <SigningSetup onStateChange={handleSigningStateChange} />
+        </div>
+        <form onSubmit={submit} className="mt-2 grid gap-4">
           <ErrorBanner message={error} />
           <label className="grid gap-2 text-sm text-slate-300">Receiver
             <select className="w-full rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-400 focus:bg-slate-900 focus:ring-1 focus:ring-cyan-400 focus:shadow-[0_0_15px_-3px_rgba(34,211,238,0.3)] appearance-none" value={receiverId} onChange={e => setReceiverId(e.target.value)} required>
@@ -218,10 +230,15 @@ export default function SendFile() {
               )}
             </div>
           </label>
-          <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-4 text-sm font-bold text-white shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-70 disabled:hover:scale-100 disabled:hover:shadow-none" disabled={loading || !receiverId || !file}>
+          <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-4 text-sm font-bold text-white shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(34,211,238,0.6)] focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-70 disabled:hover:scale-100 disabled:hover:shadow-none" disabled={loading || !receiverId || !file || !signingReady}>
             {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
             {loading ? (uploadProgress > 0 && uploadProgress < 100 ? `Uploading chunk ${uploadProgress}%...` : 'Processing and encrypting...') : 'Upload, Encrypt and Send'}
           </button>
+          {signingCheckDone && !signingReady && (
+            <p className="mt-2 text-center text-sm font-medium text-amber-400">
+              A valid signing key is required before sending files. Please configure it above.
+            </p>
+          )}
           {loading && uploadProgress > 0 && uploadProgress < 100 && (
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-800">
               <div 
@@ -241,7 +258,14 @@ export default function SendFile() {
               <AlertTriangle size={64} />
             </div>
             <p className="text-3xl font-black text-red-500 mb-3 tracking-tight">Transfer Blocked</p>
-            <p className="text-xl font-bold text-red-400 mb-4">Malware / Intrusion Detected</p>
+            <p className="text-xl font-bold text-red-400 mb-4">
+              {error && error.includes('AI Behavioural') ? 'AI Behavioral Block' : 
+               error && error.includes('Malware detected') ? 'Malware Block' :
+               error && error.includes('Network anomaly') ? 'Network Anomaly Block' :
+               error && error.includes('signature') ? 'Signature Block' :
+               error && error.includes('privacy budget') ? 'DP Policy Block' :
+               'Security Block'}
+            </p>
             {blockedScore !== null && (
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/50 bg-red-950/60 px-4 py-1.5">
                 <span className="text-sm font-semibold uppercase tracking-wider text-red-300">AI Threat Score</span>

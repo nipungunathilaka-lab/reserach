@@ -116,7 +116,7 @@ class AIService:
             reasons.append("large file size for security policy")
             risk += 0.3
         if hour_of_day < 6 or hour_of_day > 22:
-            reasons.append("unusual transfer time")
+            reasons.append("unusual hour of day (outside 06:00-22:00)")
             risk += 0.35
         if transfers_last_hour >= 8:
             reasons.append("many transfers in the last hour")

@@ -1,7 +1,7 @@
 import requests
 import time
 
-BASE_URL = "http://localhost:5000/api"
+BASE_URL = "http://localhost:5001/api"
 
 def run_tests():
     print("Testing MFA Lifecycle...")

@@ -115,7 +115,7 @@ Thanks to a unified `package.json` utilizing `concurrently`, running the entire 
    ```
 
    - **Frontend:** http://localhost:5173
-   - **Node.js API:** http://localhost:5000
+   - **Node.js API:** http://localhost:5001
    - **Python Engine:** http://localhost:8000
 
 ---

@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: '../.env' });
 
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = 'http://localhost:5001/api/auth';
 
 async function runTests() {
   console.log('=== MFA Backend Tests ===\n');

@@ -16,7 +16,11 @@ export function AuthProvider({ children }) {
     }
     api.get('/auth/me')
       .then((res) => setUser(res.data))
-      .catch(() => localStorage.removeItem('secureft_token'))
+      .catch((err) => {
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+          localStorage.removeItem('secureft_token')
+        }
+      })
       .finally(() => setLoading(false))
   }, [])
 

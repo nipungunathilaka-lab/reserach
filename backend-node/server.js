@@ -34,7 +34,7 @@ app.use('/api/crypto', require('./src/routes/crypto'));
 app.use('/api/security', require('./src/routes/security'));
 
 // Basic error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => { if(err.statusCode === 400 || res.statusCode === 400) console.log('400 ERROR AT:', req.method, req.originalUrl, err);
   console.error(err.stack);
   res.status(err.statusCode || 500).json({
     success: false,
@@ -51,21 +51,22 @@ process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });
 
-// Start the server immediately, then attempt DB connection in the background
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Wait for DB connection before starting the server
+connectDB().then(() => {
+  const PORT = process.env.PORT || 5001;
+  const server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 
-server.on('error', error => {
-  if (error.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use.`);
-  } else {
-    console.error(error);
-  }
-  process.exit(1);
-});
-
-connectDB().catch(err => {
+  server.on('error', error => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use.`);
+    } else {
+      console.error(error);
+    }
+    process.exit(1);
+  });
+}).catch(err => {
   console.error("Failed to connect to database on startup:", err);
+  process.exit(1);
 });

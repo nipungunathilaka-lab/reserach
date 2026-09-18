@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: '../.env' });
 dotenv.config({ path: '.env' }); // Load backend-node specific env
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'http://localhost:5001/api';
 
 async function runTests() {
   console.log('=== MFA FULL END-TO-END VERIFICATION ===\n');

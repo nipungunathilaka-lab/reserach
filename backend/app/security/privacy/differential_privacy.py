@@ -37,8 +37,6 @@ DP_FEATURE_POLICY = {
     "mfa_failed_attempts": DPFeaturePolicy(lower_bound=0.0, upper_bound=20.0, sensitivity=20.0),
     "failed_login_attempts": DPFeaturePolicy(lower_bound=0.0, upper_bound=20.0, sensitivity=20.0),
     "is_unusual_hour": DPFeaturePolicy(lower_bound=0.0, upper_bound=1.0, sensitivity=1.0),
-    "high_risk_file_type": DPFeaturePolicy(lower_bound=0.0, upper_bound=1.0, sensitivity=1.0),
-    "archive_file_type": DPFeaturePolicy(lower_bound=0.0, upper_bound=1.0, sensitivity=1.0),
 }
 
 class PrivacyBudgetExhausted(Exception):
