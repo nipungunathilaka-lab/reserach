@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 INTERNAL_API_SECRET = os.getenv("INTERNAL_API_SECRET", "default-insecure-internal-secret")
 API_KEY_HEADER = APIKeyHeader(name="Authorization", auto_error=False)
 
-REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
+REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
 
 _redis_client = None
 
@@ -43,17 +43,24 @@ def verify_internal_token(request: Request, authorization: str = Security(API_KE
             raise HTTPException(status_code=401, detail="Missing JTI in service token")
             
         r = get_redis()
+        env = os.getenv("ENVIRONMENT", "development")
         if r is None:
-            logger.error("Redis connection unavailable for JTI replay protection.")
-            raise HTTPException(status_code=500, detail="Internal security store unavailable")
-            
-        try:
-            is_new = r.set(f"internal-auth:jti:{jti}", "1", ex=60, nx=True)
-            if not is_new:
-                raise HTTPException(status_code=401, detail="SERVICE_AUTH_FAILURE: Replayed JTI detected")
-        except redis.RedisError as e:
-            logger.error(f"Redis error checking JTI: {e}")
-            raise HTTPException(status_code=500, detail="Internal security store unavailable")
+            if env == "development":
+                logger.warning("Redis connection unavailable for JTI replay protection. Bypassing check for local development. Please ensure Redis service is running.")
+            else:
+                logger.error("Redis connection unavailable for JTI replay protection.")
+                raise HTTPException(status_code=500, detail="Internal security store unavailable. Please ensure Redis service is running.")
+        else:
+            try:
+                is_new = r.set(f"internal-auth:jti:{jti}", "1", ex=60, nx=True)
+                if not is_new:
+                    raise HTTPException(status_code=401, detail="SERVICE_AUTH_FAILURE: Replayed JTI detected")
+            except redis.RedisError as e:
+                if env == "development":
+                    logger.warning(f"Redis error checking JTI: {e}. Bypassing check for local development. Please ensure Redis service is running.")
+                else:
+                    logger.error(f"Redis error checking JTI: {e}")
+                    raise HTTPException(status_code=500, detail="Internal security store unavailable. Please ensure Redis service is running.")
         
         if payload.get("service") != "node-api":
             raise HTTPException(status_code=403, detail="SERVICE_AUTH_FAILURE: Invalid service identity")

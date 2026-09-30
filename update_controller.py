@@ -1,53 +1,12 @@
-const Transfer = require('../models/Transfer');
-const User = require('../models/User');
-const AIAlert = require('../models/AIAlert');
-const AuditBlock = require('../models/AuditBlock');
-const MfaChallenge = require('../models/MfaChallenge');
-const axios = require('axios');
-const FormData = require('form-data');
-const fs = require('fs');
-const Busboy = require('busboy');
-const crypto = require('crypto');
-const path = require('path');
-const os = require('os');
-const BlockchainLog = require('../models/BlockchainLog');
-const SigningKey = require('../models/SigningKey');
-const SigningChallenge = require('../models/SigningChallenge');
-const { getInternalServiceToken } = require('../utils/internalAuth');
+import re
 
-const UPLOAD_STATUSES = {};
+with open('backend-node/src/controllers/fileController.js', 'r', encoding='utf-8') as f:
+    code = f.read()
 
-// Helper to append events to the blockchain ledger
-const appendToBlockchain = async (eventType, detailsObj) => {
-  const lastBlock = await BlockchainLog.findOne().sort({ timestamp: -1 });
-  const previousHash = lastBlock ? lastBlock.block_hash : '0'.repeat(64);
-  const detailsStr = JSON.stringify(detailsObj);
-  const timestamp = Date.now();
-  const dataToHash = `${timestamp}${eventType}${detailsStr}${previousHash}`;
-  const blockHash = crypto.createHash('sha256').update(dataToHash).digest('hex');
+# Add Busboy import at the top
+code = code.replace("const fs = require('fs');", "const fs = require('fs');\nconst Busboy = require('busboy');")
 
-  const block = await BlockchainLog.create({
-    timestamp,
-    event_type: eventType,
-    details: detailsStr,
-    previous_hash: previousHash,
-    block_hash: blockHash
-  });
-  return block;
-};
-
-// Helper to prevent Windows EBUSY lock errors from crashing the app
-const safeUnlink = (filePath) => {
-  try {
-    if (filePath && fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-  } catch (err) {
-    console.warn(`Non-fatal: Could not delete temp file ${filePath}:`, err.message);
-  }
-};
-
-exports.sendFile = async (req, res) => {
+new_send_file = '''exports.sendFile = async (req, res) => {
   const busboy = Busboy({ headers: req.headers });
   const fields = {};
   let pythonPromise = null;
@@ -88,7 +47,8 @@ exports.sendFile = async (req, res) => {
         const response = await axios.post(`${pythonUrl}/internal/crypto/encrypt`, formData, {
           headers: {
             ...formData.getHeaders(),
-            'Authorization': `Bearer ${getInternalServiceToken('POST', '/internal/crypto/encrypt')}`
+            'Authorization': `Bearer ${getInternalServiceToken('POST', '/internal/crypto/encrypt')}`,
+            'X-Benchmark-Test-Mode': req.headers['x-benchmark-test-mode'] || 'false'
           },
           maxBodyLength: Infinity,
           maxContentLength: Infinity
@@ -168,64 +128,9 @@ exports.sendFile = async (req, res) => {
   });
 
   req.pipe(busboy);
-};
+};'''
 
-exports.getReceivedFiles = async (req, res) => {
-  try {
-    const transfers = await Transfer.find({ receiver_id: req.user._id }).populate('sender_id', 'email full_name');
-    res.status(200).json({ success: true, data: transfers });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
-
-exports.downloadFile = async (req, res) => {
-  try {
-    const transfer = await Transfer.findById(req.params.id);
-    if (!transfer) {
-      return res.status(404).json({ success: false, error: 'Transfer not found' });
-    }
-
-    if (transfer.receiver_id.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ success: false, error: 'Not authorized' });
-    }
-
-    // Forward to Python microservice to decapsulate and decrypt using JSON matching Pydantic schema
-    const pythonUrl = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
-    
-    // Fetch sender's active signing key
-    const signingKey = await SigningKey.findOne({ user_id: transfer.sender_id, status: 'ACTIVE' });
-    const sender_public_key_spki = signingKey ? signingKey.public_key_spki : '';
-
-    let response;
-    try {
-      response = await axios.post(`${pythonUrl}/internal/crypto/decrypt`, {
-        encrypted_path: transfer.encrypted_path,
-        receiver_id: req.user._id.toString(),
-        sender_public_key_spki
-      }, {
-        responseType: 'stream',
-        headers: { 
-          'Authorization': `Bearer ${getInternalServiceToken('POST', '/internal/crypto/decrypt')}`
-        }
-      });
-    } catch (pythonErr) {
-      console.error('Python Decrypt Error:', pythonErr.response?.data || pythonErr.message);
-      return res.status(pythonErr.response?.status || 500).json({ success: false, error: 'Internal Engine Decryption Failed' });
-    }
-
-    res.setHeader('Content-Disposition', `attachment; filename="${transfer.file_name}"`);
-    response.data.on('error', (err) => {
-        console.error('Stream error during download:', err.message);
-        res.end();
-    });
-    response.data.pipe(res);
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
-
-exports.uploadChunk = async (req, res) => {
+new_upload_chunk = '''exports.uploadChunk = async (req, res) => {
   const busboy = Busboy({ headers: req.headers });
   const fields = {};
   let tempFilePath = null;
@@ -327,7 +232,8 @@ exports.uploadChunk = async (req, res) => {
           const pythonResponse = await axios.post(`${pythonUrl}/internal/crypto/encrypt`, formData, {
             headers: {
               ...formData.getHeaders(),
-              'Authorization': `Bearer ${getInternalServiceToken('POST', '/internal/crypto/encrypt')}`
+              'Authorization': `Bearer ${getInternalServiceToken('POST', '/internal/crypto/encrypt')}`,
+              'X-Benchmark-Test-Mode': req.headers['x-benchmark-test-mode'] || 'false'
             },
             maxBodyLength: Infinity,
             maxContentLength: Infinity
@@ -405,57 +311,15 @@ exports.uploadChunk = async (req, res) => {
   });
 
   req.pipe(busboy);
-};
+};'''
 
-exports.uploadStatus = async (req, res) => {
-  const upload_id = req.params.id;
-  const statusData = UPLOAD_STATUSES[upload_id];
-  
-  if (!statusData) {
-    return res.status(200).json({ status: 'processing' });
-  }
-  
-  res.status(200).json(statusData);
-};
+send_file_match = re.search(r'exports\.sendFile = async \(req, res\) => \{.*?\n\};', code, re.DOTALL)
+if send_file_match:
+    code = code.replace(send_file_match.group(0), new_send_file)
 
+upload_chunk_match = re.search(r'exports\.uploadChunk = async \(req, res\) => \{.*?\n\};', code, re.DOTALL)
+if upload_chunk_match:
+    code = code.replace(upload_chunk_match.group(0), new_upload_chunk)
 
-exports.getSentFiles = async (req, res) => {
-  try {
-    const transfers = await Transfer.find({ sender_id: req.user._id }).populate('receiver_id', 'email full_name');
-    res.status(200).json({ success: true, data: transfers });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
-
-exports.createShareLink = async (req, res) => {
-  try {
-    const transfer = await Transfer.findById(req.params.id);
-    if (!transfer) {
-      return res.status(404).json({ success: false, error: 'Transfer not found' });
-    }
-    
-    // Allow if sender or receiver
-    if (transfer.sender_id.toString() !== req.user._id.toString() && transfer.receiver_id.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ success: false, error: 'Not authorized to share this file' });
-    }
-
-    if (!transfer.share_token) {
-      const crypto = require('crypto');
-      transfer.share_token = crypto.randomBytes(16).toString('hex');
-      transfer.share_pin = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit pin
-      await transfer.save();
-    }
-
-    res.status(200).json({
-      success: true,
-      data: {
-        share_token: transfer.share_token,
-        share_pin: transfer.share_pin,
-        message: 'Share link generated successfully'
-      }
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-};
+with open('backend-node/src/controllers/fileController.js', 'w', encoding='utf-8') as f:
+    f.write(code)

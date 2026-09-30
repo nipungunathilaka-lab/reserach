@@ -136,7 +136,12 @@ class PFCEEngine:
                 
                 try:
                     with open(frag_result.encrypted_path, "rb") as f_enc:
-                        ciphertext_sha256 = hashlib.sha256(f_enc.read()).hexdigest()
+                        chash = hashlib.sha256()
+                        while True:
+                            cchunk = f_enc.read(65536)
+                            if not cchunk: break
+                            chash.update(cchunk)
+                        ciphertext_sha256 = chash.hexdigest()
                 except OSError:
                     ciphertext_sha256 = ""
 
@@ -184,7 +189,7 @@ class PFCEEngine:
                 
                 if progress_callback and (total_bytes_processed - getattr(self, '_last_cb_bytes', 0) >= 5 * 1024 * 1024 or bytes_read == 0):
                     processed_mb = round(total_bytes_processed / (1024 * 1024), 2)
-                    percentage = round((total_bytes_processed / total_size) * 100, 2) if total_size > 0 else 0
+                    percentage = round((total_bytes_processed / (total_size or 1)) * 100, 2) if total_size > 0 else 0
                     progress_callback(processed_mb, total_mb, percentage)
                     setattr(self, '_last_cb_bytes', total_bytes_processed)
                     
@@ -399,7 +404,12 @@ class PFCEEngine:
                         try:
                             # Read fragment directly from zip
                             with zipf.open(fragment["filename"]) as f_frag:
-                                encrypted_chunk = f_frag.read()
+                                encrypted_chunk = bytearray()
+                                while True:
+                                    chk = f_frag.read(1024 * 1024)
+                                    if not chk: break
+                                    encrypted_chunk.extend(chk)
+                                encrypted_chunk = bytes(encrypted_chunk)
                         except KeyError:
                             raise ValueError(f"Missing fragment file: {fragment['filename']}")
                         

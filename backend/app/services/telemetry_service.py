@@ -19,9 +19,15 @@ class TelemetryService:
         """
         try:
             # Ensure safe structure without PII or file contents
+            import numpy as np
+
+            # Differential Privacy: Add Laplace noise to continuous numerical features (epsilon=1.0)
+            def add_laplace_noise(val, sensitivity, epsilon=1.0):
+                return max(0.0, val + np.random.laplace(0, sensitivity / epsilon))
+
             telemetry_record = {
                 "timestamp": datetime.utcnow().isoformat(),
-                "file_size_mb": float(features.get("file_size_mb", 0.0)),
+                "file_size_mb": round(float(add_laplace_noise(features.get("file_size_mb", 0.0), sensitivity=10.0)), 2),
                 "hour_of_day": int(features.get("hour_of_day", 0)),
                 "transfers_last_hour": int(features.get("transfers_last_hour", 0)),
                 "mfa_failed_attempts": int(features.get("mfa_failed_attempts", 0)),

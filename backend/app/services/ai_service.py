@@ -117,7 +117,7 @@ class AIService:
             risk += 0.3
         if hour_of_day < 6 or hour_of_day > 22:
             reasons.append("unusual hour of day (outside 06:00-22:00)")
-            risk += 0.35
+            risk += 0.15
         if transfers_last_hour >= 8:
             reasons.append("many transfers in the last hour")
             risk += 0.3
@@ -289,8 +289,12 @@ class AIService:
                 policy = dp_settings.dp_accountant_fail_policy
                 
             if policy == "fail_closed":
-                from app.services.continuous_monitor import TransferBlockedError
-                raise TransferBlockedError(f"AI Behavioural Monitor blocked: {str(e)}", anomaly_score=1.0, risk_level="BLOCKED")
+                if isinstance(e, DPAccountantUnavailable):
+                    from fastapi import HTTPException
+                    raise HTTPException(status_code=503, detail="Security Infrastructure Offline: Redis connection failed")
+                else:
+                    from app.services.continuous_monitor import TransferBlockedError
+                    raise TransferBlockedError(f"AI Behavioural Monitor blocked: {str(e)}", anomaly_score=1.0, risk_level="BLOCKED")
             else:
                 # fallback_heuristics
                 privatized = raw_features

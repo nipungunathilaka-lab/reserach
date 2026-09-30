@@ -15,14 +15,17 @@ def ensure_quarantine_storage():
     except Exception:
         pass
 
-def save_to_quarantine(safe_id: str, file_bytes: bytes) -> str:
+def save_to_quarantine(safe_id: str, file_bytes: bytes = None, file_path: str = None) -> str:
     ensure_quarantine_storage()
     # Path traversal protection
     safe_id = Path(safe_id).name
     filepath = QUARANTINE_DIR / safe_id
     
-    with open(filepath, "wb") as f:
-        f.write(file_bytes)
+    if file_path and os.path.exists(file_path):
+        shutil.move(file_path, filepath)
+    elif file_bytes is not None:
+        with open(filepath, "wb") as f:
+            f.write(file_bytes)
     return str(filepath)
 
 def load_from_quarantine(safe_id: str) -> bytes:
@@ -32,7 +35,12 @@ def load_from_quarantine(safe_id: str) -> bytes:
         raise FileNotFoundError("Quarantined file not found.")
         
     with open(filepath, "rb") as f:
-        return f.read()
+        data = bytearray()
+        while True:
+            chunk = f.read(1024 * 1024)
+            if not chunk: break
+            data.extend(chunk)
+        return bytes(data)
 
 def delete_from_quarantine(safe_id: str):
     safe_id = Path(safe_id).name

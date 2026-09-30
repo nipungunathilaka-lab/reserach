@@ -1,13 +1,15 @@
 const express = require('express');
-const multer = require('multer');
 const { sendFile, getReceivedFiles, getSentFiles, downloadFile, uploadChunk, uploadStatus, createShareLink } = require('../controllers/fileController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const path = require('path');
 
-router.post('/send', protect, upload.single('file'), sendFile);
-router.post('/upload-chunk', protect, upload.single('file'), uploadChunk);
+// Multer and MemoryStorage removed completely to enforce strict streaming.
+// File streaming is now handled directly via busboy in the controller.
+
+router.post('/send', protect, sendFile);
+router.post('/upload-chunk', protect, uploadChunk);
 router.get('/status/:id', protect, uploadStatus);
 router.get('/received', protect, getReceivedFiles);
 router.get('/sent', protect, getSentFiles);

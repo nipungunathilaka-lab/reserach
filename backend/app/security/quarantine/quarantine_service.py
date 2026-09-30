@@ -37,16 +37,28 @@ class QuarantineService:
         reason: str,
         detection_name: str = None,
         malware_score: float = None,
-        transfer_id: str = None
+        transfer_id: str = None,
+        file_path: str = None
     ) -> QuarantineItem:
         db = SessionLocal()
         try:
+            import os
             safe_id = f"q_{uuid.uuid4().hex}"
-            file_size = len(file_bytes)
-            sha256 = hashlib.sha256(file_bytes).hexdigest()
             
-            # Save to isolated storage
-            save_to_quarantine(safe_id, file_bytes)
+            if file_path and os.path.exists(file_path):
+                file_size = os.path.getsize(file_path)
+                # Compute SHA256 efficiently
+                sha256_hash = hashlib.sha256()
+                with open(file_path, "rb") as fp:
+                    for chunk in iter(lambda: fp.read(1024 * 1024), b""):
+                        sha256_hash.update(chunk)
+                sha256 = sha256_hash.hexdigest()
+            else:
+                file_size = len(file_bytes) if file_bytes else 0
+                sha256 = hashlib.sha256(file_bytes).hexdigest() if file_bytes else ""
+            
+            # Save to isolated storage (shutil.move if file_path is provided)
+            save_to_quarantine(safe_id, file_bytes, file_path)
             
             item = QuarantineItem(
                 transfer_id=transfer_id,

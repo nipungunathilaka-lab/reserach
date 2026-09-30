@@ -21,6 +21,7 @@ export default function SendFile() {
   const [progressData, setProgressData] = useState(null)
   const [telemetryData, setTelemetryData] = useState(null)
   const [isBlocked, setIsBlocked] = useState(false)
+  const [isSystemOffline, setIsSystemOffline] = useState(false)
   const [blockedScore, setBlockedScore] = useState(null)
   const [signingReady, setSigningReady] = useState(false)
   const [signingCheckDone, setSigningCheckDone] = useState(false)
@@ -53,6 +54,7 @@ export default function SendFile() {
     setProgressData(null)
     setTelemetryData(null)
     setIsBlocked(false)
+    setIsSystemOffline(false)
     setBlockedScore(null)
 
     const chunkSize = 50 * 1024 * 1024 // 50MB
@@ -131,7 +133,9 @@ export default function SendFile() {
               clearInterval(pollInterval)
               const errorMsg = statusRes.data.message || 'Encryption failed'
               setError(errorMsg)
-              if (errorMsg.toLowerCase().includes('blocked') || errorMsg.toLowerCase().includes('malware')) {
+              if (errorMsg.toLowerCase().includes('offline') || errorMsg.toLowerCase().includes('redis')) {
+                setIsSystemOffline(true)
+              } else if (errorMsg.toLowerCase().includes('blocked') || errorMsg.toLowerCase().includes('malware')) {
                 setIsBlocked(true)
                 if (statusRes.data.anomaly_score !== undefined) {
                   setBlockedScore(statusRes.data.anomaly_score)
@@ -165,13 +169,15 @@ export default function SendFile() {
     } catch (err) {
       const errMsg = apiError(err)
       setError(errMsg)
-      if (errMsg.toLowerCase().includes('blocked') || errMsg.toLowerCase().includes('malware')) {
+      if (err.response?.status === 503 || errMsg.toLowerCase().includes('offline') || errMsg.toLowerCase().includes('redis')) {
+        setIsSystemOffline(true)
+      } else if (errMsg.toLowerCase().includes('blocked') || errMsg.toLowerCase().includes('malware')) {
         setIsBlocked(true)
         if (err.response?.data?.anomaly_score !== undefined) {
           setBlockedScore(err.response.data.anomaly_score)
         }
       }
-      toast.error('Failed to encrypt and send file')
+      toast.error(err.response?.status === 503 || errMsg.toLowerCase().includes('offline') ? 'System Offline' : 'Failed to encrypt and send file')
     } finally {
       // Only reset loading if we aren't starting a polling process
       if (result?.status !== 'processing' && !uploadId) {
@@ -252,7 +258,19 @@ export default function SendFile() {
       <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-xl backdrop-blur-md flex flex-col">
         <h3 className="text-2xl font-bold tracking-tight text-white mb-6">Security & Telemetry Report</h3>
         
-        {isBlocked ? (
+        {isSystemOffline ? (
+          <div className="flex flex-1 flex-col items-center justify-center text-center p-10 animate-in fade-in zoom-in duration-500 bg-slate-800/50 rounded-2xl border border-slate-700/50 shadow-[0_0_40px_rgba(0,0,0,0.3)]">
+            <div className="mb-6 rounded-full border border-slate-600/40 bg-slate-700/30 p-6 text-slate-400 shadow-[0_0_30px_rgba(0,0,0,0.4)]">
+              <AlertTriangle size={64} className="text-yellow-500" />
+            </div>
+            <p className="text-3xl font-black text-slate-300 mb-3 tracking-tight">System Offline</p>
+            <p className="text-xl font-bold text-slate-400 mb-4">Security Infrastructure Unavailable</p>
+            <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 max-w-md w-full">
+              <p className="text-sm font-mono text-slate-300 break-words">{error}</p>
+            </div>
+            <p className="mt-6 text-sm text-slate-500 max-w-md">The file transfer cannot proceed because the backend security or privacy systems are currently unreachable. Please try again later.</p>
+          </div>
+        ) : isBlocked ? (
           <div className="flex flex-1 flex-col items-center justify-center text-center p-10 animate-in fade-in zoom-in duration-500 bg-red-500/10 rounded-2xl border border-red-500/30 shadow-[0_0_40px_rgba(239,68,68,0.15)]">
             <div className="mb-6 rounded-full border border-red-500/40 bg-red-500/20 p-6 text-red-500 shadow-[0_0_30px_rgba(239,68,68,0.4)]">
               <AlertTriangle size={64} />
