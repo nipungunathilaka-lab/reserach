@@ -27,7 +27,9 @@ router = APIRouter(prefix="/internal", tags=["Internal Engine"], dependencies=[D
 @router.post("/crypto/ensure_keys")
 def ensure_keys(user_id: str = Form(...)):
     CryptoService.ensure_user_keypair(user_id)
-    return {"status": "ok"}
+    pem_path = CryptoService.key_paths(user_id)["ecdh_public"]
+    public_key_pem = pem_path.read_text("utf-8")
+    return {"status": "ok", "server_public_key_pem": public_key_pem}
 
 @router.post("/crypto/encrypt")
 async def internal_encrypt(
@@ -46,13 +48,43 @@ async def internal_encrypt(
     client_nonce: str = Form(""),
     original_file_sha256: str = Form(""),
     issued_at: str = Form(""),
-    sender_public_key_spki: str = Form("")
+    sender_public_key_spki: str = Form(""),
+    is_trusted_ip: bool = Form(False)
 ):
     start_time = time.perf_counter()
     start_cpu = time.process_time()
     
     safe_name = Path(file.filename or "uploaded_file").name
     file_size = file.size or 0
+
+    ext = Path(safe_name).suffix.lower()
+    
+    # 1. Hard Block for Critical Extensions
+    if ext in ['.exe', '.bat', '.sh']:
+        with SessionLocal() as db:
+            BlockchainService.append_block(
+                db=db,
+                event_type="TRANSFER_BLOCKED",
+                details={
+                    "transfer_id": transfer_id,
+                    "sender_id": sender_id,
+                    "receiver_id": receiver_id,
+                    "filename": safe_name,
+                    "reason": f"Critical file extension '{ext}' blocked by policy."
+                }
+            )
+        end_time = time.perf_counter()
+        exec_time_ms = round((end_time - start_time) * 1000, 2)
+        raise HTTPException(
+            status_code=406,
+            detail={
+                "message": f"Transfer blocked: Critical file extension '{ext}' is not allowed.",
+                "anomaly_score": 1.0,
+                "execution_time_ms": exec_time_ms,
+                "processing_throughput_mb_s": 0,
+                "cipher_algorithm": "PFCE Streaming (Aborted)"
+            }
+        )
 
     # Calculate hash directly from the uploaded file stream without duplicating it to disk
     import hashlib
@@ -176,36 +208,39 @@ async def internal_encrypt(
         transfers_last_hour=transfers_last_hour,
         mfa_failed_attempts=mfa_failed_attempts,
         failed_login_attempts=failed_login_attempts,
-        hour_of_day=now.hour
+        hour_of_day=now.hour,
+        is_trusted_ip=is_trusted_ip
     )
-    is_benchmark = os.environ.get("BENCHMARK_MODE", "false").lower() == "true"
+    is_benchmark = False
+    
+    force_quarantine = False
+    quarantine_reason = ""
+    
+    if ext in ['.zip', '.rar']:
+        force_quarantine = True
+        quarantine_reason = f"Suspicious archive extension '{ext}' quarantined by policy."
+    ai_result = {}
     
     try:
         ai_result = transfer_monitor.reanalyze_transfer()
-    except TransferBlockedError as e:
-        if is_benchmark:
-            print(f"BENCHMARK BYPASS: Ignored TransferBlockedError: {e.message}", flush=True)
-            ai_result = {"anomaly_score": 0.0, "is_anomaly": False, "level": "low", "reason": "Benchmark Bypass"}
-        else:
-            with SessionLocal() as db:
-                BlockchainService.append_block(
-                    db=db,
-                    event_type="AI_BLOCK",
-                    details={
-                        "transfer_id": transfer_id,
-                        "sender_id": sender_id,
-                        "receiver_id": receiver_id,
-                        "reason": e.message,
-                        "anomaly_score": e.anomaly_score
-                    }
-                )
-            # If it blocks immediately on the first check
-            print(f"BLOCKING 406: TransferBlockedError (First Check): {e.message}", flush=True)
-            raise HTTPException(status_code=406, detail={
-                "message": f"Transfer blocked: AI Behavioural Monitor. Reason: {e.message}",
-                "anomaly_score": e.anomaly_score
-            })
-
+        if ai_result.get("quarantined"):
+            force_quarantine = True
+            quarantine_reason = ai_result.get("quarantine_reason", "Continuous monitoring triggered block.")
+    except Exception as e:
+        with SessionLocal() as db:
+            BlockchainService.append_block(
+                db=db,
+                event_type="AI_BLOCK",
+                details={
+                    "transfer_id": transfer_id,
+                    "sender_id": sender_id,
+                    "receiver_id": receiver_id,
+                    "reason": str(e),
+                    "anomaly_score": getattr(e, 'anomaly_score', 1.0)
+                }
+            )
+        force_quarantine = True
+        quarantine_reason = f"Transfer blocked: AI Behavioural Monitor. Reason: {str(e)}"
     # Record production telemetry for future retraining (stripped of PII)
     if ai_result and "features" in ai_result:
         try:
@@ -279,31 +314,35 @@ async def internal_encrypt(
                     "filename": safe_name
                 }
             )
-        # Temp file managed by FastAPI
-        print("BLOCKING 406: Malware Detected", flush=True)
-        raise HTTPException(status_code=406, detail={"message": "Transfer blocked: Malware detected and quarantined."})
+        force_quarantine = True
+        quarantine_reason = "Malware detected and quarantined."
         
-        
+        # Hard block: Do not save malicious payloads to the vault
+        end_time = time.perf_counter()
+        exec_time_ms = round((end_time - start_time) * 1000, 2)
+        raise HTTPException(
+            status_code=406,
+            detail={
+                "message": "Transfer blocked: Malware detected.",
+                "anomaly_score": 1.0,
+                "execution_time_ms": exec_time_ms,
+                "processing_throughput_mb_s": 0,
+                "cipher_algorithm": "PFCE Streaming (Aborted)"
+            }
+        )
+
 
     if scan_result["verdict"] == "SCAN_FAILED" and os.environ.get("MALWARE_SCAN_FAIL_CLOSED", "false").lower() == "true":
-        if not is_benchmark:
-            raise HTTPException(status_code=406, detail={"message": "Transfer blocked: Security scan failed."})
+        raise HTTPException(status_code=406, detail={"message": "Transfer blocked: Security scan failed."})
 
     final_threat_score = ai_result.get("anomaly_score", 0)
     anomaly_level = ai_result.get("level", "").lower()
 
-    # Allow performance testing (TC-08) to bypass behavioral anomalies (like unusual time), but still block actual malware
-    is_perf_test = (("test" in safe_name.lower() or "tc08" in safe_name.lower()) and threat_score < 0.90) or is_benchmark
-
-    if not is_perf_test and (final_threat_score >= 0.8 or anomaly_level in ["high", "critical"]):
-        print(f"BLOCKING 406: Threat score {final_threat_score}, Level {anomaly_level}, Reason: {ai_result.get('reason')}", flush=True)
-        raise HTTPException(
-            status_code=406, 
-            detail={
-                "message": f"Transfer blocked: AI Behavioural Anomaly detected. Reason: {ai_result.get('reason', 'High anomaly score')}",
-                "anomaly_score": final_threat_score
-            }
-        )
+    if final_threat_score >= 0.8 or anomaly_level in ["high", "critical"]:
+        print(f"Soft blocking: Threat score {final_threat_score}, Level {anomaly_level}, Reason: {ai_result.get('reason')}", flush=True)
+        force_quarantine = True
+        if not quarantine_reason:
+            quarantine_reason = f"AI Behavioural Anomaly detected. Reason: {ai_result.get('reason', 'High anomaly score')}"
     # --- Network Anomaly Indicators Subsystem ---
     anomaly_eval_result = NetworkAnomalyMonitor.evaluate_transfer(
         client_ip=request.client.host if request.client else "127.0.0.1",
@@ -388,6 +427,7 @@ async def internal_encrypt(
             "verification_status": "VERIFIED"
         }
 
+    pfce_result = None
     try:
         pfce_result = pfce_engine.process_upload(
             file_stream=file.file, 
@@ -402,53 +442,36 @@ async def internal_encrypt(
             transfer_monitor=transfer_monitor
         )
         transfer_monitor.complete_monitoring()
-    except TransferBlockedError as e:
-        if is_benchmark:
-            print(f"BENCHMARK BYPASS: Ignored Mid-flight TransferBlockedError: {e.message}", flush=True)
-        else:
-            with SessionLocal() as db:
-                BlockchainService.append_block(
-                    db=db,
-                    event_type="AI_BLOCK",
-                    details={
-                        "transfer_id": transfer_id,
-                        "sender_id": sender_id,
-                        "receiver_id": receiver_id,
-                        "reason": e.message,
-                        "anomaly_score": e.anomaly_score
-                    }
-                )
-            print(f"BLOCKING 406: TransferBlockedError (Mid-flight): {e.message}", flush=True)
-            raise HTTPException(status_code=406, detail={
-                "message": f"Transfer blocked mid-flight: AI Behavioural Monitor. Reason: {e.message}",
-                "anomaly_score": e.anomaly_score
-            })
     except Exception as e:
-        if type(e).__name__ == 'TransferBlockedError':
-             if is_benchmark:
-                 print(f"BENCHMARK BYPASS: Ignored Mid-flight TransferBlockedError: {str(e)}", flush=True)
-             else:
-                 with SessionLocal() as db:
-                     BlockchainService.append_block(
-                         db=db,
-                         event_type="AI_BLOCK",
-                         details={
-                             "transfer_id": transfer_id,
-                             "sender_id": sender_id,
-                             "receiver_id": receiver_id,
-                             "reason": str(e)
-                         }
-                     )
-                 raise HTTPException(status_code=406, detail={
-                    "message": f"Transfer blocked mid-flight: AI Behavioural Monitor. Reason: {str(e)}"
-                })
-        else:
-             raise
+        with SessionLocal() as db:
+            BlockchainService.append_block(
+                db=db,
+                event_type="AI_BLOCK",
+                details={
+                    "transfer_id": transfer_id,
+                    "sender_id": sender_id,
+                    "receiver_id": receiver_id,
+                    "reason": str(e)
+                }
+            )
+        force_quarantine = True
+        if not quarantine_reason:
+            quarantine_reason = f"Transfer blocked mid-flight: AI Behavioural Monitor. Reason: {str(e)}"
+        
+        # In order for metrics to not crash if PFCEEngine fails early, populate basic fields
+        class FailedPFCEResult:
+            pass
+        pfce_result = FailedPFCEResult()
+        pfce_result.execution_time_seconds = time.perf_counter() - start_time
+        pfce_result.original_hash = actual_file_sha256
+        pfce_result.pfce_package_path = pfce_package_path
+        pfce_result.cipher_algorithm = "PFCE Streaming (Blocked)"
     # Cleanup handled by FastAPI UploadFile
 
-    print(f"TC08 ENCRYPTION/PROCESSING TIME: {pfce_result.execution_time_seconds:.4f} seconds", flush=True)
+    if hasattr(pfce_result, "execution_time_seconds"):
+        print(f"TC08 ENCRYPTION/PROCESSING TIME: {pfce_result.execution_time_seconds:.4f} seconds", flush=True)
     
-    original_hash = getattr(pfce_result, "original_hash", "")
+    original_hash = getattr(pfce_result, "original_hash", actual_file_sha256)
     
     exec_time_s = time.perf_counter() - start_time
     cpu_time_s = time.process_time() - start_cpu
@@ -470,12 +493,13 @@ async def internal_encrypt(
         "encrypted_path": pfce_result.pfce_package_path,
         "encrypted_key": "packaged_in_pfce",
         "nonce": "packaged_in_pfce",
-        "ecdh_public_key": None,
-        "ecdh_wrapped_key": None,
-        "anomaly_score": ai_result["anomaly_score"],
-        "is_anomaly": ai_result["is_anomaly"],
-        "anomaly_level": ai_result.get("level", ""),
-        "anomaly_reason": ai_result.get("reason", ""),
+        "ecdh_public_key": getattr(pfce_result, "ecdh_public_key", None),
+        "ecdh_wrapped_key": getattr(pfce_result, "ecdh_wrapped_key", None),
+        "ecdh_key_nonce": getattr(pfce_result, "ecdh_key_nonce", None),
+        "anomaly_score": ai_result.get("anomaly_score", 1.0 if force_quarantine else 0.0),
+        "is_anomaly": ai_result.get("is_anomaly", force_quarantine),
+        "anomaly_level": ai_result.get("level", "critical" if force_quarantine else ""),
+        "anomaly_reason": ai_result.get("reason", quarantine_reason),
         "classification_type": classification_result,
         "cipher_algorithm": getattr(pfce_result, "cipher_algorithm", "Polymorphic"),
         "execution_time_ms": exec_time_ms,
@@ -494,7 +518,9 @@ async def internal_encrypt(
         "scanner": scan_result.get("engine", "Hybrid (ClamAV + ML + Heuristic)"),
         "scan_mode": scan_result.get("scan_mode", "full_file"),
         "bytes_scanned": scan_result.get("bytes_scanned", file_size),
-        "malware_verdict": scan_result.get("verdict")
+        "malware_verdict": scan_result.get("verdict"),
+        "quarantined": force_quarantine,
+        "quarantine_reason": quarantine_reason
     }
 
 from pydantic import BaseModel

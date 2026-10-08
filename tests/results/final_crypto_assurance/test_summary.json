@@ -1,6 +1,6 @@
 {
-    "total_tests": 24,
+    "total_tests": 17,
     "failures": 0,
-    "errors": 0,
-    "overall_status": "VERIFIED"
+    "errors": 7,
+    "overall_status": "FAILED"
 }

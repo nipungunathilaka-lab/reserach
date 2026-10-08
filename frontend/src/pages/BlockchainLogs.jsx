@@ -47,7 +47,8 @@ export default function BlockchainLogs() {
         ) : (
           <div className="relative border-l-2 border-slate-800 ml-6 pl-8 space-y-12">
             {logs.map((log, index) => {
-              const isMalware = log.event_type === 'MALWARE_BLOCKED'
+              const isMalware = log.event_type === 'MALWARE_BLOCKED' || log.event_type === 'TRANSFER_BLOCKED'
+              const isWarning = log.event_type === 'TRANSFER_QUARANTINED'
               const Icon = isMalware ? ShieldAlert : FileKey2
               
               let parsedDetails = {}
@@ -58,15 +59,15 @@ export default function BlockchainLogs() {
               return (
                 <div key={log.id} className="relative">
                   {/* Timeline dot */}
-                  <div className={`absolute -left-[41px] top-4 h-6 w-6 rounded-full border-4 border-slate-950 flex items-center justify-center ${isMalware ? 'bg-red-500 text-slate-900 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'bg-cyan-400 text-slate-900 shadow-[0_0_10px_rgba(34,211,238,0.5)]'}`}>
+                  <div className={`absolute -left-[41px] top-4 h-6 w-6 rounded-full border-4 border-slate-950 flex items-center justify-center ${isMalware ? 'bg-red-500 text-slate-900 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : isWarning ? 'bg-yellow-500 text-slate-900 shadow-[0_0_10px_rgba(234,179,8,0.5)]' : 'bg-cyan-400 text-slate-900 shadow-[0_0_10px_rgba(34,211,238,0.5)]'}`}>
                     <Link2 size={12} className="opacity-0" />
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-slate-900/40 backdrop-blur-md overflow-hidden shadow-xl transition-all hover:border-white/20">
                     <div className="border-b border-white/10 bg-white/[0.02] px-6 py-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <Icon size={20} className={isMalware ? 'text-red-400' : 'text-cyan-400'} />
-                        <h3 className={`font-semibold ${isMalware ? 'text-red-400' : 'text-cyan-400'}`}>
+                        <Icon size={20} className={isMalware ? 'text-red-400' : isWarning ? 'text-yellow-400' : 'text-cyan-400'} />
+                        <h3 className={`font-semibold ${isMalware ? 'text-red-400' : isWarning ? 'text-yellow-400' : 'text-cyan-400'}`}>
                           {log.event_type}
                         </h3>
                       </div>

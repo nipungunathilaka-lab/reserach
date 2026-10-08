@@ -208,6 +208,7 @@ class AIService:
         file_name: str | None = None,
         user_id: str = "system",
         analysis_id: str = None,
+        **kwargs
     ) -> dict[str, Any]:
         if file_name:
             ext = file_name.split('.')[-1].lower() if '.' in file_name else ''
@@ -264,6 +265,11 @@ class AIService:
             "high_risk_file_type": high_risk_file_type,
             "archive_file_type": archive_file_type,
         }
+        
+        is_trusted_ip = kwargs.get("is_trusted_ip", False)
+        if is_trusted_ip:
+            raw_features["is_unusual_hour"] = 0
+            is_unusual_hour = 0
 
         try:
             # Request privatization with analysis class
@@ -319,7 +325,9 @@ class AIService:
             # 1. ML Isolation Forest Anomaly Detection
             decision = float(cls._model.decision_function(x)[0]) if cls._model is not None else 0.0
             prediction = int(cls._model.predict(x)[0]) if cls._model is not None else 1
-            ml_risk = max(0.0, min(1.0, 0.5 - decision)) if prediction == -1 else 0.0
+            
+            # Expose continuous risk spectrum rather than hardcoding 0.0 for normal files
+            ml_risk = max(0.01, min(1.0, 0.5 - decision))
             ml_prediction = "anomaly" if prediction == -1 else "normal"
             ml_decision_score = round(decision, 5)
             
@@ -382,9 +390,19 @@ class AIService:
         v3_freq = round(min(transfers_last_hour / 10.0, 1.0), 4)
         v4_auth = round(min((mfa_failed_attempts + failed_login_attempts) / 5.0, 1.0), 4)
         v5_type = 1.0 if high_risk_file_type else (0.5 if archive_file_type else 0.0)
-        v6_ml_factor = round(ml_risk, 4)
+        v6_ml_factor = round(ml_risk, 4) if ml_risk is not None else 0.0
         
         context_vector_c = [v1_size, v2_time, v3_freq, v4_auth, v5_type, v6_ml_factor]
+
+        # Feature 1: AI Threshold & Weight Tuning (reduce penalty if trusted IP)
+        if is_trusted_ip and score >= 0.35 and is_unusual_hour == 0:
+             # Reduce risk score for trusted IP during unusual hours
+             score = max(0.0, score - 0.2)
+             if score < 0.35:
+                 is_anomaly = False
+                 level = "low"
+             elif score < 0.8:
+                 level = "medium"
 
         return {
             "is_anomaly": bool(is_anomaly),

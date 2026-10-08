@@ -1,5 +1,5 @@
 const express = require('express');
-const { sendFile, getReceivedFiles, getSentFiles, downloadFile, uploadChunk, uploadStatus, createShareLink } = require('../controllers/fileController');
+const { sendFile, getReceivedFiles, getSentFiles, downloadFile, uploadChunk, uploadStatus, createShareLink, releaseQuarantinedFile } = require('../controllers/fileController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -15,5 +15,6 @@ router.get('/received', protect, getReceivedFiles);
 router.get('/sent', protect, getSentFiles);
 router.get('/:id/download', protect, downloadFile);
 router.post('/:id/share', protect, createShareLink);
+router.post('/:id/release', protect, releaseQuarantinedFile);
 
 module.exports = router;

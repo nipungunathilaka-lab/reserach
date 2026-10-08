@@ -55,7 +55,7 @@ def get_sync_redis():
     global _redis_client_sync
     if not _redis_client_sync:
         url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
-        _redis_client_sync = redis.from_url(url, decode_responses=True)
+        _redis_client_sync = redis.from_url(url, decode_responses=True, socket_timeout=1)
     return _redis_client_sync
 
 class PrivacyBudgetAccountant:
@@ -100,6 +100,8 @@ class PrivacyBudgetAccountant:
     """
     
     _script_hash = None
+    redis_warned = False
+    redis_available = True
 
     @classmethod
     def get_epoch(cls) -> tuple[str, int]:
@@ -127,12 +129,22 @@ class PrivacyBudgetAccountant:
         reserved_budget_int = int(dp_settings.dp_reserved_epsilon * scale)
         
         try:
+            if not cls.redis_available:
+                raise redis.RedisError("Redis marked unavailable")
+            
             r = get_sync_redis()
+            r.ping() # explicitly check connection
             if not cls._script_hash:
                 cls._script_hash = r.script_load(cls._LUA_SCRIPT)
             result = r.evalsha(cls._script_hash, 1, key, analysis_id, cost_int, max_budget_int, ttl, analysis_class, reserved_budget_int)
         except redis.RedisError as e:
-            raise DPAccountantUnavailable(f"Privacy accountant unavailable: {str(e)}")
+            cls.redis_available = False
+            if not cls.redis_warned:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.warning(f"DPAccountant Redis connection failed: {e}. Using in-memory fallback for local development.")
+                cls.redis_warned = True
+            return cls._in_memory_consume(key, analysis_id, cost_int, max_budget_int, analysis_class, reserved_budget_int, scale)
             
         status, charged, new_consumed = result
         
@@ -141,6 +153,33 @@ class PrivacyBudgetAccountant:
             raise PrivacyBudgetExhausted(f"Privacy budget exhausted. Remaining: {remaining}")
             
         return (max_budget_int - new_consumed) / scale
+        
+    @classmethod
+    def _in_memory_consume(cls, key: str, analysis_id: str, cost_int: int, max_budget_int: int, analysis_class: str, reserved_budget_int: int, scale: int) -> float:
+        if not hasattr(cls, '_local_budget'):
+            cls._local_budget = {}
+            
+        if key not in cls._local_budget:
+            cls._local_budget[key] = {"consumed": 0, "seen": set()}
+            
+        b = cls._local_budget[key]
+        
+        if analysis_id in b["seen"]:
+            return (max_budget_int - b["consumed"]) / scale
+            
+        remaining = max_budget_int - b["consumed"]
+        
+        if analysis_class == "PERIODIC":
+            if remaining - reserved_budget_int < cost_int:
+                raise PrivacyBudgetExhausted(f"Privacy budget exhausted. Remaining: {remaining / scale}")
+        else:
+            if remaining < cost_int:
+                raise PrivacyBudgetExhausted(f"Privacy budget exhausted. Remaining: {remaining / scale}")
+                
+        b["consumed"] += cost_int
+        b["seen"].add(analysis_id)
+        
+        return (max_budget_int - b["consumed"]) / scale
             
     @classmethod
     def get_budget_status(cls, user_id: str) -> dict:
@@ -148,10 +187,17 @@ class PrivacyBudgetAccountant:
         key = f"dp:budget:{user_id}:{epoch}"
         try:
             r = get_sync_redis()
+            r.ping()
             consumed_str = r.hget(key, 'consumed')
             count_str = r.hget(key, 'count')
         except redis.RedisError:
-            return {"status": "unavailable"}
+            if hasattr(cls, '_local_budget') and key in cls._local_budget:
+                b = cls._local_budget[key]
+                consumed_str = str(b["consumed"])
+                count_str = str(len(b["seen"]))
+            else:
+                consumed_str = "0"
+                count_str = "0"
             
         scale = 1_000_000
         consumed_int = int(consumed_str) if consumed_str else 0

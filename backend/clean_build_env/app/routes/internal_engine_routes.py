@@ -18,7 +18,9 @@ router = APIRouter(prefix="/internal", tags=["Internal Engine"])
 @router.post("/crypto/ensure_keys")
 def ensure_keys(user_id: str = Form(...)):
     CryptoService.ensure_user_keypair(user_id)
-    return {"status": "ok"}
+    pem_path = CryptoService.key_paths(user_id)["ecdh_public"]
+    public_key_pem = pem_path.read_text("utf-8")
+    return {"status": "ok", "server_public_key_pem": public_key_pem}
 
 @router.post("/crypto/encrypt")
 async def internal_encrypt(

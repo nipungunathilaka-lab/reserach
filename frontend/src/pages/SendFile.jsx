@@ -135,13 +135,51 @@ export default function SendFile() {
               setError(errorMsg)
               if (errorMsg.toLowerCase().includes('offline') || errorMsg.toLowerCase().includes('redis')) {
                 setIsSystemOffline(true)
-              } else if (errorMsg.toLowerCase().includes('blocked') || errorMsg.toLowerCase().includes('malware')) {
+              } else if (errorMsg.toLowerCase().includes('blocked') || errorMsg.toLowerCase().includes('malware') || errorMsg.toLowerCase().includes('critical file extension')) {
                 setIsBlocked(true)
-                if (statusRes.data.anomaly_score !== undefined) {
-                  setBlockedScore(statusRes.data.anomaly_score)
+                const errorData = statusRes.data.detail;
+                if (errorData && typeof errorData === 'object') {
+                  if (errorData.anomaly_score !== undefined) {
+                    setBlockedScore(errorData.anomaly_score)
+                  }
+                  if (errorData.execution_time_ms !== undefined) {
+                    setResult({
+                      status: 'blocked',
+                      performance: {
+                        cpu_usage_percent: 0,
+                        execution_time_ms: errorData.execution_time_ms || 0,
+                        processing_throughput_mb_s: errorData.processing_throughput_mb_s || 0
+                      },
+                      encryption: {
+                        algorithm: errorData.cipher_algorithm || 'PFCE Streaming (Aborted)',
+                        rsa_key_protection: 'Aborted',
+                        ecdh_forward_secrecy: 'Aborted',
+                        aes_time_ms: 0,
+                        rsa_key_wrap_time_ms: 0,
+                        ecdh_time_ms: 0
+                      },
+                      ai: {
+                        is_anomaly: true,
+                        level: 'critical',
+                        anomaly_score: errorData.anomaly_score || 1.0,
+                        reason: errorData.message || 'Blocked'
+                      },
+                      integrity: {
+                        sha256_original_hash: 'Aborted',
+                        status: 'Aborted'
+                      },
+                      transfer: {
+                        id: 'N/A',
+                        file_name: file?.name || 'unknown',
+                        receiver: { full_name: 'Aborted' }
+                      }
+                    });
+                  }
                 }
               }
-              setResult(null)
+              if (!statusRes.data.detail || !statusRes.data.detail.execution_time_ms) {
+                setResult(null)
+              }
               setProgressData(null)
               toast.error('Processing failed')
               setLoading(false)
@@ -167,14 +205,53 @@ export default function SendFile() {
         })
       }
     } catch (err) {
-      const errMsg = apiError(err)
+      let errMsg = apiError(err)
+      if (typeof err.response?.data?.error === 'object' && err.response.data.error.message) {
+        errMsg = err.response.data.error.message;
+      }
       setError(errMsg)
       if (err.response?.status === 503 || errMsg.toLowerCase().includes('offline') || errMsg.toLowerCase().includes('redis')) {
         setIsSystemOffline(true)
-      } else if (errMsg.toLowerCase().includes('blocked') || errMsg.toLowerCase().includes('malware')) {
+      } else if (errMsg.toLowerCase().includes('blocked') || errMsg.toLowerCase().includes('malware') || err.response?.status === 406) {
         setIsBlocked(true)
-        if (err.response?.data?.anomaly_score !== undefined) {
-          setBlockedScore(err.response.data.anomaly_score)
+        const errorData = err.response?.data?.error;
+        if (errorData && typeof errorData === 'object') {
+          if (errorData.anomaly_score !== undefined) {
+            setBlockedScore(errorData.anomaly_score)
+          }
+          if (errorData.execution_time_ms !== undefined) {
+            setResult({
+              status: 'blocked',
+              performance: {
+                cpu_usage_percent: 0,
+                execution_time_ms: errorData.execution_time_ms || 0,
+                processing_throughput_mb_s: errorData.processing_throughput_mb_s || 0
+              },
+              encryption: {
+                algorithm: errorData.cipher_algorithm || 'PFCE Streaming (Aborted)',
+                rsa_key_protection: 'Aborted',
+                ecdh_forward_secrecy: 'Aborted',
+                aes_time_ms: 0,
+                rsa_key_wrap_time_ms: 0,
+                ecdh_time_ms: 0
+              },
+              ai: {
+                is_anomaly: true,
+                level: 'critical',
+                anomaly_score: errorData.anomaly_score || 1.0,
+                reason: errorData.message || 'Blocked'
+              },
+              integrity: {
+                sha256_original_hash: 'Aborted',
+                status: 'Aborted'
+              },
+              transfer: {
+                id: 'N/A',
+                file_name: file?.name || 'unknown',
+                receiver: { full_name: 'Aborted' }
+              }
+            });
+          }
         }
       }
       toast.error(err.response?.status === 503 || errMsg.toLowerCase().includes('offline') ? 'System Offline' : 'Failed to encrypt and send file')
@@ -258,7 +335,7 @@ export default function SendFile() {
       <section className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-xl backdrop-blur-md flex flex-col">
         <h3 className="text-2xl font-bold tracking-tight text-white mb-6">Security & Telemetry Report</h3>
         
-        {isSystemOffline ? (
+        {isSystemOffline && (
           <div className="flex flex-1 flex-col items-center justify-center text-center p-10 animate-in fade-in zoom-in duration-500 bg-slate-800/50 rounded-2xl border border-slate-700/50 shadow-[0_0_40px_rgba(0,0,0,0.3)]">
             <div className="mb-6 rounded-full border border-slate-600/40 bg-slate-700/30 p-6 text-slate-400 shadow-[0_0_30px_rgba(0,0,0,0.4)]">
               <AlertTriangle size={64} className="text-yellow-500" />
@@ -270,7 +347,9 @@ export default function SendFile() {
             </div>
             <p className="mt-6 text-sm text-slate-500 max-w-md">The file transfer cannot proceed because the backend security or privacy systems are currently unreachable. Please try again later.</p>
           </div>
-        ) : isBlocked ? (
+        )}
+        
+        {isBlocked && (
           <div className="flex flex-1 flex-col items-center justify-center text-center p-10 animate-in fade-in zoom-in duration-500 bg-red-500/10 rounded-2xl border border-red-500/30 shadow-[0_0_40px_rgba(239,68,68,0.15)]">
             <div className="mb-6 rounded-full border border-red-500/40 bg-red-500/20 p-6 text-red-500 shadow-[0_0_30px_rgba(239,68,68,0.4)]">
               <AlertTriangle size={64} />
@@ -295,9 +374,9 @@ export default function SendFile() {
             </div>
             <p className="mt-6 text-sm text-slate-400 max-w-md">Your connection has been logged and the security operations center has been notified. This action was aborted to protect the network.</p>
           </div>
-        ) : (
-          <>
-        {!result && (
+        )}
+
+        {!isSystemOffline && !isBlocked && !result && (
           <div className="flex flex-1 flex-col items-center justify-center text-center p-10 opacity-70">
             <div className="mb-6 animate-pulse rounded-full border border-cyan-500/20 bg-cyan-500/10 p-6 text-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
               <Shield size={48} />
@@ -307,7 +386,7 @@ export default function SendFile() {
           </div>
         )}
 
-        {result && result.status === 'processing' && (
+        {!isSystemOffline && !isBlocked && result && result.status === 'processing' && (
           <div className="flex flex-1 flex-col items-center justify-center text-center p-10 animate-in fade-in zoom-in duration-500">
             <div className="mb-6 rounded-full border border-cyan-500/30 bg-cyan-500/10 p-6 text-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
               <Loader2 size={48} className="animate-spin" />
@@ -337,13 +416,34 @@ export default function SendFile() {
             {/* Header Row: Classification & Encryption */}
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Classification Badge */}
-              <div className={`flex flex-1 items-center gap-3 rounded-xl border p-4 backdrop-blur-md ${result.classification_type === 'Sensitive' ? 'text-orange-400 bg-orange-500/10 border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.15)]' : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.15)]'}`}>
-                {result.classification_type === 'Sensitive' ? <AlertTriangle size={32} className="text-orange-400" /> : <CheckCircle size={32} className="text-emerald-400" />}
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider opacity-80">Data Classification</p>
-                  <p className="text-xl font-black tracking-tight">{result.classification_type || 'Normal'}</p>
-                </div>
-              </div>
+              {(() => {
+                const isMalicious = result.status === 'blocked' || result.ai?.anomaly_score >= 0.8 || result.ai?.level === 'critical';
+                const classificationLabel = isMalicious ? 'Malicious / Blocked' : (result.classification_type || 'Normal');
+                
+                let bgClass = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.15)]';
+                let Icon = CheckCircle;
+                let iconClass = "text-emerald-400";
+                
+                if (isMalicious) {
+                  bgClass = 'text-red-400 bg-red-500/10 border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.15)]';
+                  Icon = AlertTriangle;
+                  iconClass = "text-red-400";
+                } else if (result.classification_type === 'Sensitive') {
+                  bgClass = 'text-orange-400 bg-orange-500/10 border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.15)]';
+                  Icon = AlertTriangle;
+                  iconClass = "text-orange-400";
+                }
+                
+                return (
+                  <div className={`flex flex-1 items-center gap-3 rounded-xl border p-4 backdrop-blur-md ${bgClass}`}>
+                    <Icon size={32} className={iconClass} />
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider opacity-80">Data Classification</p>
+                      <p className="text-xl font-black tracking-tight">{classificationLabel}</p>
+                    </div>
+                  </div>
+                );
+              })()}
               
               {/* Encryption Engine */}
               <div className="flex flex-1 items-center gap-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-4 shadow-[0_0_20px_rgba(34,211,238,0.15)] backdrop-blur-md">
@@ -467,8 +567,6 @@ export default function SendFile() {
               </div>
             )}
           </div>
-        )}
-          </>
         )}
       </section>
     </div>

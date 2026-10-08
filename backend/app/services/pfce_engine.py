@@ -28,6 +28,9 @@ class PFCEUploadResult:
     fragment_count: int         
     original_hash: str          
     cipher_algorithm: str
+    ecdh_public_key: str | None = None
+    ecdh_wrapped_key: str | None = None
+    ecdh_key_nonce: str | None = None
 # ==========================================
 # PFCE CORE ENGINE: DYNAMIC & ADAPTIVE FRAGMENTATION
 # ==========================================
@@ -66,7 +69,8 @@ class PFCEEngine:
         
         # Forward Secrecy: Claim a One-Time Receiver Prekey for this transfer
         transfer_id_basename = os.path.basename(pfce_package_path)
-        prekey_public_pem = CryptoService.claim_prekey(receiver_id, transfer_id_basename)
+        receiver_id_int = int(receiver_id) if isinstance(receiver_id, str) and receiver_id.isdigit() else receiver_id
+        prekey_public_pem = CryptoService.claim_prekey(receiver_id_int, transfer_id_basename)
         
         # Hybrid (ECDH + ML-KEM) Transfer-Level Setup using UPCE
         hybrid_kek = None
@@ -237,6 +241,11 @@ class PFCEEngine:
         unique_ciphers = list(set([f.get("cipher_algorithm", "Unknown") for f in metadata["fragments"]]))
         cipher_algorithm_used = ", ".join(unique_ciphers) if unique_ciphers else "None"
         
+        ephemeral_public = metadata.get("hybrid", {}).get("ecdh_ephemeral_public")
+        first_frag = metadata["fragments"][0] if metadata["fragments"] else {}
+        hybrid_wrapped_key = first_frag.get("hybrid_wrapped_key")
+        hybrid_wrap_nonce = first_frag.get("hybrid_wrap_nonce")
+        
         try:
             with SessionLocal() as db:
                 BlockchainService.append_block(
@@ -262,7 +271,10 @@ class PFCEEngine:
             ecdh_time_ms=round(total_ecdh_time_ms, 3),
             fragment_count=fragment_id,
             original_hash=master_hash.hexdigest(),
-            cipher_algorithm=cipher_algorithm_used
+            cipher_algorithm=cipher_algorithm_used,
+            ecdh_public_key=ephemeral_public,
+            ecdh_wrapped_key=hybrid_wrapped_key,
+            ecdh_key_nonce=hybrid_wrap_nonce
         )
 
     def process_download_stream(self, pfce_package_path: str, receiver_id: str | int, crypto_engine=None, sender_public_key_spki: str = "") -> Generator[bytes, None, None]:

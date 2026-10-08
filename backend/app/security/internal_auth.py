@@ -44,9 +44,30 @@ def verify_internal_token(request: Request, authorization: str = Security(API_KE
             
         r = get_redis()
         env = os.getenv("ENVIRONMENT", "development")
+        
+        # Local fallback dictionary for development
+        if not hasattr(verify_internal_token, "local_jti_cache"):
+            verify_internal_token.local_jti_cache = {}
+            verify_internal_token.redis_warned = False
+            
+        import time
+        now = time.time()
+        
+        # Cleanup expired JTIs from local cache
+        keys_to_delete = [k for k, v in verify_internal_token.local_jti_cache.items() if now > v]
+        for k in keys_to_delete:
+            del verify_internal_token.local_jti_cache[k]
+
         if r is None:
             if env == "development":
-                logger.warning("Redis connection unavailable for JTI replay protection. Bypassing check for local development. Please ensure Redis service is running.")
+                if not verify_internal_token.redis_warned:
+                    logger.warning("Redis connection unavailable for JTI replay protection. Using in-memory fallback for local development.")
+                    verify_internal_token.redis_warned = True
+                
+                # In-memory fallback
+                if jti in verify_internal_token.local_jti_cache:
+                    raise HTTPException(status_code=401, detail="SERVICE_AUTH_FAILURE: Replayed JTI detected")
+                verify_internal_token.local_jti_cache[jti] = now + 60
             else:
                 logger.error("Redis connection unavailable for JTI replay protection.")
                 raise HTTPException(status_code=500, detail="Internal security store unavailable. Please ensure Redis service is running.")
@@ -57,7 +78,14 @@ def verify_internal_token(request: Request, authorization: str = Security(API_KE
                     raise HTTPException(status_code=401, detail="SERVICE_AUTH_FAILURE: Replayed JTI detected")
             except redis.RedisError as e:
                 if env == "development":
-                    logger.warning(f"Redis error checking JTI: {e}. Bypassing check for local development. Please ensure Redis service is running.")
+                    if not verify_internal_token.redis_warned:
+                        logger.warning(f"Redis error checking JTI: {e}. Using in-memory fallback for local development.")
+                        verify_internal_token.redis_warned = True
+                        
+                    # In-memory fallback
+                    if jti in verify_internal_token.local_jti_cache:
+                        raise HTTPException(status_code=401, detail="SERVICE_AUTH_FAILURE: Replayed JTI detected")
+                    verify_internal_token.local_jti_cache[jti] = now + 60
                 else:
                     logger.error(f"Redis error checking JTI: {e}")
                     raise HTTPException(status_code=500, detail="Internal security store unavailable. Please ensure Redis service is running.")

@@ -147,7 +147,12 @@ class UniversalPolymorphicCryptoEngine:
             
         try:
             # 1. ML-KEM Component
-            receiver_pqc_info = MLKEMService.get_active_public_key(receiver_id)
+            try:
+                receiver_pqc_info = MLKEMService.get_active_public_key(str(receiver_id))
+            except ValueError:
+                logger.info(f"[UPCE] Generating missing PQC keypair for user {receiver_id}")
+                MLKEMService.generate_keypair(str(receiver_id))
+                receiver_pqc_info = MLKEMService.get_active_public_key(str(receiver_id))
             receiver_pub_key = receiver_pqc_info["public_key"]
             receiver_key_version = receiver_pqc_info["key_version"]
             kem_ciphertext, mlkem_secret_buf = MLKEMService.encapsulate(receiver_pub_key)

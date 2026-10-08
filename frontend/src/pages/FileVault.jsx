@@ -12,6 +12,7 @@ export default function FileVault() {
   const [shareData, setShareData] = useState(null)
   const [downloading, setDownloading] = useState(null)
   const [secureSession, setSecureSession] = useState(false)
+  const [releasing, setReleasing] = useState(null)
 
   const load = async () => {
     try {
@@ -41,7 +42,40 @@ export default function FileVault() {
       const base64Spki = btoa(String.fromCharCode(...new Uint8Array(clientPubSpki)))
       const clientPem = `-----BEGIN PUBLIC KEY-----\n${base64Spki.match(/.{1,64}/g).join('\n')}\n-----END PUBLIC KEY-----`
 
-      await api.post('/crypto/ecdh/exchange', { client_public_key_pem: clientPem })
+      const res = await api.post('/crypto/ecdh/exchange', { client_public_key_pem: clientPem })
+      const serverPem = res.data.server_public_key_pem
+      
+      if (!serverPem) {
+        throw new Error("No server public key returned")
+      }
+
+      const pemHeader = "-----BEGIN PUBLIC KEY-----";
+      const pemFooter = "-----END PUBLIC KEY-----";
+      const pemContents = serverPem.substring(
+          serverPem.indexOf(pemHeader) + pemHeader.length,
+          serverPem.indexOf(pemFooter)
+      ).replace(/\s/g, '');
+      
+      const binaryDerString = window.atob(pemContents);
+      const binaryDer = new Uint8Array(binaryDerString.length);
+      for (let i = 0; i < binaryDerString.length; i++) {
+          binaryDer[i] = binaryDerString.charCodeAt(i);
+      }
+      
+      const serverPubKey = await window.crypto.subtle.importKey(
+          "spki",
+          binaryDer.buffer,
+          { name: "ECDH", namedCurve: "P-256" },
+          true,
+          []
+      );
+
+      const sharedSecret = await window.crypto.subtle.deriveBits(
+          { name: "ECDH", public: serverPubKey },
+          keyPair.privateKey,
+          256
+      );
+
       setSecureSession(true)
     } catch (err) {
       console.error("ECDH Failed", err)
@@ -109,6 +143,21 @@ export default function FileVault() {
       setError(apiError(err))
     } finally {
       setDownloading(null)
+    }
+  }
+
+  const releaseQuarantine = async (transfer) => {
+    if (!window.confirm("Are you sure you want to approve and release this file? You take full responsibility for its safety.")) return;
+    setReleasing(transfer.id)
+    setError('')
+    try {
+      await api.post(`/files/${transfer.id}/release`)
+      alert("File released successfully!")
+      load() // Reload vault
+    } catch (err) {
+      setError(apiError(err))
+    } finally {
+      setReleasing(null)
     }
   }
 
@@ -200,10 +249,21 @@ export default function FileVault() {
                       <div>
                         <span className="inline-block min-w-[2rem] font-black text-cyan-300">v{file.version || 1}</span>
                         <span className="text-xs text-slate-400 ml-2">{new Date(file.created_at).toLocaleString()}</span>
+                        {file.status === 'quarantined' && (
+                          <span className="ml-3 text-xs font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">QUARANTINED</span>
+                        )}
                       </div>
-                      <button onClick={() => download(file)} disabled={downloading === file.id} className="text-cyan-400 hover:text-cyan-300 disabled:opacity-50 transition-colors" title="Download Decrypted File">
-                        <Download size={16} />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        {file.status === 'quarantined' ? (
+                          <button onClick={() => releaseQuarantine(file)} disabled={releasing === file.id} className="text-amber-400 hover:text-amber-300 disabled:opacity-50 transition-colors bg-amber-500/10 hover:bg-amber-500/20 px-3 py-1 rounded text-xs font-bold" title="Verify & Release File">
+                            {releasing === file.id ? 'Releasing...' : 'Release'}
+                          </button>
+                        ) : (
+                          <button onClick={() => download(file)} disabled={downloading === file.id} className="text-cyan-400 hover:text-cyan-300 disabled:opacity-50 transition-colors" title="Download Decrypted File">
+                            <Download size={16} />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

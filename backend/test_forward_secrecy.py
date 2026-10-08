@@ -60,14 +60,25 @@ def test_fresh_sender_key_and_prekey_consumption(setup_db, db_session, test_user
     
     assert prekey_pub1 != prekey_pub2
     
+    from app.services.upce_quantum_service import UniversalPolymorphicCryptoEngine
+    from app.services.mlkem_service import MLKEMService
+    try:
+        MLKEMService.get_active_public_key("2")
+    except ValueError:
+        MLKEMService.generate_keypair("2")
+
+    upce = UniversalPolymorphicCryptoEngine()
+    upce_res1 = upce.initialize_transfer_security(1, 2, {"min_chunk_bytes": 1024}, prekey_pub1, transfer_id1)
+    upce_res2 = upce.initialize_transfer_security(1, 2, {"min_chunk_bytes": 1024}, prekey_pub2, transfer_id2)
+
     res1 = CryptoService.encrypt_file_for_receiver(
-        "dummy_test.txt", 2, "test_file_1", "Sensitive", prekey_public_pem=prekey_pub1, transfer_id=transfer_id1, sender_id=1
+        "dummy_test.txt", 2, "test_file_1", "Sensitive", hybrid_kek=upce_res1.get("hybrid_kek"), transfer_id=transfer_id1, sender_id=1
     )
     res2 = CryptoService.encrypt_file_for_receiver(
-        "dummy_test.txt", 2, "test_file_2", "Sensitive", prekey_public_pem=prekey_pub2, transfer_id=transfer_id2, sender_id=1
+        "dummy_test.txt", 2, "test_file_2", "Sensitive", hybrid_kek=upce_res2.get("hybrid_kek"), transfer_id=transfer_id2, sender_id=1
     )
     
-    assert res1.ecdh_public_key != res2.ecdh_public_key
+    assert upce_res1["metadata"]["ecdh_ephemeral_public"] != upce_res2["metadata"]["ecdh_ephemeral_public"]
 
 def test_concurrent_prekey_claims(setup_db):
     # Ensure there is exactly 1 prekey available
@@ -94,8 +105,18 @@ def test_compromise_before_deletion(setup_db):
     transfer_id = str(uuid.uuid4())
     prekey_pub = CryptoService.claim_prekey(2, transfer_id)
     
+    from app.services.upce_quantum_service import UniversalPolymorphicCryptoEngine
+    from app.services.mlkem_service import MLKEMService
+    try:
+        MLKEMService.get_active_public_key("2")
+    except ValueError:
+        MLKEMService.generate_keypair("2")
+        
+    upce = UniversalPolymorphicCryptoEngine()
+    upce_res = upce.initialize_transfer_security(1, 2, {"min_chunk_bytes": 1024}, prekey_pub, transfer_id)
+
     res = CryptoService.encrypt_file_for_receiver(
-        "dummy_test.txt", 2, "test_file_pre", "Sensitive", prekey_public_pem=prekey_pub, transfer_id=transfer_id, sender_id=1
+        "dummy_test.txt", 2, "test_file_pre", "Sensitive", hybrid_kek=upce_res.get("hybrid_kek"), transfer_id=transfer_id, sender_id=1
     )
     
     # State: TRANSFER_PENDING. The private prekey is still in the database.
@@ -106,8 +127,11 @@ def test_compromise_before_deletion(setup_db):
         stolen_private = stolen_prekey.private_key_pem
         
     # Attacker can decrypt:
-    unwrapped = CryptoService.unwrap_key_with_ecdh(
-        2, res.ecdh_public_key, res.ecdh_wrapped_key, res.ecdh_key_nonce, "test_file_pre", prekey_private_pem=stolen_private, transfer_id=transfer_id, sender_id=1
+    recovered_kek = upce.recover_transfer_security(1, 2, transfer_id, upce_res.get("metadata"), stolen_private, prekey_pub)
+    unwrapped = CryptoService.unwrap_hybrid_key(
+        hybrid_kek=recovered_kek,
+        hybrid_wrapped_key_b64=res.hybrid_wrapped_key,
+        hybrid_wrap_nonce_b64=res.hybrid_wrap_nonce
     )
     assert unwrapped is not None
 
@@ -115,8 +139,18 @@ def test_compromise_after_deletion(setup_db):
     transfer_id = str(uuid.uuid4())
     prekey_pub = CryptoService.claim_prekey(2, transfer_id)
     
+    from app.services.upce_quantum_service import UniversalPolymorphicCryptoEngine
+    from app.services.mlkem_service import MLKEMService
+    try:
+        MLKEMService.get_active_public_key("2")
+    except ValueError:
+        MLKEMService.generate_keypair("2")
+        
+    upce = UniversalPolymorphicCryptoEngine()
+    upce_res = upce.initialize_transfer_security(1, 2, {"min_chunk_bytes": 1024}, prekey_pub, transfer_id)
+
     res = CryptoService.encrypt_file_for_receiver(
-        "dummy_test.txt", 2, "test_file_post", "Sensitive", prekey_public_pem=prekey_pub, transfer_id=transfer_id, sender_id=1
+        "dummy_test.txt", 2, "test_file_post", "Sensitive", hybrid_kek=upce_res.get("hybrid_kek"), transfer_id=transfer_id, sender_id=1
     )
     
     # Receiver downloads and consumes the key
@@ -134,8 +168,18 @@ def test_no_downgrade_for_modern_transfers(setup_db):
     transfer_id = str(uuid.uuid4())
     prekey_pub = CryptoService.claim_prekey(2, transfer_id)
     
+    from app.services.upce_quantum_service import UniversalPolymorphicCryptoEngine
+    from app.services.mlkem_service import MLKEMService
+    try:
+        MLKEMService.get_active_public_key("2")
+    except ValueError:
+        MLKEMService.generate_keypair("2")
+        
+    upce = UniversalPolymorphicCryptoEngine()
+    upce_res = upce.initialize_transfer_security(1, 2, {"min_chunk_bytes": 1024}, prekey_pub, transfer_id)
+    
     res = CryptoService.encrypt_file_for_receiver(
-        "dummy_test.txt", 2, "test_file_dg", "Sensitive", prekey_public_pem=prekey_pub, transfer_id=transfer_id, sender_id=1
+        "dummy_test.txt", 2, "test_file_dg", "Sensitive", hybrid_kek=upce_res.get("hybrid_kek"), transfer_id=transfer_id, sender_id=1
     )
     
     # Receiver consumes key
@@ -144,9 +188,7 @@ def test_no_downgrade_for_modern_transfers(setup_db):
     # Now try to decrypt again but pretend the prekey_priv is missing (or attacker only has long-term key)
     # The system should fail closed, not downgrade to RSA or static ECDH
     try:
-        CryptoService.unwrap_key_with_ecdh(
-            2, res.ecdh_public_key, res.ecdh_wrapped_key, res.ecdh_key_nonce, "test_file_dg", prekey_private_pem=None, transfer_id=transfer_id, sender_id=1
-        )
+        recovered_kek = upce.recover_transfer_security(1, 2, transfer_id, upce_res.get("metadata"), None, prekey_pub)
         assert False, "Should have failed closed!"
     except Exception:
         assert True

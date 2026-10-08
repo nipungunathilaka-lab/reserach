@@ -51,7 +51,8 @@ class ContinuousTransferMonitor:
         transfers_last_hour: int,
         mfa_failed_attempts: int,
         failed_login_attempts: int,
-        hour_of_day: int
+        hour_of_day: int,
+        is_trusted_ip: bool = False
     ):
         self.telemetry = TransferTelemetry(
             transfer_id=transfer_id,
@@ -65,6 +66,7 @@ class ContinuousTransferMonitor:
             failed_login_attempts=failed_login_attempts,
             hour_of_day=hour_of_day
         )
+        self.is_trusted_ip = is_trusted_ip
         self.last_logged_time = time.time()
 
     def update_telemetry(self, chunk_size: int) -> None:
@@ -172,7 +174,8 @@ class ContinuousTransferMonitor:
             failed_login_attempts=self.telemetry.failed_login_attempts,
             file_name=self.telemetry.file_name,
             user_id=self.telemetry.sender_id,
-            analysis_id=analysis_id
+            analysis_id=analysis_id,
+            is_trusted_ip=self.is_trusted_ip
         )
         
         # Overlay rolling heuristics
@@ -200,11 +203,9 @@ class ContinuousTransferMonitor:
         
         if self.telemetry.current_risk_level == "BLOCKED":
             self.telemetry.status = "BLOCKED"
-            raise TransferBlockedError(
-                message=f"Continuous monitoring triggered block. Reason: {ai_result.get('reason')}",
-                anomaly_score=score,
-                risk_level=self.telemetry.current_risk_level
-            )
+            # Soft block instead of raising exception immediately
+            ai_result["quarantined"] = True
+            ai_result["quarantine_reason"] = f"Continuous monitoring triggered block. Reason: {ai_result.get('reason')}"
             
         return ai_result
         

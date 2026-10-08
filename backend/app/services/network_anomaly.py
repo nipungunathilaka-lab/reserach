@@ -125,11 +125,12 @@ class NetworkAnomalyEngine:
             # IsolationForest decision function: negative means anomaly
             decision = float(cls._model.decision_function(df)[0])
             prediction = int(cls._model.predict(df)[0])
+            
+            # Continuously map decision boundary to network risk score
+            ml_risk = max(0.01, min(1.0, 0.5 - decision))
             if prediction == -1:
                 signals.append("NETWORK_MODEL_ANOMALY")
-                # Scale ML risk
-                ml_risk = min(max(0.0, 0.5 - decision), 1.0)
-                risk_score = max(risk_score, ml_risk)
+            risk_score = max(risk_score, ml_risk)
 
         final_risk = min(risk_score, 1.0)
         return final_risk, signals

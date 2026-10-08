@@ -3,15 +3,11 @@ import time
 import requests
 import statistics
 import shutil
+import csv
 
 # 1. Constants for configuration
-SIZES_TO_TEST = [
-    1 * 1024 * 1024,      # 1MB
-    10 * 1024 * 1024,     # 10MB
-    50 * 1024 * 1024,     # 50MB
-    100 * 1024 * 1024,    # 100MB
-    1024 * 1024 * 1024    # 1GB
-]
+SIZES_MB = [1, 10, 25, 50, 100, 300]
+SIZES_TO_TEST = [size * 1024 * 1024 for size in SIZES_MB]
 ITERATIONS = 5
 UPLOAD_ENDPOINT = "http://localhost:5001/api/files/send"
 TOKEN = "dummy_jwt_token"
@@ -34,6 +30,8 @@ def run_benchmark():
         "client_signature": "mock-signature",
         "client_nonce": "mock-nonce"
     }
+
+    results = []
 
     for file_size in SIZES_TO_TEST:
         execution_times = []
@@ -76,12 +74,41 @@ def run_benchmark():
         if len(execution_times) > 0:
             mean_time = statistics.mean(execution_times)
             sd_time = statistics.stdev(execution_times) if len(execution_times) > 1 else 0.0
-            print(f"Final Result ({category_mb}MB Category): {mean_time:.2f} ± {sd_time:.2f} ms")
+            print(f"Category {category_mb}MB: {mean_time:.2f} ± {sd_time:.2f} ms")
+            results.append({
+                "File Size (MB)": category_mb,
+                "Mean Latency (ms)": round(mean_time, 2),
+                "Standard Deviation (ms)": round(sd_time, 2)
+            })
         else:
             print(f"No requests completed for {category_mb}MB category.")
+            results.append({
+                "File Size (MB)": category_mb,
+                "Mean Latency (ms)": "N/A",
+                "Standard Deviation (ms)": "N/A"
+            })
 
     if os.path.exists(temp_dir):
         shutil.rmtree(temp_dir)
+        
+    # Print consolidated report
+    print("\n" + "="*60)
+    print("CONSOLIDATED FINAL REPORT")
+    print("="*60)
+    print(f"{'File Size (MB)':<18} | {'Mean Latency (ms)':<20} | {'Std Dev (ms)':<15}")
+    print("-" * 60)
+    for res in results:
+        print(f"{res['File Size (MB)']:<18} | {str(res['Mean Latency (ms)']):<20} | {str(res['Standard Deviation (ms)']):<15}")
+    print("="*60)
+
+    # Export to CSV
+    csv_file = "benchmark_results.csv"
+    with open(csv_file, mode="w", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=["File Size (MB)", "Mean Latency (ms)", "Standard Deviation (ms)"])
+        writer.writeheader()
+        writer.writerows(results)
+    
+    print(f"\nResults successfully exported to {csv_file}")
 
 if __name__ == "__main__":
     run_benchmark()
