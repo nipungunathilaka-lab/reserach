@@ -27,6 +27,7 @@ BLOCKCHAIN_RPC_URL = os.getenv("BLOCKCHAIN_RPC_URL", "http://localhost:8545")
 BLOCKCHAIN_CHAIN_ID = int(os.getenv("BLOCKCHAIN_CHAIN_ID", "1337"))
 BLOCKCHAIN_SIGNER_ADDRESS = os.getenv("BLOCKCHAIN_SIGNER_ADDRESS")
 BLOCKCHAIN_SIGNER_PRIVATE_KEY = os.getenv("BLOCKCHAIN_SIGNER_PRIVATE_KEY")
+BLOCKCHAIN_CONTRACT_ADDRESS = os.getenv("BLOCKCHAIN_CONTRACT_ADDRESS")
 
 class BlockchainService:
     """
@@ -49,7 +50,7 @@ class BlockchainService:
             
             cls._web3 = Web3(Web3.HTTPProvider(
                 BLOCKCHAIN_RPC_URL, 
-                request_kwargs={'verify': False, 'auth': ('rpcuser', 'rpcpassword123!')}
+                request_kwargs={'verify': '/app/certs/ca.crt', 'auth': ('rpcuser', 'rpcpassword123!')}
             ))
             cls._web3.middleware_onion.inject(geth_poa_middleware, layer=0)
             if not cls._web3.is_connected():
@@ -143,13 +144,16 @@ class BlockchainService:
         if not cls._contract_address:
             # We would usually read this from a config or env var, but for testing
             # we deploy if it doesn't exist
-            try:
-                addr = cls._deploy_contract()
-                if not addr:
+            if BLOCKCHAIN_CONTRACT_ADDRESS:
+                cls._contract_address = BLOCKCHAIN_CONTRACT_ADDRESS
+            else:
+                try:
+                    addr = cls._deploy_contract()
+                    if not addr:
+                        return None
+                except Exception as e:
+                    logger.error("Contract deployment failed: %s", e)
                     return None
-            except Exception as e:
-                logger.error("Contract deployment failed: %s", e)
-                return None
                 
         cls._contract_instance = w3.eth.contract(address=cls._contract_address, abi=cls._contract_abi)
         return cls._contract_instance
